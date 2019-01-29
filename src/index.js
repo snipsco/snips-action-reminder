@@ -11,8 +11,20 @@ withHermes(async (hermes, done) => {
 
         const dialog = hermes.dialog()
 
-        // This is a placeholder! Replace that by something valid!
-        dialog.flow('pokemon', handlers.pokemon)
+        dialog.flows([
+            {
+                intent: 'snips-assistant:SetReminder',
+                action: handlers.setReminder
+            },
+            {
+                intent: 'snips-assistant:GetReminders',
+                action: handlers.getReminder
+            },
+            {
+                intent: 'snips-assistant:RescheduleReminder',
+                action: handlers.rescheduleReminder
+            }
+        ])
 
     } catch (error) {
         // Output initialization errors to stderr and exit
