@@ -10,4 +10,5 @@ module.exports = async () => {
     const config = configFactory.get()
     const language = LANGUAGE_MAPPINGS[config.locale]
     await i18nFactory.init(language)
+    REMINDERS = new Array()
 }

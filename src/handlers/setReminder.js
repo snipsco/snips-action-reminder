@@ -1,46 +1,51 @@
 const api = require('../api')
 const { i18nFactory } = require('../factories')
 const { message } = require('../utils')
+const Reminder = require('../utils/').reminder
 
+// Brief:
+//     Create a new reminder and save it into the file system
 module.exports = async function (msg, flow) {
-    // Print the received intent message
-    // eslint-disable-next-line
     console.log('setReminder callback')
-    //console.log('Received:\n', JSON.stringify(msg))
+    var success = 1
 
-    // Suppose we have a pokemon id slot
-    // If there are multiple, we take the only that is supposed to be the 'most valid'.
-    // We discard slots with a confidence value too low.
+    var r_name = ''
+    var r_datetime = ''
+    var r_recurrence = ''
+
     const reminder_name = message.getSlotsByName(msg, 'reminder_name', { onlyMostConfident: true, threshold: 0.5 })
-    const recurrence = message.getSlotsByName(msg, 'recurrence', { onlyMostConfident: true, threshold: 0.5 })
     const datetime = message.getSlotsByName(msg, 'datetime', { onlyMostConfident: true, threshold: 0.5 })
+    const recurrence = message.getSlotsByName(msg, 'recurrence', { onlyMostConfident: true, threshold: 0.5 })
 
-    // We need this slot, so if the slot had a low confidence or was not mark as required,
-    // we throw an error.
     if(reminder_name) {
-        console.log('Name: '+reminder_name.value.value)
-    }
-    if(recurrence) {
-        console.log('Recurrence: '+recurrence.value.value)
+        r_name = reminder_name.value.value
     }
     if(datetime) {
-        console.log("Datetime: %o", datetime.value.value)
+        r_datetime = datetime.value.value.value
+        console.log(r_datetime)
     }
 
+    if(recurrence) {
+        r_recurrence = recurrence.value.value
+    }
 
-    // Get the Pokemon data
-    //const pokemon = await api.getPokemon(pokemonId.value.value)
-
-    // End the dialog session.
-    flow.end()
-
-    // Return the TTS speech.
     const i18n = i18nFactory.get()
-    // const pokemonName = pokemon.forms[0].name
-    // return i18n({
-    //     name: pokemonName,
-    //     weight: pokemon.weight,
-    //     height: pokemon.height
-    // })
-    return 'Success'
+    try {
+        rem = new Reminder(r_name, r_datetime, r_recurrence)
+        REMINDERS.push(rem)
+        console.log(`Current reminder number: ${REMINDERS.length}`)
+
+        var options = {year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric"};
+        res = i18n('info.confirmReminderSet', {
+            name: rem.name,
+            date_time: rem.datetime.toLocaleString('fr-FR', options),
+            recurrence: r_recurrence
+        })
+    } catch (e) {
+        console.log(e)
+        res = i18n('error.incomplete')
+    }
+
+    flow.end()
+    return res
 }
