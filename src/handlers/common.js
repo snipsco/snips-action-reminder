@@ -37,7 +37,11 @@ module.exports = async function (msg, knownSlots = {}) {
                 threshold: SLOT_CONFIDENCE_THRESHOLD
             })
             if (tempSlot) {
-                res[slot] = tempSlot.value.value
+                if (tempSlot.entity == 'snips/datetime') {
+                    res[slot] = tempSlot.value.value.value
+                } else {
+                    res[slot] = tempSlot.value.value
+                }
             }
         } else {
             res[slot] = knownSlots[slot]

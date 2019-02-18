@@ -1,8 +1,9 @@
 const api = require('../api')
 const { i18nFactory } = require('../factories')
 const { message, logger } = require('../utils')
-const Reminder = require('../class/').Reminder
 const commonHandler = require('./common')
+
+const Reminder = require('../class/').Reminder
 
 //Create a new reminder and save it into the file system
 module.exports = async function (msg, flow) {
