@@ -21,5 +21,9 @@ const handlerWrapper = handler => (
 
 // Add handlers here, and wrap them.
 module.exports = {
-    pokemon: handlerWrapper(require('./pokemon'))
+    setReminder: handlerWrapper(require('./setReminder'))
+    //getReminder: handlerWrapper(require('./getReminder')),
+    //rescheduleReminder: handlerWrapper(require('./rescheduleReminder')),
+    //renameReminder: handlerWrapper(require('./renameReminder')),
+    //cancelReminder: handlerWrapper(require('./cancelReminder')),
 }

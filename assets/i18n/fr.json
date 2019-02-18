@@ -9,6 +9,6 @@
         "unspecific": "Oups, quelque chose s'est mal passé."
     },
     "pokemon": {
-        "info": "Le pokémon {{ name }} pèse ${{ weight }} kilos et mesure {{ height }} centimètres."
+        "info": "Le pokémon {{ name }} pèse {{ weight }} kilos et mesure {{ height }} centimètres."
     }
 }
