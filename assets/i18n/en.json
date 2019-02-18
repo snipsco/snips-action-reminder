@@ -6,21 +6,9 @@
         "intentNotRecognized": "Sorry, I did not understand your request.",
         "APIResponse": "Sorry, there was an issue with the service provider.",
         "APIRequest": "Sorry, the service provider is unreachable.",
-        "unspecific": "Oops, something went wrong.",
-        "incomplete": "Sorry, incomplete information provided, please try again"
+        "unspecific": "Oops, something went wrong."
     },
-    "ask": {
-        "create": "Would you like to create one?",
-        "nameAndTime": "When should I set this reminder and how should I name it?",
-        "name": "How should I name this reminder?",
-        "time": "When should I set this reminder for?"
-    },
-    "info": {
-        "remind": "It's time for {{ reminder }}",
-        "confirmReminderSet": "Okay, your reminder {{ name }} is set for {{ date_time }} {{ recurrence }}",
-        "noReminder": "Seems like you have no reminder set for the moment.",
-        "noReminderFor": "Seems like you have no reminder set for {{ something }}.",
-        "numberOfReminders": "I'v found {{ number }} reminders.",
-        "reminderSetFor": "{{ reminder_name }} is set for {{ date_time }}"
+    "pokemon": {
+        "info": "{{ name }}'s weight is {{ weight }} and its height is {{ height }}."
     }
 }
