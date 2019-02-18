@@ -2,6 +2,8 @@ const api = require('../api')
 const { i18nFactory } = require('../factories')
 const { message } = require('../utils')
 
+// Brief:
+//     Change an exist reminder to the new time 
 module.exports = async function (msg, flow) {
     // Print the received intent message
     // eslint-disable-next-line

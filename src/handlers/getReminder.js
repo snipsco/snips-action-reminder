@@ -2,11 +2,13 @@ const api = require('../api')
 const { i18nFactory } = require('../factories')
 const { message } = require('../utils')
 
+// Brief:
+//     Get a reminder from all the saved reminder
 module.exports = async function (msg, flow) {
     // Print the received intent message
     // eslint-disable-next-line
     console.log('getReminder callback')
-    //console.log('Received:\n', JSON.stringify(msg))
+    console.log('Received:\n', JSON.stringify(msg))
 
     // Suppose we have a pokemon id slot
     // If there are multiple, we take the only that is supposed to be the 'most valid'.
@@ -19,6 +21,9 @@ module.exports = async function (msg, flow) {
     // we throw an error.
     if(reminder_name) {
         console.log('Name: '+reminder_name.value.value)
+        task = `to ${reminder_name.value.value}`
+    }else{
+        task = ''
     }
     if(recurrence) {
         console.log('Recurrence: '+recurrence.value.value)
@@ -41,5 +46,5 @@ module.exports = async function (msg, flow) {
     //     weight: pokemon.weight,
     //     height: pokemon.height
     // })
-    return 'Success'
+    return `Yes sir, I will remind you ${task}`
 }

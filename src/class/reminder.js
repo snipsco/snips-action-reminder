@@ -1,9 +1,14 @@
 const cron = require('node-cron')
 const timestamp = require('time-stamp')
+const fs = require("fs")
+const path = require('path')
+
+const { i18nFactory } = require('../factories')
+const say = require('../utils/').say
 
 module.exports = class Reminder {
 
-    constructor(name, datetime, recurrence) {
+    constructor (name, datetime, recurrence) {
         if (!name || !(datetime || recurrence))
             throw "[Create Reminder faild] Incomplete information"
         this.id = timestamp('YYYYMMDD-HHmmss-ms')
@@ -15,12 +20,18 @@ module.exports = class Reminder {
         this.recurrence = recurrence
         this.schedule = Reminder.parseSchedule(this.datetime, this.recurrence)
         this.task = cron.schedule(this.schedule, () => {
-          console.log(`Reminder task <${this.name}> is arrive`);
+            const i18n = i18nFactory.get()
+            say(i18n('info.remind', { reminder: this.name }))
+            console.log(`Reminder task <${this.name}> is triggered`)
+        }, {
+            scheduled: false
         })
-        this.debug_dump()
     }
 
-    debug_dump() {
+    debug_dump () {
+        var date_now = new Date(Date.now())
+        console.log(`Current time ................ ${date_now.toLocaleString("en-GB")}`)
+        console.log(`Target time ................. ${this.datetime.toLocaleString("en-GB")}`)
         console.log(`Reminder id ................. ${this.id}`)
         console.log(`Reminder name ............... ${this.name}`)
         if (this.recurrence)
@@ -28,6 +39,23 @@ module.exports = class Reminder {
         else
             console.log(`Reminder recurrence ......... NONE`)
         console.log(`Reminder schedule ........... ${this.schedule}`)
+    }
+
+    save () {
+        let data = JSON.stringify({
+            id: this.id,
+            name: this.name,
+            recurrence: this.recurrence,
+            schedule: this.schedule
+        })
+        let reminder_path = path.resolve(__dirname + `/../../reminder_records/${this.id}.json`)
+
+        fs.writeFile(reminder_path, data, 'utf8', (err, reminder_path) => {
+            if (err) {
+                return console.error(err);
+            }
+            console.log(`Successfully write file ${reminder_path}`)
+        })
     }
 
     // ┌────────────── second (optional, not used)
@@ -39,7 +67,7 @@ module.exports = class Reminder {
     // │ │ │ │ │ │
     // │ │ │ │ │ │
     // * * * * * *
-    static parseSchedule(date, recurrence=null) {
+    static parseSchedule (date, recurrence=null) {
         var schedule = ''
         switch (recurrence) {
             case 'mondays':
@@ -87,13 +115,12 @@ module.exports = class Reminder {
                 break
 
             default:
-                console.log("No recurrence task")
                 schedule = `${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()+1} ${date.getDay()}`
         }
         return schedule
     }
 
-    static parse_date_time(date_time_raw) {
+    static parse_date_time (date_time_raw) {
         var date_time = {}
 
         var temp = date_time_raw.split(' ')

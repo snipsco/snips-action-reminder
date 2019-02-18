@@ -1,7 +1,7 @@
 const api = require('../api')
 const { i18nFactory } = require('../factories')
 const { message } = require('../utils')
-const Reminder = require('../utils/').reminder
+const Reminder = require('../class/').reminder
 
 // Brief:
 //     Create a new reminder and save it into the file system
@@ -35,7 +35,7 @@ module.exports = async function (msg, flow) {
         REMINDERS.push(rem)
         console.log(`Current reminder number: ${REMINDERS.length}`)
 
-        var options = {year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric"};
+        var options = {month: "long", day: "numeric", hour: "numeric", minute: "numeric"};
         res = i18n('info.confirmReminderSet', {
             name: rem.name,
             date_time: rem.datetime.toLocaleString('fr-FR', options),

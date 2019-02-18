@@ -2,6 +2,7 @@ const { withHermes } = require('hermes-javascript')
 const bootstrap = require('./bootstrap')
 const handlers = require('./handlers')
 const { translation, logger } = require('./utils')
+const { Dialog } = require('hermes-javascript')
 
 // Initialize hermes
 withHermes(async (hermes, done) => {
@@ -25,6 +26,15 @@ withHermes(async (hermes, done) => {
                 action: handlers.rescheduleReminder
             }
         ])
+
+        dialog.publish('start_session', {
+            site_id: 'default',
+            session_init: {
+                init_type:  Dialog.enums.initType.notification,
+                value: 'Ready .'
+            }
+        })
+
 
     } catch (error) {
         // Output initialization errors to stderr and exit

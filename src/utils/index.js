@@ -3,5 +3,5 @@ module.exports = {
     logger: require('./logger'),
     message: require('./message'),
     translation: require('./translation'),
-    reminder: require('./reminder')
+    say: require('./say')
 }
