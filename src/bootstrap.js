@@ -1,4 +1,4 @@
-const { configFactory, i18nFactory, httpFactory } = require('./factories')
+const { configFactory, i18nFactory, httpFactory, reminderFactory } = require('./factories')
 
 const {
     LANGUAGE_MAPPINGS
@@ -11,4 +11,5 @@ module.exports = async (bootstrapOptions) => {
     const language = LANGUAGE_MAPPINGS[config.locale]
     await i18nFactory.init(language, bootstrapOptions.i18n)
     httpFactory.init(bootstrapOptions.http)
+    await reminderFactory.init()
 }
