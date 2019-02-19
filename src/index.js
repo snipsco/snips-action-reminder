@@ -1,7 +1,8 @@
 const { withHermes } = require('hermes-javascript')
 const bootstrap = require('./bootstrap')
 const handlers = require('./handlers')
-const { translation, logger } = require('./utils')
+const { translation, logger, say, ask } = require('./utils')
+const { BINDINGS } = require('./bindings')
 
 // Initialize hermes
 module.exports = function ({
@@ -12,35 +13,11 @@ module.exports = function ({
         try {
             // Bootstrap config, locale, i18n…
             await bootstrap(bootstrapOptions)
-
             const dialog = hermes.dialog()
+            dialog.flows(BINDINGS)
 
-            dialog.flows([
-                {
-                    intent: 'snips-assistant:SetReminder',
-                    action: handlers.setReminder
-                },
-                {
-                    intent: 'snips-assistant:GetReminders',
-                    action: handlers.getReminder
-                },
-                {
-                    intent: 'snips-assistant:RescheduleReminder',
-                    action: handlers.rescheduleReminder
-                },
-                {
-                    intent: 'snips-assistant:RenameReminder',
-                    action: handlers.renameReminder
-                }
-            ])
-
-            // dialog.publish('start_session', {
-            //     site_id: 'default',
-            //     session_init: {
-            //         init_type:  Dialog.enums.initType.notification,
-            //         value: 'Reminder action code is ready'
-            //     }
-            // })
+            say('Reminder action code is ready')
+            ask('Do you want to continue?', '99689')
 
         } catch (error) {
             // Output initialization errors to stderr and exit
