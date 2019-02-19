@@ -12,9 +12,9 @@ module.exports = async function (msg, knownSlots = {}) {
     if (msg.intent.probability < INTENT_PROBABILITY_THRESHOLD) {
         throw new Error('intentNotRecognized')
     }
-    // if (math.geometricMean(msg.asr_tokens.map(token => token.confidence)) < ASR_TOKENS_CONFIDENCE_THRESHOLD) {
-    //     throw new Error('intentNotRecognized')
-    // }
+    if (math.geometricMean(msg.asr_tokens.map(token => token.confidence)) < ASR_TOKENS_CONFIDENCE_THRESHOLD) {
+        throw new Error('intentNotRecognized')
+    }
 
     let slots = [
         'reminder_name',
@@ -31,7 +31,7 @@ module.exports = async function (msg, knownSlots = {}) {
     res = { }
 
     slots.forEach( (slot) => {
-        if (!('reminder_name' in knownSlots)) {
+        if (!(slot in knownSlots)) {
             let tempSlot = message.getSlotsByName(msg, slot, {
                 onlyMostConfident: true,
                 threshold: SLOT_CONFIDENCE_THRESHOLD

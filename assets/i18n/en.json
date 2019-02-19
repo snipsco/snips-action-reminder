@@ -17,7 +17,7 @@
     "info": {
         "briefReady": "Reminder APP is ready to use.",
         "briefNumber": "There are {{ number }} reminders has been loaded.",
-        "remind": "It's time for {{ reminder_name }}",
+        "remind": "Reminder {{ reminder_name }}, it's time!",
         "confirmReminderSet": "Okay, your reminder {{ name }} is set for {{ date_time }} {{ recurrence }}.",
         "noReminder": "Seems like you have no reminder set for the moment.",
         "noReminderFor": "Seems like you have no reminder set for {{ something }}.",
