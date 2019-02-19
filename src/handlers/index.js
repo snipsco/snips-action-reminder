@@ -21,6 +21,11 @@ const handlerWrapper = handler => (
 
 // Add handlers here, and wrap them.
 module.exports = {
+    // yes: handlerWrapper(require('./yes')),
+    // no: handlerWrapper(require('./no')),
+    stop: handlerWrapper(require('./stop')),
+    // silence: handlerWrapper(require('./silence')),
+    // cancel: handlerWrapper(require('./cancel')),
     setReminder: handlerWrapper(require('./setReminder'))
     //getReminder: handlerWrapper(require('./getReminder')),
     //rescheduleReminder: handlerWrapper(require('./rescheduleReminder')),
