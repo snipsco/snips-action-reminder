@@ -1,44 +1,83 @@
 const cron = require('node-cron')
 const timestamp = require('time-stamp')
-const fs = require("fs")
+const fs = require('fs')
 const path = require('path')
 
 const { i18nFactory } = require('../factories')
-const say = require('../utils/').say
+const { logger } = require('../utils')
+const { ask } = require('../tts')
 
 module.exports = class Reminder {
 
-    constructor (name, datetime, recurrence) {
-        if (!name || !(datetime || recurrence))
-            throw "[Create Reminder faild] Incomplete information"
-        this.id = timestamp('YYYYMMDD-HHmmss-ms')
+    constructor (name, datetime, recurrence, id = null) {
+        if (!name || !(datetime || recurrence)){
+            throw new Error('incompleteReminderCreationInfo')
+        }
+
+        this.statusReminder = false
+        this.alarmStatus = false
+
+        this.id = (id) ? id : timestamp('YYYYMMDD-HHmmss-ms')
+
         this.name = name
-        if (datetime)
-            this.datetime = Reminder.parse_date_time(datetime)
-        else
-            this.datetime = new Date(Date.now())
+        this.datetime = (datetime) ? datetime : new Date(Date.now())
         this.recurrence = recurrence
+
         this.schedule = Reminder.parseSchedule(this.datetime, this.recurrence)
-        this.task = cron.schedule(this.schedule, () => {
-            const i18n = i18nFactory.get()
-            say(i18n('info.remind', { reminder: this.name }))
-            console.log(`Reminder task <${this.name}> is triggered`)
-        }, {
+
+        // when the task arrives, start alarm cron which play tts and wait for a user respond each 10 seconds
+        this.taskAlarm = cron.schedule('*/10 * * * * *', this.alarm, {
+            scheduled: false
+        })
+
+        this.taskReminder = cron.schedule(this.schedule, this.enableAlarm, {
             scheduled: false
         })
     }
 
-    debug_dump () {
-        var date_now = new Date(Date.now())
-        console.log(`Current time ................ ${date_now.toLocaleString("en-GB")}`)
-        console.log(`Target time ................. ${this.datetime.toLocaleString("en-GB")}`)
-        console.log(`Reminder id ................. ${this.id}`)
-        console.log(`Reminder name ............... ${this.name}`)
-        if (this.recurrence)
-            console.log(`Reminder recurrence ......... ${this.recurrence}`)
-        else
-            console.log(`Reminder recurrence ......... NONE`)
-        console.log(`Reminder schedule ........... ${this.schedule}`)
+    alarm () {
+        const i18n = i18nFactory.get()
+        let message = i18n('info.remind', { reminder: this.name })
+        ask(message, {reminder_id: this.id, reminder_name: this.name})
+    }
+
+    enable () {
+        this.statusReminder = true
+        this.taskReminder.start()
+    }
+
+    disable () {
+        this.statusReminder = false
+        this.taskReminder.stop()
+    }
+
+    enableAlarm () {
+        this.statusAlarm = true
+        this.taskAlarm.start()
+    }
+
+    disableAlarm () {
+        this.statusAlarm = false
+        this.taskAlarm.stop()
+    }
+
+    delete () {
+        // delete task cron object
+        this.disable()
+        this.task.destory()
+
+        // delete alarm crom object
+        this.disableAlarm()
+        this.alarm.destory()
+
+        // delete the saved reminder in the FS
+        let reminderSavedPath = path.resolve(__dirname + `/../../reminder_records/${this.id}.json`)
+        fs.unlink(reminderSavedPath, (err) => {
+            if (err) {
+                return logger.error(err)
+            }
+            logger.info(`Deleted reminder: ${reminderSavedPath}`)
+        })
     }
 
     save () {
@@ -48,13 +87,14 @@ module.exports = class Reminder {
             recurrence: this.recurrence,
             schedule: this.schedule
         })
-        let reminder_path = path.resolve(__dirname + `/../../reminder_records/${this.id}.json`)
 
-        fs.writeFile(reminder_path, data, 'utf8', (err, reminder_path) => {
+        let reminderSavePath = path.resolve(__dirname + `/../../reminder_records/${this.id}.json`)
+
+        fs.writeFile(reminderSavePath, data, 'utf8', (err) => {
             if (err) {
-                return console.error(err);
+                return logger.error(err);
             }
-            console.log(`Successfully write file ${reminder_path}`)
+            logger.info(`Saved reminder: ${reminderSavePath}`)
         })
     }
 
@@ -67,76 +107,76 @@ module.exports = class Reminder {
     // │ │ │ │ │ │
     // │ │ │ │ │ │
     // * * * * * *
-    static parseSchedule (date, recurrence=null) {
-        var schedule = ''
+    static parseSchedule (datetime, recurrence=null) {
+        let schedule = ''
         switch (recurrence) {
             case 'mondays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Mon`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Mon`
                 break
 
             case 'tuesdays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Tue`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Tue`
                 break
 
             case 'wednesdays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Wed`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Wed`
                 break
 
             case 'thursdays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Thu`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Thu`
                 break
 
             case 'fridays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Fri`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Fri`
                 break
 
             case 'saturdays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Sat`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Sat`
                 break
 
             case 'sundays':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Sun`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Sun`
                 break
 
             case 'weekly':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * ${date.getDay()}`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * ${datetime.getDay()}`
                 break
 
             case 'daily':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * *`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * *`
                 break
 
             case 'monthly':
-                schedule = `${date.getMinutes()} ${date.getHours()} * ${date.getMonth()+1} *`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * ${datetime.getDay()}`
                 break
 
             case 'weekends':
-                schedule = `${date.getMinutes()} ${date.getHours()} * * Sat,Sun`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} * * Sat,Sun`
                 break
 
             default:
-                schedule = `${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()+1} ${date.getDay()}`
+                schedule = `${datetime.getMinutes()} ${datetime.getHours()} ${datetime.getDate()} ${datetime.getMonth()+1} ${datetime.getDay()}`
+        }
+
+        if (!cron.validate(schedule)) {
+            logger.error('unvalideScheduleExpression')
         }
         return schedule
     }
 
-    static parse_date_time (date_time_raw) {
-        var date_time = {}
-
-        var temp = date_time_raw.split(' ')
-        var date = temp[0]
-        var time = temp[1]
-
-        temp = date.split('-')
-        var year = parseInt(temp[0])
-        var month = parseInt(temp[1])
-        var day = parseInt(temp[2])
-
-        temp = time.split(':')
-        var hour = parseInt(temp[0])
-        var minutes = parseInt(temp[1])
-
-        var res = new Date(year, month-1, day, hour, minutes)
-        return res
+    dumpReminderInfo () {
+        var datetimeNow = new Date(Date.now())
+        logger.info('---------------------------------')
+        logger.info(`Current time .......... ${datetimeNow.toLocaleString('en-GB')}`)
+        logger.info(`Target time ........... ${this.datetime.toLocaleString('en-GB')}`)
+        logger.info(`Reminder id ........... ${this.id}`)
+        logger.info(`Reminder name ......... ${this.name}`)
+        if (this.recurrence){
+            logger.info(`Reminder recurrence ... ${this.recurrence}`)
+        } else {
+            logger.info('Reminder recurrence ... NONE')
+        }
+        logger.info(`Reminder schedule ..... ${this.schedule}`)
+        logger.info('---------------------------------')
     }
 }
