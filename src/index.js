@@ -1,8 +1,8 @@
 const { withHermes } = require('hermes-javascript')
 const bootstrap = require('./bootstrap')
-const handlers = require('./handlers')
-const { translation, logger, say, ask } = require('./utils')
+const { translation, logger } = require('./utils')
 const { BINDINGS } = require('./bindings')
+const { say } = require('./tts')
 
 // Initialize hermes
 module.exports = function ({
@@ -13,11 +13,12 @@ module.exports = function ({
         try {
             // Bootstrap config, locale, i18n…
             await bootstrap(bootstrapOptions)
+
             const dialog = hermes.dialog()
             dialog.flows(BINDINGS)
 
             say('Reminder action code is ready')
-            ask('Do you want to continue?', '99689')
+            //ask('Do you want to continue?', '99689')
 
         } catch (error) {
             // Output initialization errors to stderr and exit

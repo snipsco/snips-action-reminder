@@ -1,43 +1,26 @@
-const api = require('../api')
-const { i18nFactory } = require('../factories')
-const { message, logger } = require('../utils')
+const { reminderFactory } = require('../factories')
+const { logger } = require('../utils')
 const commonHandler = require('./common')
 
-const Reminder = require('../class/').Reminder
-
-//Create a new reminder and save it into the file system
+// Create a new reminder and save it into the file system
 module.exports = async function (msg, flow) {
-    const i18n = i18nFactory.get()
 
-    logger.info('SetReminder')
+    let res = null
 
-    var success = 1
+    logger.debug('SetReminder')
+    //logger.debug(reminderFactory.get())
 
-    const slots = await commonHandler(msg, knownSlots = {} )
+    const slots = await commonHandler(msg)
 
     if (slots.reminder_name && (slots.recurrence || slots.datetime)) {
-        res = 'all the slots are good'
-        logger.info('all the slots are good')
+        logger.debug('Completed slots')
+        res = reminderFactory.addReminder(slots.reminder_name, slots.datetime, slots.recurrence)
     } else {
-        res = 'incompleted slots'
-        logger.info('incompleted slots')
-    }
+        logger.debug('Incompleted slots')
+        // start the slots-filler or continue the session to ask again
 
-    // try {
-    //     rem = new Reminder(r_name, r_datetime, r_recurrence)
-    //     REMINDERS.push(rem)
-    //     console.log(`Current reminder number: ${REMINDERS.length}`)
-    //
-    //     var options = {month: "long", day: "numeric", hour: "numeric", minute: "numeric"};
-    //     res = i18n('info.confirmReminderSet', {
-    //         name: rem.name,
-    //         date_time: rem.datetime.toLocaleString('fr-FR', options),
-    //         recurrence: r_recurrence
-    //     })
-    // } catch (e) {
-    //     console.log(e)
-    //     res = i18n('error.incomplete')
-    // }
+        res = 'Incompleted slots values, please try again'
+    }
 
     flow.end()
     return res

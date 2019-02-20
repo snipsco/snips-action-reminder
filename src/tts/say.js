@@ -1,5 +1,5 @@
 const { Hermes, Dialog } = require('hermes-javascript')
-const logger = require('./logger')
+const { logger } = require('../utils')
 
 module.exports = (text, site_id='default') => {
     logger.info(text)
