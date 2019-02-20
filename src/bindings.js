@@ -1,24 +1,32 @@
+const handlers = require('./handlers')
+
 module.exports = {
     BINDINGS: [
         {
             intent: 'snips-assistant:SetReminder',
-            action: require('./handlers').setReminder
+            action: handlers.setReminder
         },
         {
             intent: 'snips-assistant:GetReminders',
-            action: require('./handlers').getReminder
+            action: handlers.getReminder
         },
         {
             intent: 'snips-assistant:RescheduleReminder',
-            action: require('./handlers').rescheduleReminder
+            action: handlers.rescheduleReminder
         },
         {
             intent: 'snips-assistant:RenameReminder',
-            action: require('./handlers').renameReminder
+            action: handlers.renameReminder
         },
         {
             intent: 'snips-assistant:Stop',
-            action: require('./handlers').stop
+            action: handlers.stop
         }
+    ],
+    BUILTIN_INTENTS: [
+        'snips-assistant:No',
+        'snips-assistant:Stop',
+        'snips-assistant:Cancel',
+        'snips-assistant:Silence'
     ]
 }
