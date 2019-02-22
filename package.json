@@ -1,5 +1,5 @@
 {
-  "name": "snips-action-snips-action-reminder",
+  "name": "snips-reminder",
   "version": "0.0.1",
   "description": "snips action code for reminder app",
   "main": "src/index.js",
