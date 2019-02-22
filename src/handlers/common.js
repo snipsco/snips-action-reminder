@@ -1,19 +1,22 @@
 const { message, logger, math } = require('../utils')
-const { configFactory } = require('../factories')
 const {
-    HOME_SYNONYMS,
-    WORK_SYNONYMS,
     INTENT_PROBABILITY_THRESHOLD,
     SLOT_CONFIDENCE_THRESHOLD,
     ASR_TOKENS_CONFIDENCE_THRESHOLD
 } = require('../constants')
 
-module.exports = async function (msg, knownSlots = {}) {
+module.exports = async (msg, knownSlots = {}) => {
     if (msg.intent.probability < INTENT_PROBABILITY_THRESHOLD) {
-        throw new Error('intentNotRecognized')
+        throw 'intentNotRecognized -> lowThreshold'
+        //logger.error('intentNotRecognized -> lowThreshold')
+        //return {}
+        //throw new Error('intentNotRecognized')
     }
     if (math.geometricMean(msg.asr_tokens.map(token => token.confidence)) < ASR_TOKENS_CONFIDENCE_THRESHOLD) {
-        throw new Error('intentNotRecognized')
+        throw 'intentNotRecognized -> lowGeometricMean'
+        //logger.error('intentNotRecognized -> lowGeometricMean')
+        //return {}
+        //throw new Error('intentNotRecognized')
     }
 
     let slots = [
@@ -28,7 +31,7 @@ module.exports = async function (msg, knownSlots = {}) {
         'new_reminder_datetime',
     ]
 
-    res = { }
+    let res = { }
 
     slots.forEach( (slot) => {
         if (!(slot in knownSlots)) {
