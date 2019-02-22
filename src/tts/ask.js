@@ -15,7 +15,7 @@ module.exports = (text, customData = null, siteId='default', intentFilter = BUIL
             value: {
                 text: text,
                 intent_filter: intentFilter,
-                can_be_enqueued: true,
+                can_be_enqueued: false,
                 send_intent_not_recognized: true
             }
         }
