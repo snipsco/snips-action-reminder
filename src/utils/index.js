@@ -3,5 +3,6 @@ module.exports = {
     logger: require('./logger'),
     message: require('./message'),
     translation: require('./translation'),
-    math: require('./math')
+    math: require('./math'),
+    parser: require('./parser')
 }
