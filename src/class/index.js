@@ -1,4 +1,4 @@
 module.exports = {
     Reminder: require('./Reminder'),
-    ReminderPool: require('./ReminderArray')
+    ReminderSet: require('./ReminderSet')
 }

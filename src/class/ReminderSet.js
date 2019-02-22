@@ -1,43 +1,30 @@
 const fs = require('fs')
 const path = require('path')
 const { logger } = require('../utils')
-const { Reminder } = require('../class')
-const { i18nFactory } = require('../factories')
+const Reminder = require('./Reminder')
 
-module.exports = class ReminderArray extends Set {
+module.exports = class ReminderSet extends Set {
     constructor (remindersPath) {
         super()
         this.remindersPath = remindersPath
+        this.loadSavedReminders()
     }
 
-    addReminder (reminder_name, datetime, recurrence, id = null) {
-        const i18n = i18nFactory.get()
+    addNew (reminder_name, datetime, recurrence, id = null) {
         let res = null
 
         try {
             let temp = new Reminder(reminder_name, datetime, recurrence, id)
-
-            logger.info((id?'Load':'New') + `reminder: ${reminderPool.length}`)
-
-            logger.debug(temp.dumpReminderInfo())
-
-            let datetimeString = temp.datetime.toLocaleString('fr-FR', {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric' })
-
-            res = i18n('info.confirmReminderSet', {
-                name: temp.name,
-                date_time: datetimeString,
-                recurrence: temp.recurrence
-            })
+            res = temp
+            logger.info((id ? 'Load' : 'New') + ` reminder: ${reminder_name}`)
+            temp.dumpReminderInfo()
 
             temp.enable()
+            temp.save()
             this.add(temp)
         } catch (err) {
             logger.error(err)
-            res = i18n('error.incomplete')
+            return false
         }
         return res
     }
@@ -51,20 +38,24 @@ module.exports = class ReminderArray extends Set {
             logger.info(`Found ${files.length} saved reminders!`)
 
             // load each saved reminder to runtime system
+            logger.info(files)
             files.forEach(file => {
-                let reminderPath = path.resolve(`${this.remindersPath}${file}`)
-                fs.readFile(reminderPath, 'utf8', function (err, data) {
-                    if (err) {
-                        logger.error(err)
-                    }
-                    let reminderTemp = JSON.parse(data)
-                    let res = this.addReminder(reminderTemp.name,
-                                               reminderTemp.datetime,
-                                               reminderTemp.recurrence,
-                                               reminderTemp.id)
-                    logger.info(res)
-                })
+                let reminderPath = path.resolve(`${this.remindersPath}/${file}`)
+                logger.debug(`Reading: ${reminderPath}`)
+                let reminderTemp = JSON.parse(fs.readFileSync(reminderPath))
+                let res = this.addNew(reminderTemp.name,
+                                      reminderTemp.datetime,
+                                      reminderTemp.recurrence,
+                                      reminderTemp.id)
+                logger.info(`Loaded reminder: ${res}`)
             })
+        })
+    }
+
+    disableAll() {
+        this.forEach((reminder) => {
+            reminder.disable()
+            reminder.disableAlarm()
         })
     }
 
@@ -90,4 +81,18 @@ module.exports = class ReminderArray extends Set {
         })
     }
 
+    // threshold unit: ms
+    checkAndDeleteExpiredReminders (threshold = 604800000) {
+        logger.info(`Checking expried reminders.. Appleid threshold: ${threshold/86400000} days`)
+        let targetReminders = []
+        let dateNow = new Date(Date.now())
+        this.forEach( (reminder) => {
+            if (dateNow - reminder.datetime > threshold) {
+                targetReminders.push(reminder)
+            }
+        })
+        targetReminders.forEach( (reminder) => {
+            this.deleteReminderById(reminder.id)
+        })
+    }
 }
