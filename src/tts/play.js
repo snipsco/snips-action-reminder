@@ -12,8 +12,8 @@ module.exports = (siteId = 'default') => {
 
     audio.publish('play_audio', {
         id: '0',
-        site_id: siteId,
-        wav_bytes: alarmWav,
-        wav_bytes_len:  alarmWav.length
+        siteId: siteId,
+        wavBytes: alarmWav,
+        wavBytesLen: alarmWav.length
     })
 }

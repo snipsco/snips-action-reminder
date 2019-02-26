@@ -6,17 +6,16 @@ const {
 } = require('../constants')
 
 module.exports = async (msg, knownSlots = {}) => {
-    if (msg.intent.probability < INTENT_PROBABILITY_THRESHOLD) {
-        throw 'intentNotRecognized -> lowThreshold'
-        //logger.error('intentNotRecognized -> lowThreshold')
-        //return {}
-        //throw new Error('intentNotRecognized')
-    }
-    if (math.geometricMean(msg.asr_tokens.map(token => token.confidence)) < ASR_TOKENS_CONFIDENCE_THRESHOLD) {
-        throw 'intentNotRecognized -> lowGeometricMean'
-        //logger.error('intentNotRecognized -> lowGeometricMean')
-        //return {}
-        //throw new Error('intentNotRecognized')
+    logger.debug('message intent: %o', msg)
+
+    if (msg.intent) {
+        if (msg.intent.confidenceScore < INTENT_PROBABILITY_THRESHOLD) {
+            throw 'intentNotRecognized -> lowThreshold'
+        }
+
+        if (message.getAsrConfidence(msg) < ASR_TOKENS_CONFIDENCE_THRESHOLD) {
+            throw 'intentNotRecognized -> lowGeometricMean'
+        }
     }
 
     let slots = [
@@ -31,7 +30,7 @@ module.exports = async (msg, knownSlots = {}) => {
         'new_reminder_datetime',
     ]
 
-    let res = { }
+    let res = {}
 
     slots.forEach( (slot) => {
         if (!(slot in knownSlots)) {
@@ -41,7 +40,7 @@ module.exports = async (msg, knownSlots = {}) => {
             })
             if (tempSlot) {
                 if (tempSlot.entity == 'snips/datetime') {
-                    res[slot] = tempSlot.value.value.value
+                    res[slot] = tempSlot.value
                 } else {
                     res[slot] = tempSlot.value.value
                 }

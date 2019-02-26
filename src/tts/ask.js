@@ -8,16 +8,14 @@ module.exports = (text, customData = null, siteId='default', intentFilter = BUIL
     const hermes = new Hermes()
     const dialog = hermes.dialog()
     dialog.publish('start_session', {
-        custom_data: customData,
-        site_id: siteId,
-        session_init: {
-            init_type:  Dialog.enums.initType.action,
-            value: {
-                text: text,
-                intent_filter: intentFilter,
-                can_be_enqueued: false,
-                send_intent_not_recognized: true
-            }
-        }
+        init: {
+            type: Dialog.enums.initType.action,
+            text: text,
+            intentFilter: intentFilter,
+            canBeEnqueued: false,
+            sendIntentNotRecognized: true
+        },
+        customData: customData,
+        siteId: siteId
     })
 }

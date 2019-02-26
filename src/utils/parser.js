@@ -24,8 +24,7 @@ const { GRAIN_TO_STRING } = require('../constants')
              completedDatetime.setMinutes(datetimeNow.getMinutes())
              return completedDatetime
          case 'Week':// base: the first day of next weeek at 00:00
-             let dateTmp = completedDatetime.getDate()
-             completedDatetime.setDate(dateTmp + datetimeNow.getDay() - 1)
+             completedDatetime.setDate(completedDatetime.getDate() + datetimeNow.getDay() - 1)
              completedDatetime.setHours(datetimeNow.getHours())
              completedDatetime.setMinutes(datetimeNow.getMinutes())
              return completedDatetime

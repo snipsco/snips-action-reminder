@@ -31,6 +31,7 @@ module.exports = {
                         mock: {
                             locale: 'english'
                         }
+                    }
                 }
             })
         })

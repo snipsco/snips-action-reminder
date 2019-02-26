@@ -1,16 +1,16 @@
 const { Hermes, Dialog } = require('hermes-javascript')
 const { logger } = require('../utils')
 
-module.exports = (text, site_id='default') => {
+module.exports = (text, siteId='default') => {
     logger.info(text)
 
     const hermes = new Hermes()
     const dialog = hermes.dialog()
     dialog.publish('start_session', {
-        site_id: site_id,
-        session_init: {
-            init_type:  Dialog.enums.initType.notification,
-            value: text
-        }
+        init: {
+            type: Dialog.enums.initType.notification,
+            text: text,
+        },
+        siteId: siteId
     })
 }
