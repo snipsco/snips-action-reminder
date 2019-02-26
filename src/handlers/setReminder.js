@@ -1,68 +1,120 @@
 const i18nFactory = require('../factories/i18nFactory')
 const { logger } = require('../utils')
 const commonHandler = require('./common')
+const { createReminder } = require('../reminders')
 
-function createReminder (flow, parsedSlots, knownSlots) {
-    logger.debug('createReminder')
-    const i18n = i18nFactory.get()
-    let reminder = G_allReminders.addNew(parsedSlots.reminder_name, parsedSlots.datetime, parsedSlots.recurrence)
-    if (reminder){
+function flowInterruption (flow, knownSlots) {
+    flow.continue('snips-assistant:Cancel', (msg, flow) => {
         flow.end()
-        var options = {month: "long", day: "numeric", hour: "numeric", minute: "numeric"}
-        return i18n('info.confirmReminderSet', {
+    })
+    flow.continue('snips-assistant:Stop', (msg, flow) => {
+        flow.end()
+    })
+    flow.notRecognized((msg, flow) => {
+        knownSlots.depth -= 1
+        msg.slots = []
+        return require('./index').setReminder(msg, flow, knownSlots)
+    })
+}
+
+function newReminder (flow, parsedSlots) {
+    logger.debug('createReminder')
+    flow.end()
+    const i18n = i18nFactory.get()
+    let reminder = createReminder(parsedSlots.reminder_name,
+                                  parsedSlots.datetime,
+                                  parsedSlots.recurrence)
+    if (reminder){
+        var options = {
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'}
+        return i18n('inform.confirmReminderSet', {
             name: reminder.name,
             date_time: reminder.datetime.toLocaleString('fr-FR', options),
             recurrence: reminder.recurrence
         })
     } else {
-        return i18n('info.canNotCreateReminder')
+        return i18n('inform.canNotCreateReminder')
     }
 }
 
 // time = datetime or recurrence
-function createReminderMissingTime (flow, parsedSlots, knownSlots) {
+function newReminderMissingTime (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingTime')
+    flowInterruption(flow, knownSlots)
     const i18n = i18nFactory.get()
-    //flow.end()
-    flow.continue('snips-assistant:SetReminder', (msg, flow) => {
-        logger.info('flow continue for SetReminder')
 
-        slotDetected = {
+    flow.continue('snips-assistant:SetReminder', (msg, flow) => {
+        let slotDetected = {
             reminder_name: parsedSlots.reminder_name,
-            depth:
+            depth: knownSlots.depth - 1
         }
-        flow.end()
+        return require('./index').setReminder(msg, flow, slotDetected)
     })
+
     return i18n('ask.time')
 }
 
-function createReminderMissingName (flow, parsedSlots, knownSlots) {
+function newReminderMissingName (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingName')
+    flowInterruption(flow, knownSlots)
     const i18n = i18nFactory.get()
-    flow.end()
+
+    flow.continue('snips-assistant:SetReminder', (msg, flow) => {
+
+        let slotDetected = {
+            depth: knownSlots.depth - 1
+        }
+
+        if (parsedSlots.datetime) {
+            slotDetected.datetime = parsedSlots.datetime
+        }
+        if (parsedSlots.recurrence) {
+            slotDetected.recurrence = parsedSlots.recurrence
+        }
+
+        return require('./index').setReminder(msg, flow, slotDetected)
+    })
+
     return i18n('ask.name')
 }
 
-function createReminderMissingNameAndTime (flow, parsedSlots, knownSlots) {
+function newReminderMissingNameAndTime (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingNameAndTime')
     const i18n = i18nFactory.get()
-    flow.end()
+    flowInterruption(flow, knownSlots)
+
+    flow.continue('snips-assistant:SetReminder', (msg, flow) => {
+        let slotDetected = {
+            depth: knownSlots.depth - 1
+        }
+        return require('./index').setReminder(msg, flow, slotDetected)
+    })
     return i18n('ask.nameAndTime')
 }
 
 // Create a new reminder and save it into the file system
-module.exports = async function (msg, flow, knownSlots = { depth: 2 }) {
+module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     logger.debug('SetReminder')
+    const i18n = i18nFactory.get()
+
     const slots = await commonHandler(msg, knownSlots)
+
     if (slots.reminder_name && (slots.recurrence || slots.datetime)) {
-        return createReminder(flow, slots, knownSlots)
+        return newReminder(flow, slots)
+    } else if (knownSlots.depth === 0) {
+        flow.end()
+        return i18n('inform.doNotUnderstantd')
     } else if ( !slots.reminder_name && (slots.recurrence || slots.datetime) ) {
-        return createReminderMissingName(flow, slots, knownSlots)
+        return newReminderMissingName(flow, slots, knownSlots)
     } else if ( slots.reminder_name && !(slots.recurrence || slots.datetime) ) {
-        return createReminderMissingTime(flow, slots, knownSlots)
+        return newReminderMissingTime(flow, slots, knownSlots)
     } else if ( !slots.reminder_name && !(slots.recurrence || slots.datetime)) {
-        return createReminderMissingNameAndTime(flow, slots, knownSlots)
+        return newReminderMissingNameAndTime(flow, slots, knownSlots)
     } else {
-        return 'case not addressed! Please check as soon as possible'
+        flow.end()
+        return i18n('debug.caseNotRecognized')
     }
 }
