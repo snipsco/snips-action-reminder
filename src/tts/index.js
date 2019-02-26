@@ -1,4 +1,5 @@
 module.exports = {
     say: require('./say'),
-    ask: require('./ask')
+    ask: require('./ask'),
+    alarm: require('./play')
 }
