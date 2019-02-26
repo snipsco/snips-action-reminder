@@ -3,9 +3,8 @@ const cron = require('node-cron')
 const timestamp = require('time-stamp')
 const fs = require('fs')
 const parser = require('./utils/parser')
-const i18nFactory = require('./factories/i18nFactory')
 const logger = require('./utils/logger')
-const { ask } = require('./tts')
+const { createAlarm } = require('./alarms')
 
 const reminders = []
 const remindersDir = __dirname + '/../reminder_records/'
@@ -15,8 +14,14 @@ function initReminder(name, datetime, recurrence, id = null, schedule = null, ex
         throw 'incompleteReminderCreationInfo'
     }
 
-    let _datetime = new Date((datetime) ? datetime : Date.now())
-    let _schedule = (schedule) ? schedule : parser.getScheduleString(_datetime, recurrence)
+    const _datetime = new Date((datetime) ? datetime : Date.now())
+    const _schedule = (schedule) ? schedule : parser.getScheduleString(_datetime, recurrence)
+
+    const taskReminder = cron.schedule(_schedule, () => {
+        createAlarm(name, id)
+    }, {
+        scheduled: false
+    })
 
     return {
         id: (id) ? id : timestamp('YYYYMMDD-HHmmss-ms'),
@@ -25,40 +30,12 @@ function initReminder(name, datetime, recurrence, id = null, schedule = null, ex
         recurrence,
         schedule: _schedule,
         expired: (expired) ? expired : false,
-        taskAlarm: cron.schedule('*/15 * * * * *', () => {
-            const i18n = i18nFactory.get()
-            let message = i18n('info.remind', {
-                name: this.name
-            })
-            //alarm()
-            // customData only supports string type
-            ask(message, JSON.stringify({
-                reminder_id: this.id,
-                reminder_name: this.name}))
-        }, {
-            scheduled: false
-        }),
-        taskReminder: cron.schedule(_schedule, () => {
-            this.statusAlarm = true
-            this.taskAlarm.start()
-        }, {
-            scheduled: false
-        }),
-        disableAlarm() {
-            this.statusAlarm = false
-            this.taskAlarm.stop()
-            logger.info(`Reminder: ${this.id}'s alarm is disabled`)
-            if (!this.recurrence) {
-                this.expired = true
-                this.taskAlarm.destory()
-                logger.info(`Reminder: ${this.id} is expired`)
-            }
-        },
+        taskReminder,
         save() {
             let data = JSON.stringify({
                 id: this.id,
                 name: this.name,
-                datetime: this.datetimeStr,
+                datetime: this.datetime.toJSON(),
                 recurrence: this.recurrence,
                 schedule: this.schedule,
                 expired: this.expired
@@ -92,7 +69,9 @@ function createReminder(name, datetime, recurrence, id = null, schedule = null, 
     if (reminder) {
         reminders.push(reminder)
         reminder.taskReminder.start()
-        reminder.save()
+        if (!id) {
+            reminder.save()
+        }
         return reminder
     } else {
         return null
@@ -156,8 +135,8 @@ module.exports = {
     deleteReminderById(id) {
         const reminder = reminders.filter(reminder => reminder.id === id)
         if(reminder) {
-            // place holder -- destory cron jobs (reminder and alarm)
-
+            reminder.taskReminder.stop()
+            reminder.taskReminder.destroy()
             reminders.splice(reminders.indexOf(reminder), 1)
             return true
         }
@@ -198,7 +177,12 @@ module.exports = {
     disableAllReminders() {
         reminders.forEach(reminder => {
             reminder.taskReminder.stop()
-            reminder.taskAlarm.stop()
+        })
+    },
+    destroyAllReminders() {
+        reminders.forEach(reminder => {
+            reminder.taskReminder.stop()
+            reminder.taskReminder.destroy()
         })
     }
 }

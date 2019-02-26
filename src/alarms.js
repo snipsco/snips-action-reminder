@@ -8,11 +8,10 @@ const alarmSchedule = '*/15 * * * * *'
 
 function initAlarm(name, id) {
     const taskAlarm = cron.schedule(alarmSchedule, () => {
-        // const i18n = i18nFactory.get()
-        // let message = i18n('info.remind', {
-        //     name: name
-        // })
-        message = `it's time for reminder: ${name}`
+        const i18n = i18nFactory.get()
+        let message = i18n('info.remind', {
+            name: name
+        })
         const tts = require('./tts')
         tts.ask(message, JSON.stringify({
             reminder_id: id
@@ -26,7 +25,6 @@ function initAlarm(name, id) {
         name,
         taskAlarm
     }
-
 }
 
 module.exports = {
@@ -40,7 +38,7 @@ module.exports = {
         return false
     },
     deleteAlarm(id) {
-        alarm = alarms.filter(alarm => alarm.id === id)
+        const alarm = alarms.filter(alarm => alarm.id === id)
         if (alarm.length === 1) {
             alarm[0].taskAlarm.stop()
             alarm[0].taskAlarm.destroy()
@@ -48,5 +46,11 @@ module.exports = {
             return true
         }
         return false
+    },
+    destroyAllAlarm() {
+        alarms.forEach(alarm => {
+            alarm.taskAlarm.stop()
+            alarm.taskAlarm.destroy()
+        })
     }
 }

@@ -1,10 +1,8 @@
 const { configFactory, i18nFactory, httpFactory } = require('./factories')
-const { ReminderSet } = require('./class')
 const path = require('path')
-
-const {
-    LANGUAGE_MAPPINGS
-} = require('./constants')
+const { loadAllReminders, enableAllReminders, destroyAllReminders } = require('./reminders')
+const { destroyAllAlarm } = require('./alarms')
+const { LANGUAGE_MAPPINGS } = require('./constants')
 
 // Put anything that needs to be called on app. startup here.
 module.exports = async (bootstrapOptions) => {
@@ -14,14 +12,12 @@ module.exports = async (bootstrapOptions) => {
     await i18nFactory.init(language, bootstrapOptions.i18n)
     httpFactory.init(bootstrapOptions.http)
 
-    G_allReminders = new ReminderSet(path.resolve(__dirname + '/../reminder_records/'))
-
-    setTimeout(() => {
-        G_allReminders.checkAndDeleteExpiredReminders()
-    }, 5000)
+    loadAllReminders()
+    enableAllReminders()
 
     process.on('SIGINT', function() {
-        G_allReminders.disableAll()
+        destroyAllReminders()
+        destroyAllAlarm()
         process.exit()
     })
 }
