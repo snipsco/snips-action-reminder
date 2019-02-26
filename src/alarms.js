@@ -1,7 +1,6 @@
 const cron = require('node-cron')
-
 const i18nFactory = require('./factories/i18nFactory')
-
+const logger = require('./utils/logger')
 const alarms = []
 // play the tts sound each 15 seconds (dialogue timeout max 15 seconds)
 const alarmSchedule = '*/15 * * * * *'
@@ -9,12 +8,13 @@ const alarmSchedule = '*/15 * * * * *'
 function initAlarm(name, id) {
     const taskAlarm = cron.schedule(alarmSchedule, () => {
         const i18n = i18nFactory.get()
-        let message = i18n('info.remind', {
+        let message = i18n('inform.remind', {
             name: name
         })
         const tts = require('./tts')
         tts.ask(message, JSON.stringify({
-            reminder_id: id
+            reminder_id: id,
+            reminder_name: name
         }))
     }, {
         scheduled: false
@@ -40,6 +40,7 @@ module.exports = {
     deleteAlarm(id) {
         const alarm = alarms.filter(alarm => alarm.id === id)
         if (alarm.length === 1) {
+            logger.info(`Stopping alarm for: ${alarm[0].name}`)
             alarm[0].taskAlarm.stop()
             alarm[0].taskAlarm.destroy()
             alarms.splice(alarms.indexOf(alarm), 1)
