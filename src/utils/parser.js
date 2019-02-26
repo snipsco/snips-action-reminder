@@ -1,28 +1,49 @@
 const cron = require('node-cron')
+const { GRAIN_TO_STRING } = require('../constants')
 
 /**
- * Convert <snips/datetime> raw date to <Date object> in JS
- * A <snips/datetime> example: '2019-02-20 09:28:33.414474992 +00:00'
+ * Convert a incompleted datetime to a exact time, filling the unclear parts by current time sub-segments
+ * A uncompleted datetime example: '2020-01-01 00:00:00 +01:00' (Next year)
+ * A completed datetime example: '2020-03-26 16:39:00 +01:00' (A year after from today)
  *
- * @param {string} datetimeSnips original <snips/datetime> type
- * @return {Object} <JS Date object> (precision: minute)
+ * @param {Date Object} datetime
+ * @return {Date Object} (precision: minute)
  */
-function toJsDatetime (datetimeSnips) {
-    let temp = datetimeSnips.split(' ')
-    let date = temp[0]
-    let time = temp[1]
+ function getCompletedDatetime(datetime) {
+     const datetimeNow = new Date(Date.now())
+     let completedDatetime = new Date(datetime.value)
 
-    temp = date.split('-')
-    let year = parseInt(temp[0])
-    let month = parseInt(temp[1])
-    let day = parseInt(temp[2])
-
-    temp = time.split(':')
-    let hour = parseInt(temp[0])
-    let minutes = parseInt(temp[1])
-
-    return new Date(year, month-1, day, hour, minutes)
-}
+     switch (GRAIN_TO_STRING[datetime.grain]) {
+         case 'Minute':// base: exact at YYYY-MM-DD HH-MM
+             return completedDatetime
+         case 'Hour':// base: the next hour at HH:00
+             completedDatetime.setMinutes(datetimeNow.getMinutes())
+             return completedDatetime
+         case 'Day':// base: the next day at 00:00
+             completedDatetime.setHours(datetimeNow.getHours())
+             completedDatetime.setMinutes(datetimeNow.getMinutes())
+             return completedDatetime
+         case 'Week':// base: the first day of next weeek at 00:00
+             let dateTmp = completedDatetime.getDate()
+             completedDatetime.setDate(dateTmp + datetimeNow.getDay() - 1)
+             completedDatetime.setHours(datetimeNow.getHours())
+             completedDatetime.setMinutes(datetimeNow.getMinutes())
+             return completedDatetime
+         case 'Month':// base: the first day of month at 00:00
+             completedDatetime.setDate(datetimeNow.getDate())
+             completedDatetime.setHours(datetimeNow.getHours())
+             completedDatetime.setMinutes(datetimeNow.getMinutes())
+             return completedDatetime
+         case 'Year':// base: the first day of year at 00:00
+             completedDatetime.setMonth(datetimeNow.getMonth() + 1)
+             completedDatetime.setDate(datetimeNow.getDate())
+             completedDatetime.setHours(datetimeNow.getHours())
+             completedDatetime.setMinutes(datetimeNow.getMinutes())
+             return completedDatetime
+         default:// base: exact at YYYY-MM-DD HH-MM-SS
+             return completedDatetime
+     }
+ }
 
 /**
  * convert a datetime and recurrence to a cron schedule expression
@@ -42,18 +63,18 @@ function toJsDatetime (datetimeSnips) {
  * @return {String} cron schedule expression composed of 6 segments
  */
 function getScheduleString (datetime, recurrence=null) {
-    let mapper = {
-        mondays: `* * Mon`,
-        tuesdays: `* * Tue`,
-        wednesdays: `* * Wed`,
-        thursdays: `* * Thu`,
-        fridays: `* * Fri`,
-        satuardays: `* * Sat`,
-        sundays: `* * Sun`,
+    const mapper = {
+        mondays: '* * Mon',
+        tuesdays: '* * Tue',
+        wednesdays: '* * Wed',
+        thursdays: '* * Thu',
+        fridays: '* * Fri',
+        satuardays: '* * Sat',
+        sundays: '* * Sun',
         weekly: `* * ${datetime.getDay()}`,
-        daily: `* * *`,
+        daily: '* * *',
         monthly: `${datetime.getDate()} * *`,
-        weekend: `* * Sat,Sun`,
+        weekend: '* * Sat,Sun',
     }
 
     let schedule = `${datetime.getSeconds()} ${datetime.getMinutes()} ${datetime.getHours()} `
@@ -70,6 +91,6 @@ function getScheduleString (datetime, recurrence=null) {
 }
 
 module.exports = {
-    toJsDatetime,
+    getCompletedDatetime,
     getScheduleString
 }
