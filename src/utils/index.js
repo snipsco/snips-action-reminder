@@ -5,5 +5,6 @@ module.exports = {
     translation: require('./translation'),
     parser: require('./parser'),
     arrayIntersection: require('./arrayIntersection'),
-    arrayUnique: require('./arrayUnique')
+    arrayUnique: require('./arrayUnique'),
+    generateMessageForReminders: require('./generateMessageForReminders')
 }
