@@ -1,4 +1,4 @@
-const { logger, arrayIntersection } = require('../utils')
+const { logger, arrayIntersection, generateMessageForReminders } = require('../utils')
 const i18nFactory = require('../factories/i18nFactory')
 const commonHandler = require('./common')
 const {
@@ -8,28 +8,6 @@ const {
     getRemindersByName,
     getRemindersByRecurrence
 } = require('../reminders')
-
-function generateMessageForReminders(reminders, pastRemidners = false) {
-    const i18n = i18nFactory.get()
-
-    let message = i18n(pastRemidners ? 'inform.numberOfPastReminders' : 'inform.numberOfComingReminders', {
-        number: reminders.length
-    })
-
-    reminders.forEach(reminder => {
-        message += i18n('inform.reminderSetFor', {
-            reminder_name: reminder.name,
-            date_time: reminder.datetime.toLocaleString('fr-FR', {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric'}),
-            recurrence: reminder.recurrence
-        })
-        message += ' '
-    })
-    return message
-}
 
 module.exports = async function (msg, flow, knownSlots) {
     logger.debug('getReminder')
@@ -79,7 +57,7 @@ module.exports = async function (msg, flow, knownSlots) {
         // recurrence remonder will never be past, always non-expired
         //const remindersFromRecurrence = slots.recurrence ? getRemindersByRecurrence(slots.recurrence) : []
 
-        if (remindersFromDatetime.length && remindersFromName.lenght) {
+        if (remindersFromDatetime.length && remindersFromName.length) {
             res = arrayIntersection(remindersFromDatetime, remindersFromName)
         } else {
             res = remindersFromDatetime.concat(remindersFromName)
@@ -102,14 +80,14 @@ module.exports = async function (msg, flow, knownSlots) {
         logger.debug(`reminder found by datetime ${remindersFromDatetime}`)
         logger.debug(`reminder found by recurrence ${remindersFromRecurrence}`)
 
-        if (remindersFromDatetime.length && remindersFromName.lenght && remindersFromRecurrence.length) {
+        if (remindersFromDatetime.length && remindersFromName.length && remindersFromRecurrence.length) {
             res = arrayIntersection(remindersFromDatetime, remindersFromName)
             res = arrayIntersection(remindersFromRecurrence, res)
-        } else if (!remindersFromDatetime.length && remindersFromName.lenght && remindersFromRecurrence.length) {
+        } else if (!remindersFromDatetime.length && remindersFromName.length && remindersFromRecurrence.length) {
             res = remindersFromName.concat(remindersFromRecurrence)
-        } else if (remindersFromDatetime.length && !remindersFromName.lenght && remindersFromRecurrence.length) {
+        } else if (remindersFromDatetime.length && !remindersFromName.length && remindersFromRecurrence.length) {
             res = remindersFromDatetime.concat(remindersFromRecurrence)
-        } else if (remindersFromDatetime.length && remindersFromName.lenght && !remindersFromRecurrence.length) {
+        } else if (remindersFromDatetime.length && remindersFromName.length && !remindersFromRecurrence.length) {
             res = remindersFromDatetime.concat(remindersFromName)
         } else {
             res = remindersFromName.concat(remindersFromDatetime).concat(remindersFromRecurrence)
