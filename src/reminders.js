@@ -52,8 +52,6 @@ function initReminder(name, datetime, recurrence, id = null, schedule = null, ex
         delete() {
             this.taskReminder.stop()
             this.taskReminder.destroy()
-            this.taskAlarm.stop()
-            this.taskAlarm.destory()
 
             fs.unlink(path.resolve(remindersDir, `${this.id}.json`), (err) => {
                 if (err) {
@@ -203,12 +201,17 @@ module.exports = {
         return reminders.filter(reminder => reminder.recurrence === recurrence)
     },
     checkExpiredById,
+    deleteAllReminders() {
+        reminders.forEach(reminder => {
+            reminder.delete()
+        })
+        reminders.splice(0)
+    },
     deleteReminderById(id) {
         const reminder = reminders.filter(reminder => reminder.id === id)
-        if(reminder) {
-            reminder.taskReminder.stop()
-            reminder.taskReminder.destroy()
-            reminders.splice(reminders.indexOf(reminder), 1)
+        if(reminder.length === 1) {
+            reminder[0].delete()
+            reminders.splice(reminders.indexOf(reminder[0]), 1)
             return true
         }
         return false
