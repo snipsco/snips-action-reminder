@@ -12,15 +12,5 @@ module.exports = {
     INTENT_PROBABILITY_THRESHOLD: 0.2,
     INTENT_FILTER_PROBABILITY_THRESHOLD: 0,
     SLOT_CONFIDENCE_THRESHOLD: 0,
-    ASR_TOKENS_CONFIDENCE_THRESHOLD: 0.2,
-    GRAIN_TO_STRING: [
-        'Year',
-        'Quarter',
-        'Month',
-        'Week',
-        'Day',
-        'Hour',
-        'Minute',
-        'Second',
-    ]
+    ASR_TOKENS_CONFIDENCE_THRESHOLD: 0.2
 }

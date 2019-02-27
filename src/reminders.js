@@ -5,7 +5,6 @@ const fs = require('fs')
 const { getCompletedDatetime, getScheduleString } = require('./utils/parser')
 const logger = require('./utils/logger')
 const { createAlarm } = require('./alarms')
-const { GRAIN_TO_STRING } = require('./constants')
 
 const reminders = []
 const remindersDir = __dirname + '/../reminder_records/'
@@ -182,7 +181,7 @@ module.exports = {
         return reminders.filter(reminder => reminder.name === name)
     },
     getRemindersByDatetime(datetime) {
-        switch (GRAIN_TO_STRING[datetime.grain]) {
+        switch (datetime.grain) {
             case 'Minute':
                 return getReminderByMinute(datetime.value)
             case 'Hour':

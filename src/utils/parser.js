@@ -1,5 +1,4 @@
 const cron = require('node-cron')
-const { GRAIN_TO_STRING } = require('../constants')
 
 /**
  * Convert a incompleted datetime to a exact time, filling the unclear parts by current time sub-segments
@@ -13,7 +12,7 @@ const { GRAIN_TO_STRING } = require('../constants')
      const datetimeNow = new Date(Date.now())
      let completedDatetime = new Date(datetime.value)
 
-     switch (GRAIN_TO_STRING[datetime.grain]) {
+     switch (datetime.grain) {
          case 'Minute':// base: exact at YYYY-MM-DD HH-MM
              return completedDatetime
          case 'Hour':// base: the next hour at HH:00

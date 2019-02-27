@@ -1,4 +1,4 @@
-const { message, logger, math } = require('../utils')
+const { message, logger } = require('../utils')
 const {
     INTENT_PROBABILITY_THRESHOLD,
     SLOT_CONFIDENCE_THRESHOLD,
@@ -6,7 +6,7 @@ const {
 } = require('../constants')
 
 module.exports = async (msg, knownSlots = {}) => {
-    logger.debug('message intent: %o', msg)
+    //logger.debug('message intent: %o', msg)
 
     if (msg.intent) {
         if (msg.intent.confidenceScore < INTENT_PROBABILITY_THRESHOLD) {
