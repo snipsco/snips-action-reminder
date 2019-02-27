@@ -15,9 +15,9 @@ const cron = require('node-cron')
      switch (datetime.grain) {
          case 'Minute':// base: exact at YYYY-MM-DD HH-MM
              return completedDatetime
-         case 'Hour':// base: the next hour at HH:00
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
+         // case 'Hour':// base: the next hour at HH:00
+         //     completedDatetime.setMinutes(datetimeNow.getMinutes())
+         //     return completedDatetime
          case 'Day':// base: the next day at 00:00
              completedDatetime.setHours(datetimeNow.getHours())
              completedDatetime.setMinutes(datetimeNow.getMinutes())

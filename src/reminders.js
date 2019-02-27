@@ -105,16 +105,21 @@ function getAllComingReminders() {
     return reminders.filter(reminder => !reminder.expired)
 }
 
+function getAllExpiredReminders() {
+    // reminders in the past 7 days
+    return reminders.filter(reminder => reminder.expired)
+}
+
 // get reminders by different time constrain
 function getReminderByMinute(datetime) {
     const _datetime = new Date(datetime)
 
     const reminders = getAllComingReminders()
 
-    const reminder = reminders.filter(reminder => {
+    const reminder = reminders.filter(reminder =>
         (reminder.datetime.getTime() >= _datetime.getTime()) &&
         (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60)
-    })
+    )
 
     if (reminder.length === 1) {
         return reminder
@@ -127,21 +132,21 @@ function getRemindersByHour(datetime) {
 
     const reminders = getAllComingReminders()
 
-    return reminders.filter(reminder => {
+    return reminders.filter(reminder =>
         (reminder.datetime.getTime() >= _datetime.getTime()) &&
         (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60)
-    })
+    )
 }
 
-function getRemindersByDay(datetime) {
+function getRemindersByDate(datetime) {
     const _datetime = new Date(datetime)
 
     const reminders = getAllComingReminders()
 
-    return reminders.filter(reminder => {
+    return reminders.filter(reminder =>
         (reminder.datetime.getTime() >= _datetime.getTime()) &&
         (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24)
-    })
+    )
 }
 
 function getRemindersByWeek(datetime) {
@@ -149,10 +154,10 @@ function getRemindersByWeek(datetime) {
 
     const reminders = getAllComingReminders()
 
-    return reminders.filter(reminder => {
+    return reminders.filter(reminder =>
         (reminder.datetime.getTime() >= _datetime.getTime()) &&
         (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24 * 7)
-    })
+    )
 }
 
 function getRemindersByMonth(datetime) {
@@ -160,10 +165,10 @@ function getRemindersByMonth(datetime) {
 
     const reminders = getAllComingReminders()
 
-    return reminders.filter(reminder => {
+    return reminders.filter(reminder =>
         (reminder.datetime.getTime() >= _datetime.getTime()) &&
         (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24 * 30)
-    })
+    )
 }
 
 module.exports = {
@@ -172,10 +177,7 @@ module.exports = {
         return [...reminders]
     },
     getAllComingReminders,
-    getExpiredReminders() {
-        // reminders in the past 7 days
-        return reminders.filter(reminder => reminder.expired)
-    },
+    getAllExpiredReminders,
     getReminderById,
     getRemindersByName(name) {
         return reminders.filter(reminder => reminder.name === name)
@@ -187,7 +189,7 @@ module.exports = {
             case 'Hour':
                 return getRemindersByHour(datetime.value)
             case 'Day':
-                return getRemindersByDay(datetime.value)
+                return getRemindersByDate(datetime.value)
             case 'Week':
                 return getRemindersByWeek(datetime.value)
             case 'Month':
