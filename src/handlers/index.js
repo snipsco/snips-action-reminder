@@ -1,9 +1,9 @@
-const { translation, logger } = require('../utils')
+const { logger } = require('../utils')
 
 // Wrap handlers to gracefully capture errors
 const handlerWrapper = handler => (
     async (message, flow, ...args) => {
-        logger.debug(`message: ${message}`)
+        //logger.debug('message: %o', message)
         try {
             // Run handler until completion
             const tts = await handler(message, flow, ...args)
@@ -14,7 +14,8 @@ const handlerWrapper = handler => (
             flow.end()
             // And make the TTS output the proper error message
             logger.error(error)
-            return await translation.errorMessage(error)
+            return 'Sorry, I dont quite understood, please try again'
+            //return await translation.errorMessage(error)
         }
     }
 )
@@ -22,13 +23,13 @@ const handlerWrapper = handler => (
 // Add handlers here, and wrap them.
 module.exports = {
     yes: handlerWrapper(require('./yes')),
-    // no: handlerWrapper(require('./no')),
+    no: handlerWrapper(require('./no')),
     stop: handlerWrapper(require('./stop')),
-    // silence: handlerWrapper(require('./silence')),
-    // cancel: handlerWrapper(require('./cancel')),
+    silence: handlerWrapper(require('./silence')),
+    cancel: handlerWrapper(require('./cancel')),
     setReminder: handlerWrapper(require('./setReminder')),
-    getReminder: handlerWrapper(require('./getReminder'))
-    //rescheduleReminder: handlerWrapper(require('./rescheduleReminder')),
-    //renameReminder: handlerWrapper(require('./renameReminder')),
-    //cancelReminder: handlerWrapper(require('./cancelReminder')),
+    getReminder: handlerWrapper(require('./getReminder')),
+    rescheduleReminder: handlerWrapper(require('./rescheduleReminder')),
+    renameReminder: handlerWrapper(require('./renameReminder')),
+    cancelReminder: handlerWrapper(require('./cancelReminder'))
 }
