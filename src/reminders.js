@@ -169,6 +169,17 @@ function getRemindersByMonth(datetime) {
     )
 }
 
+function getRemindersByYear(datetime) {
+    const _datetime = new Date(datetime)
+
+    const reminders = getAllComingReminders()
+
+    return reminders.filter(reminder =>
+        (reminder.datetime.getTime() >= _datetime.getTime()) &&
+        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24 * 365)
+    )
+}
+
 module.exports = {
     createReminder,
     getAllReminders() {
@@ -192,6 +203,8 @@ module.exports = {
                 return getRemindersByWeek(datetime.value)
             case 'Month':
                 return getRemindersByMonth(datetime.value)
+            case 'Year':
+                return getRemindersByYear(datetime.value)
             default:
                 // Not sure which will be this case
                 return getReminderByMinute(datetime.value)
