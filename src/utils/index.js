@@ -3,5 +3,7 @@ module.exports = {
     logger: require('./logger'),
     message: require('./message'),
     translation: require('./translation'),
-    parser: require('./parser')
+    parser: require('./parser'),
+    arrayIntersection: require('./arrayIntersection'),
+    arrayUnique: require('./arrayUnique')
 }
