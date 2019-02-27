@@ -19,8 +19,8 @@ module.exports = {
             action: handlers.renameReminder
         },
         {
-            intent: 'snips-assistant:Stop',
-            action: handlers.stop
+            intent: 'snips-assistant:CancelReminder',
+            action: handlers.cancelReminder
         }
     ],
     BUILTIN_INTENTS: [
