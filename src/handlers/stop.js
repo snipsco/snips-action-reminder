@@ -7,6 +7,7 @@ module.exports = async function (msg, flow) {
     if (!msg.customData) {
         flow.end()
         logger.debug('Terminated session')
+        return
     }
     const customData = JSON.parse(msg.customData)
     deleteAlarm(customData.reminder_id)
