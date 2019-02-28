@@ -55,11 +55,13 @@
             "confirmCreat": "Okay, reminder {{ name }} is set for {{ datetime }} {{ recurrence }}. "
         }
     },
-    "getReminder": {
+    "getReminders": {
         "ask": {
 
         },
         "info": {
+            "noReminderFound": "Seems like you have no reminder set for the monment. ",
+            "foundReminders": "I'v found {{ number }} reminders. ",
             "foundComingReminders": "I'v found {{ number }} coming reminders. ",
             "foundPastReminders": "I'v found {{ number }} past reminders. "
         }
@@ -73,7 +75,17 @@
             "confirmRename": "Okay, reminder {{ old_name }} has been renamed to {{ new_name }}"
         }
     },
-    "cancelReminder": {},
+    "cancelReminder": {
+        "ask": {
+            "confirmToCancelAll": "Are you sure you want to cancel all these reminders? ",
+            "confirmToCancelReminder": "Are you sure you want to cancel the reminder {{ name }} set for {{ datetime }}"
+        },
+        "info": {
+            "confirmRemindersCancelled" : "Successfully cancelled all these reminders. ",
+            "confirmReminderCancelled" : "Successfully cancelled reminder: {{ name }}. ",
+            "multiRemindersFound": "Seems like there are multiple reminders found. "
+        }
+    },
     "debug": {
         "caseNotRecognized": "Oh lala! This case is not addressed! Please check as soon as possible!"
     }
