@@ -1,22 +1,8 @@
 const i18nFactory = require('../factories/i18nFactory')
 const { logger } = require('../utils')
-const commonHandler = require('./common')
+const { extractSlots, flowContinueBuiltin} = require('./common')
 const { createReminder } = require('../reminders')
 const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
-
-function flowInterruption (flow, knownSlots) {
-    flow.continue('snips-assistant:Cancel', (msg, flow) => {
-        flow.end()
-    })
-    flow.continue('snips-assistant:Stop', (msg, flow) => {
-        flow.end()
-    })
-    flow.notRecognized((msg, flow) => {
-        knownSlots.depth -= 1
-        msg.slots = []
-        return require('./index').setReminder(msg, flow, knownSlots)
-    })
-}
 
 function newReminder (flow, parsedSlots) {
     logger.debug('createReminder')
@@ -39,7 +25,7 @@ function newReminder (flow, parsedSlots) {
 // time = datetime or recurrence
 function newReminderMissingTime (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingTime')
-    flowInterruption(flow, knownSlots)
+    flowContinueBuiltin(flow, knownSlots)
     const i18n = i18nFactory.get()
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
@@ -55,7 +41,7 @@ function newReminderMissingTime (flow, parsedSlots, knownSlots) {
 
 function newReminderMissingName (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingName')
-    flowInterruption(flow, knownSlots)
+    flowContinueBuiltin(flow, knownSlots)
     const i18n = i18nFactory.get()
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
@@ -80,7 +66,7 @@ function newReminderMissingName (flow, parsedSlots, knownSlots) {
 function newReminderMissingNameAndTime (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingNameAndTime')
     const i18n = i18nFactory.get()
-    flowInterruption(flow, knownSlots)
+    flowContinueBuiltin(flow, knownSlots)
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
         let slotDetected = {
@@ -96,7 +82,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     logger.debug('SetReminder')
     const i18n = i18nFactory.get()
 
-    const slots = await commonHandler(msg, knownSlots)
+    const slots = await extractSlots(msg, knownSlots)
 
     if (slots.reminder_name && (slots.recurrence || slots.datetime)) {
         return newReminder(flow, slots)

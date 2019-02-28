@@ -1,6 +1,6 @@
 const { logger, arrayIntersection, generateMessageForReminders } = require('../utils')
 const i18nFactory = require('../factories/i18nFactory')
-const commonHandler = require('./common')
+const { extractSlots, flowContinueBuiltin } = require('./common')
 const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
 const {
     deleteReminderById,
@@ -10,7 +10,7 @@ const {
 module.exports = async function (msg, flow) {
     logger.debug('cancelReminder')
     const i18n = i18nFactory.get()
-    const slots = await commonHandler(msg)
+    const slots = await extractSlots(msg)
     const reminders = getReminders(
         slots.reminder_name,
         slots.datetime,

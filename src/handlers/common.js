@@ -5,9 +5,8 @@ const {
     ASR_TOKENS_CONFIDENCE_THRESHOLD
 } = require('../constants')
 
-module.exports = async (msg, knownSlots = {}) => {
+async function extractSlots(msg, knownSlots = {}) {
     //logger.debug('message intent: %o', msg)
-
     if (msg.intent) {
         if (msg.intent.confidenceScore < INTENT_PROBABILITY_THRESHOLD) {
             throw 'intentNotRecognized -> lowThreshold'
@@ -54,4 +53,26 @@ module.exports = async (msg, knownSlots = {}) => {
     })
 
     return res
+}
+
+function flowContinueBuiltin(flow, knownSlots) {
+    flow.continue('snips-assistant:No', (msg, flow) => {
+        flow.end()
+    })
+    flow.continue('snips-assistant:Cancel', (msg, flow) => {
+        flow.end()
+    })
+    flow.continue('snips-assistant:Stop', (msg, flow) => {
+        flow.end()
+    })
+    flow.notRecognized((msg, flow) => {
+        knownSlots.depth -= 1
+        msg.slots = []
+        return require('./index').setReminder(msg, flow, knownSlots)
+    })
+}
+
+module.exports = {
+    extractSlots,
+    flowContinueBuiltin
 }
