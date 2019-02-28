@@ -66,6 +66,16 @@ Coming soon
 - :white_check_mark: "February 28, 5:30 PM"
 - :x: "March 1, 10:00 AM"
 
+### :x: *Remind me to 'do sth' today*
+
+This query will create a reminder by using the current date and time. It doesn't make any sense. This case need to be handled as a special.
+
+### :interrobang: *Please cancel all the reminders*
+
+Not sure if this is an issue.
+
+This action will delete all the coming reminders, the past reminders will be kept for checking.
+
 ## Planned features & To do
 
 ### Set a reminder
