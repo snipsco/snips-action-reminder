@@ -2,6 +2,7 @@ const i18nFactory = require('../factories/i18nFactory')
 const { logger } = require('../utils')
 const commonHandler = require('./common')
 const { createReminder } = require('../reminders')
+const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
 
 function flowInterruption (flow, knownSlots) {
     flow.continue('snips-assistant:Cancel', (msg, flow) => {
@@ -25,14 +26,9 @@ function newReminder (flow, parsedSlots) {
                                   parsedSlots.datetime,
                                   parsedSlots.recurrence)
     if (reminder){
-        var options = {
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'}
         return i18n('inform.confirmReminderSet', {
             name: reminder.name,
-            date_time: reminder.datetime.toLocaleString('fr-FR', options),
+            date_time: generateDatetimeTTS(reminder.datetime),
             recurrence: reminder.recurrence
         })
     } else {
