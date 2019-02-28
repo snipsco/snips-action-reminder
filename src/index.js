@@ -17,7 +17,7 @@ module.exports = function ({
             const dialog = hermes.dialog()
             dialog.flows(BINDINGS)
 
-            say('Reminder action code is ready')
+            say('Ready')
             //ask('Do you want to continue?', '99689')
 
         } catch (error) {
