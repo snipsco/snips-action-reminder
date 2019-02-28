@@ -4,6 +4,58 @@ Snips action code for reminder app written in Javascript.
 
 Working in progress.
 
+## Test & Demo cases
+
+### `SetReminder`
+
+#### Create a reminder for the current time of tomorrow
+> *Hey Snips, remind me to call my sister tomorrow*
+
+#### Create a reminder that will make sound 2 minutes after (Quick demo one)
+> *Hey Snips, remind me to take out the pizza in 2 minutes*
+
+#### Create a reminder for the current time and date of the next month
+> *Hey Snips, remind me to 'call the back' next month*
+
+#### Create a daily reminder
+> *Hey Snips, remind me to 'go to school' every day*
+
+### `GetReminder`
+
+#### Query reminders of next week
+> *Hey Snips, what reminders do I have for the next week?*
+
+#### Query reminders of the past
+> *Hey Snips, do I have any past reminders?*
+
+#### Query a reminder by its name
+> *Hey Snips, show me my reminder of 'call my sister'*
+
+#### Query reminders with recurrence
+> *Hey Snips, show me all the weekly reminders*
+
+### `RenameReminder`
+
+Coming soon
+
+### `RescheduleReminder`
+
+Coming soon
+
+### `CancelReminder`
+
+#### Cancel all the reminders
+> *Hey Snips, delete all my reminders*
+
+#### Cancel reminders for tomorrow
+> *Hey Snips, cancel all my reminders for tomorrow*
+
+#### Cancel a reminder by its name
+> *Hey Snips, cancel the reminder 'call my sister'*
+
+#### Cancel a reminder by its recurrence
+> *Hey Snips, cancel all the daily reminders*
+
 ## Known Issues
 
 ### TTS can pronounce and can't pronounce
