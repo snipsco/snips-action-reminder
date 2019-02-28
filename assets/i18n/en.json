@@ -69,10 +69,12 @@
     "rescheduleReminder": {},
     "renameReminder": {
         "ask": {
-            "howToRename": "How should I rename this reminder? "
+            "newReminderName": "How should I rename this reminder? ",
+            "whichToRename": "Which one would you like to rename and how? "
         },
         "info": {
-            "confirmRename": "Okay, reminder {{ old_name }} has been renamed to {{ new_name }}"
+            "noReminderFound": "I could not find this reminder. ",
+            "reminderRenamed": "Okay, reminder {{ oldName }} has been renamed to {{ newName }}"
         }
     },
     "cancelReminder": {

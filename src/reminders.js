@@ -3,6 +3,7 @@ const cron = require('node-cron')
 const timestamp = require('time-stamp')
 const fs = require('fs')
 const { getCompletedDatetime, getScheduleString } = require('./utils/parser')
+const matchDatetime = require('./utils/matchDatetime')
 const logger = require('./utils/logger')
 const { createAlarm } = require('./alarms')
 
@@ -108,107 +109,39 @@ function getAllExpiredReminders() {
     return reminders.filter(reminder => reminder.expired)
 }
 
-// get reminders by different time constrain
-function getReminderByMinute(datetime) {
-    const _datetime = new Date(datetime)
-
-    const reminders = getAllComingReminders()
-
-    const reminder = reminders.filter(reminder =>
-        (reminder.datetime.getTime() >= _datetime.getTime()) &&
-        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60)
-    )
-
-    if (reminder.length === 1) {
-        return reminder
-    }
-    return null
-}
-
-function getRemindersByHour(datetime) {
-    const _datetime = new Date(datetime)
-
-    const reminders = getAllComingReminders()
-
-    return reminders.filter(reminder =>
-        (reminder.datetime.getTime() >= _datetime.getTime()) &&
-        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60)
-    )
-}
-
-function getRemindersByDate(datetime) {
-    const _datetime = new Date(datetime)
-
-    const reminders = getAllComingReminders()
-
-    return reminders.filter(reminder =>
-        (reminder.datetime.getTime() >= _datetime.getTime()) &&
-        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24)
-    )
-}
-
-function getRemindersByWeek(datetime) {
-    const _datetime = new Date(datetime)
-
-    const reminders = getAllComingReminders()
-
-    return reminders.filter(reminder =>
-        (reminder.datetime.getTime() >= _datetime.getTime()) &&
-        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24 * 7)
-    )
-}
-
-function getRemindersByMonth(datetime) {
-    const _datetime = new Date(datetime)
-
-    const reminders = getAllComingReminders()
-
-    return reminders.filter(reminder =>
-        (reminder.datetime.getTime() >= _datetime.getTime()) &&
-        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24 * 30)
-    )
-}
-
-function getRemindersByYear(datetime) {
-    const _datetime = new Date(datetime)
-
-    const reminders = getAllComingReminders()
-
-    return reminders.filter(reminder =>
-        (reminder.datetime.getTime() >= _datetime.getTime()) &&
-        (reminder.datetime.getTime() < _datetime.getTime() + 1000 * 60 * 60 * 24 * 365)
-    )
-}
-
 module.exports = {
     createReminder,
+    renameReminderById(id, newName) {
+        const reminder = getReminderById(id)
+        const index = reminders.indexOf(reminder)
+        reminders[index].name = newName
+        reminders[index].taskReminder.stop()
+        reminders[index].taskReminder.destroy()
+        reminders[index].taskReminder = cron.schedule(reminders[index].schedule, () => {
+            createAlarm(newName, reminders[index].id)
+        })
+        reminders[index].save()
+    },
     getAllReminders() {
         return [...reminders]
     },
     getAllComingReminders,
     getAllExpiredReminders,
+    getReminders(name, datetime, recurrence, expired = false) {
+        res = reminders.filter(reminder =>
+            (!name || name === reminder.name) &&
+            (!datetime || matchDatetime(datetime, reminder.datetime)) &&
+            (!recurrence || recurrence === reminder.recurrence) &&
+            (expired === reminder.expired)
+        )
+        return res.length ? res : null
+    },
     getReminderById,
     getRemindersByName(name) {
         return reminders.filter(reminder => reminder.name === name)
     },
     getRemindersByDatetime(datetime) {
-        switch (datetime.grain) {
-            case 'Minute':
-                return getReminderByMinute(datetime.value)
-            case 'Hour':
-                return getRemindersByHour(datetime.value)
-            case 'Day':
-                return getRemindersByDate(datetime.value)
-            case 'Week':
-                return getRemindersByWeek(datetime.value)
-            case 'Month':
-                return getRemindersByMonth(datetime.value)
-            case 'Year':
-                return getRemindersByYear(datetime.value)
-            default:
-                // Not sure which will be this case
-                return getReminderByMinute(datetime.value)
-        }
+        return reminders.filter(reminder => matchDatetime(datetime, reminder.datetime))
     },
     getRemindersByRecurrence(recurrence) {
         return reminders.filter(reminder => reminder.recurrence === recurrence)
