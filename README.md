@@ -58,7 +58,7 @@ Coming soon
 
 ## Known Issues
 
-### TTS can pronounce and can't pronounce
+### :white_check_mark:[Solved] TTS can pronounce and can't pronounce
 
 - :white_check_mark: "February 28, 3:00 PM"
 - :x: "March 7, 10:54 AM"
