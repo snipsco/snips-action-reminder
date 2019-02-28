@@ -1,4 +1,5 @@
 const i18nFactory = require('../factories/i18nFactory')
+generateDatetimeTTS = require('../tts/generateDatetimeTTS')
 
 module.exports = (reminders, pastRemidners = false) => {
     const i18n = i18nFactory.get()
@@ -10,11 +11,7 @@ module.exports = (reminders, pastRemidners = false) => {
     reminders.forEach(reminder => {
         message += i18n('inform.reminderSetFor', {
             reminder_name: reminder.name,
-            date_time: reminder.datetime.toLocaleString('fr-FR', {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric'}),
+            date_time: generateDatetimeTTS(reminder.datetime),
             recurrence: reminder.recurrence
         })
         message += ' '
