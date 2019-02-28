@@ -33,7 +33,7 @@ const cron = require('node-cron')
              completedDatetime.setMinutes(datetimeNow.getMinutes())
              return completedDatetime
          case 'Year':// base: the first day of year at 00:00
-             completedDatetime.setMonth(datetimeNow.getMonth() + 1)
+             completedDatetime.setMonth(datetimeNow.getMonth())
              completedDatetime.setDate(datetimeNow.getDate())
              completedDatetime.setHours(datetimeNow.getHours())
              completedDatetime.setMinutes(datetimeNow.getMinutes())
