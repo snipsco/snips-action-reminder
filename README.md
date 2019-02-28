@@ -58,7 +58,9 @@ Coming soon
 
 ## Known Issues
 
-### :white_check_mark:[Solved] TTS can pronounce and can't pronounce
+### :white_check_mark:[Solved] Datetime tts pronunciation
+
+Test data with pico-tts:
 
 - :white_check_mark: "February 28, 3:00 PM"
 - :x: "March 7, 10:54 AM"
@@ -66,15 +68,31 @@ Coming soon
 - :white_check_mark: "February 28, 5:30 PM"
 - :x: "March 1, 10:00 AM"
 
-### :x: *Remind me to 'do sth' today*
+Solved by generating the tts that without any `,` , `:` and `00` in the sentence.
+
+### :x: Reminders that have recurrence
+
+ This will work as a recurrence job, but still `datetime` needs to be updated after each execution to be clear for user's query
+
+### :x: *"Remind me to 'do sth' today"*
 
 This query will create a reminder by using the current date and time. It doesn't make any sense. This case need to be handled as a special.
 
-### :interrobang: *Please cancel all the reminders*
+### :interrobang: *"Please cancel all the reminders"*
 
 Not sure if this is an issue.
 
 This action will delete all the coming reminders, the past reminders will be kept for checking.
+
+### :interrobang: Bundle and flow chart
+
+These are not crucial problems, but it's better to change to simplify the logic.
+
+For all the intents, `reminder_name` can be changed to `name`
+
+For `RenameReminder`, `former_reminder_name` can be changed to `reminder_name`(Or `name`).
+
+For `RescheduleReminder`, `former_reminder_datetime` can be changed to `datetime`.
 
 ## Planned features & To do
 
