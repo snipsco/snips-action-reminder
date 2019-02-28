@@ -21,6 +21,22 @@ module.exports = {
         {
             intent: 'snips-assistant:CancelReminder',
             action: handlers.cancelReminder
+        },
+        {
+            intent: 'snips-assistant:No',
+            action: handlers.no
+        },
+        {
+            intent: 'snips-assistant:Stop',
+            action: handlers.stop
+        },
+        {
+            intent: 'snips-assistant:Cancel',
+            action: handlers.cancel
+        },
+        {
+            intent: 'snips-assistant:Silence',
+            action: handlers.slience
         }
     ],
     BUILTIN_INTENTS: [
