@@ -16,5 +16,5 @@ module.exports = (reminders, pastRemidners = false) => {
         })
         message += ' '
     })
-    return message
+    return (reminders.length > 5) ? '' : message
 }

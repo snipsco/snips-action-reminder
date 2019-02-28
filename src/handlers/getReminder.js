@@ -17,14 +17,14 @@ module.exports = async function (msg, flow) {
     )
 
     // No reminders, no slots
-    if (!reminders && !Object.keys(slots).length) {
+    if (!reminders.length && !Object.keys(slots).length) {
         logger.debug('No reminders, no slots')
         flow.end()
         return i18n('getReminder.info.noReminderFound')
     }
 
     // No reminders, slots detected
-    if (!reminders && Object.keys(slots).length) {
+    if (!reminders.length && Object.keys(slots).length) {
         logger.debug('No reminders, slots detected')
         flow.continue('snips-assistant:Yes', (msg, flow) => {
             slots.depth = 3
@@ -37,7 +37,7 @@ module.exports = async function (msg, flow) {
     }
 
     // Found reminders by using some of the constrains
-    if (reminders) {
+    if (reminders.length) {
         logger.debug('Found reminders by using some of the constrains')
         flow.end()
         return generateMessageForReminders(reminders, slots.past_reminders ? true : false)

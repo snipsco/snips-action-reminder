@@ -19,14 +19,14 @@ module.exports = async function (msg, flow) {
     )
 
     // No reminders
-    if (!reminders) {
+    if (!reminders.length) {
         logger.debug('No reminders')
         flow.end()
         return i18n('getReminder.info.noReminderFound')
     }
 
     // Cancel all the found reminders
-    if (reminders && slots.all_reminders) {
+    if (reminders.length && slots.all_reminders) {
         logger.debug('Cancel all the found reminders')
         flow.continue('snips-assistant:Yes', (msg, flow) => {
             flow.end()

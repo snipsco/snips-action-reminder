@@ -128,13 +128,12 @@ module.exports = {
     getAllComingReminders,
     getAllExpiredReminders,
     getReminders(name, datetime, recurrence, expired = false) {
-        res = reminders.filter(reminder =>
+        return reminders.filter(reminder =>
             (!name || name === reminder.name) &&
             (!datetime || matchDatetime(datetime, reminder.datetime)) &&
             (!recurrence || recurrence === reminder.recurrence) &&
             (expired === reminder.expired)
         )
-        return res.length ? res : null
     },
     getReminderById,
     getRemindersByName(name) {
