@@ -36,11 +36,21 @@ Working in progress.
 
 ### `RenameReminder`
 
-Coming soon
+#### Rename a unique defined reminder
+> *Hey Snips, I would like to rename the reminder 'call the bank' to 'call my sister'*
+
+#### Rename the unique reminder found set for today/tomorrow
+**(If there is only one reminder set for that day)**
+> *Hey Snips, I would like to rename the reminder I set for today*
 
 ### `RescheduleReminder`
 
-Coming soon
+#### Reschedule a reminder by using its name
+> You: *Hey Snips, I want to reschedule the reminder 'take out the pizza'*
+
+> Snips: *How should I reschedule this reminder?*
+
+> You: *At 11 o'clock*
 
 ### `CancelReminder`
 
