@@ -6,6 +6,7 @@ const handlerWrapper = handler => (
         //logger.debug('message: %o', message)
         try {
             // Run handler until completion
+            logger.debug('------------------') 
             const tts = await handler(message, flow, ...args)
             // And make the TTS speak
             return tts
