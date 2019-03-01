@@ -3,6 +3,7 @@ const { logger } = require('../utils')
 const { BUILTIN_INTENTS } = require('../bindings')
 
 module.exports = (text, customData = null, siteId='default', intentFilter = BUILTIN_INTENTS) => {
+    logger.debug('------------------') 
     logger.info(`Asking: ${text}`)
 
     const hermes = new Hermes()
