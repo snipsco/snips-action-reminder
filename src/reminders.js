@@ -122,6 +122,18 @@ module.exports = {
         })
         reminders[index].save()
     },
+    rescheduleReminderById(id, newDatetime) {
+        const reminder = getReminderById(id)
+        const index = reminders.indexOf(reminder)
+        reminders[index].datetime = getCompletedDatetime(newDatetime)
+        reminders[index].schedule = getScheduleString(reminders[index].datetime, reminders[index].recurrence)
+        reminders[index].taskReminder.stop()
+        reminders[index].taskReminder.destroy()
+        reminders[index].taskReminder = cron.schedule(reminders[index].schedule, () => {
+            createAlarm(reminders[index].name, reminders[index].id)
+        })
+        reminders[index].save()
+    },
     getAllReminders() {
         return [...reminders]
     },
