@@ -22,7 +22,7 @@ module.exports = async function (msg, flow) {
     if (!reminders.length) {
         logger.debug('No reminders')
         flow.end()
-        return i18n('getReminder.info.noReminderFound')
+        return i18n('getReminders.info.noReminderFound')
     }
 
     // Cancel all the found reminders

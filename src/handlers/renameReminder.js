@@ -40,13 +40,13 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     if (!reminders.length && !Object.keys(slots).length) {
         logger.debug('No reminders, no slots')
         flow.end()
-        return i18n('getReminder.info.noReminderFound')
+        return i18n('getReminders.info.noReminderFound')
     }
 
     // No reminders found, former_reminder_name and new_reminder_name provided
     if (!reminders.length && (slots.former_reminder_name || slots.new_reminder_name)) {
         logger.debug('No reminders found, former_reminder_name and new_reminder_name provided')
-        flowContinueBuiltin(flow, knownSlots)
+        flowContinueBuiltin(flow, knownSlots, require('./index').renameReminder)
         flow.continue('snips-assistant:Yes', (msg, flow) => {
             slots.depth = 3
             return require('./index').setReminder(msg, flow, slots)
@@ -58,7 +58,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     if (reminders.length === 1 && !slots.new_reminder_name) {
         logger.debug('One reminder found, new name not provided')
         slots.depth = knownSlots.depth - 1
-        flowContinueBuiltin(flow, slots)
+        flowContinueBuiltin(flow, slots, require('./index').renameReminder)
         flow.continue('snips-assistant:RenameReminder', (msg, flow) => {
             return require('./index').renameReminder(msg, flow, slots)
         })
@@ -69,7 +69,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     if (reminders.length > 1) {
         logger.debug('Several reminders found')
         slots.depth = knownSlots.depth - 1
-        flowContinueBuiltin(flow, slots)
+        flowContinueBuiltin(flow, slots, require('./index').renameReminder)
         flow.continue('snips-assistant:RenameReminder', (msg, flow) => {
             return require('./index').renameReminder(msg, flow, slots)
         })

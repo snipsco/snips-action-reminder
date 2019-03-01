@@ -25,7 +25,7 @@ function newReminder (flow, parsedSlots) {
 // time = datetime or recurrence
 function newReminderMissingTime (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingTime')
-    flowContinueBuiltin(flow, knownSlots)
+    flowContinueBuiltin(flow, knownSlots, require('./index').setReminder)
     const i18n = i18nFactory.get()
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
@@ -41,7 +41,7 @@ function newReminderMissingTime (flow, parsedSlots, knownSlots) {
 
 function newReminderMissingName (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingName')
-    flowContinueBuiltin(flow, knownSlots)
+    flowContinueBuiltin(flow, knownSlots, require('./index').setReminder)
     const i18n = i18nFactory.get()
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
@@ -66,7 +66,7 @@ function newReminderMissingName (flow, parsedSlots, knownSlots) {
 function newReminderMissingNameAndTime (flow, parsedSlots, knownSlots) {
     logger.debug('createReminderMissingNameAndTime')
     const i18n = i18nFactory.get()
-    flowContinueBuiltin(flow, knownSlots)
+    flowContinueBuiltin(flow, knownSlots, require('./index').setReminder)
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
         let slotDetected = {

@@ -48,14 +48,14 @@ async function extractSlots(msg, knownSlots = {}) {
             res[slot] = knownSlots[slot]
         }
         if (res[slot]) {
-            logger.info(`\t${slot} : `, res[slot])
+            logger.info(`>>>  ${slot} : `, JSON.stringify(res[slot]))
         }
     })
 
     return res
 }
 
-function flowContinueBuiltin(flow, knownSlots) {
+function flowContinueBuiltin(flow, knownSlots, notRecognizedCallback) {
     flow.continue('snips-assistant:No', (msg, flow) => {
         flow.end()
     })
@@ -68,7 +68,7 @@ function flowContinueBuiltin(flow, knownSlots) {
     flow.notRecognized((msg, flow) => {
         knownSlots.depth -= 1
         msg.slots = []
-        return require('./index').setReminder(msg, flow, knownSlots)
+        return notRecognizedCallback(msg, flow, knownSlots)
     })
 }
 

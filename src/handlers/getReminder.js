@@ -20,7 +20,7 @@ module.exports = async function (msg, flow) {
     if (!reminders.length && !Object.keys(slots).length) {
         logger.debug('No reminders, no slots')
         flow.end()
-        return i18n('getReminder.info.noReminderFound')
+        return i18n('getReminders.info.noReminderFound')
     }
 
     // No reminders, slots detected
@@ -33,7 +33,7 @@ module.exports = async function (msg, flow) {
         flow.continue('snips-assistant:No', (msg, flow) => {
             flow.end()
         })
-        return i18n('getReminder.info.noReminderFound') + i18n('setReminder.ask.createReminder')
+        return i18n('getReminders.info.noReminderFound') + i18n('setReminder.ask.createReminder')
     }
 
     // Found reminders by using some of the constrains
