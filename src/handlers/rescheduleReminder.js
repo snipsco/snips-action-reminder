@@ -46,13 +46,17 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
         return i18n('getReminders.info.noReminderFound')
     }
 
-    // No reminders found, former_reminder_datetime or new_reminder_datetime provided
-    if (!reminders.length && (slots.former_reminder_datetime || slots.new_reminder_datetime)) {
-        logger.debug('No reminders found, former_reminder_datetime or new_reminder_datetime provided')
+    // No reminder found, former_reminder_datetime or new_reminder_datetime provided
+    // No reminder found, one of the slots provided
+    if (!reminders.length && Object.keys(slots).length) {
+        logger.debug('No reminder found, one of the slots provided')
         flowContinueBuiltin(flow, knownSlots, require('./index').rescheduleReminder)
         flow.continue('snips-assistant:Yes', (msg, flow) => {
             slots.depth = 3
             return require('./index').setReminder(msg, flow, slots)
+        })
+        flow.continue('snips-assistant:No', (msg, flow) => {
+            flow.end()
         })
         return i18n('rescheduleReminder.info.noReminderFound') + i18n('setReminder.ask.createReminder')
     }
