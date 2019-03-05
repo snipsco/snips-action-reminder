@@ -26,7 +26,7 @@ function newReminder (flow, slots) {
 // Sub-handler, asking for time (datetime or recurrence)
 function newReminderMissingTime (flow, slots, depth) {
     logger.debug('createReminderMissingTime')
-    slots.depth = depth - 1
+    slots.depth = depth
     flowContinueBuiltin(flow, slots, require('./index').setReminder)
     const i18n = i18nFactory.get()
 
@@ -40,7 +40,7 @@ function newReminderMissingTime (flow, slots, depth) {
 // Sub-handler, asking for name
 function newReminderMissingName (flow, slots, depth) {
     logger.debug('createReminderMissingName')
-    slots.depth = depth - 1
+    slots.depth = depth
     flowContinueBuiltin(flow, slots, require('./index').setReminder)
     const i18n = i18nFactory.get()
 
@@ -54,14 +54,14 @@ function newReminderMissingName (flow, slots, depth) {
 // Sub-handler, asking for both name and time
 function newReminderMissingNameAndTime (flow, slots, depth) {
     logger.debug('createReminderMissingNameAndTime')
-    slots.depth = depth - 1
+    slots.depth = depth
     flowContinueBuiltin(flow, slots, require('./index').setReminder)
     const i18n = i18nFactory.get()
 
     flow.continue('snips-assistant:SetReminder', (msg, flow) => {
         return require('./index').setReminder(msg, flow, slots)
     })
-    
+
     return i18n('ask.nameAndTime')
 }
 
@@ -84,17 +84,17 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
 
     // slot name not provided
     if (!slots.reminder_name && (slots.recurrence || slots.datetime)) {
-        return newReminderMissingName(flow, slots, knownSlots.depth)
+        return newReminderMissingName(flow, slots, --knownSlots.depth)
     }
 
     // slot datetime or recurrence is not provided
     if (slots.reminder_name && !(slots.recurrence || slots.datetime)) {
-        return newReminderMissingTime(flow, slots, knownSlots.depth)
+        return newReminderMissingTime(flow, slots, --knownSlots.depth)
     }
 
     // no slot provided
     if (!slots.reminder_name && !(slots.recurrence || slots.datetime)) {
-        return newReminderMissingNameAndTime(flow, slots, knownSlots.depth)
+        return newReminderMissingNameAndTime(flow, slots, --knownSlots.depth)
     }
 
     flow.end()
