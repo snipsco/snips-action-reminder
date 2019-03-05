@@ -5,10 +5,31 @@ const {
     getReminders
 } = require('../reminders')
 
-module.exports = async function (msg, flow) {
-    logger.debug('getReminder')
+// Sub-handler, report all the found reminders
+function reportReminders(flow, slots, reminders) {
+    flow.end()
+    return generateMessageForReminders(reminders, slots.past_reminders ? true : false)
+}
+
+// Sub-handler, ask to create reminder
+function askToCreateReminder(flow, slots, depth) {
+    slots.depth = depth
+    flowContinueBuiltin(flow, slots, require('./index').getReminder)
     const i18n = i18nFactory.get()
-    const slots = await extractSlots(msg)
+    flow.continue('snips-assistant:Yes', (msg, flow) => {
+        slots.depth = 3
+        return require('./index').setReminder(msg, flow, slots)
+    })
+    flow.continue('snips-assistant:No', (msg, flow) => {
+        flow.end()
+    })
+    return i18n('getReminders.info.noReminderFound') + i18n('setReminder.ask.createReminder')
+}
+
+module.exports = async function(msg, flow, knownSlots = { depth: 2 }) {
+    logger.debug(`getReminder, depth: ${knownSlots.depth}`)
+    const i18n = i18nFactory.get()
+    const slots = await extractSlots(msg, knownSlots)
     const reminders = getReminders(
         slots.reminder_name,
         slots.datetime,
@@ -26,21 +47,13 @@ module.exports = async function (msg, flow) {
     // No reminders, slots detected
     if (!reminders.length && Object.keys(slots).length) {
         logger.debug('No reminders, slots detected')
-        flow.continue('snips-assistant:Yes', (msg, flow) => {
-            slots.depth = 3
-            return require('./index').setReminder(msg, flow, slots)
-        })
-        flow.continue('snips-assistant:No', (msg, flow) => {
-            flow.end()
-        })
-        return i18n('getReminders.info.noReminderFound') + i18n('setReminder.ask.createReminder')
+        return askToCreateReminder(flow, slots, --knownSlots.depth)
     }
 
     // Found reminders by using some of the constrains
     if (reminders.length) {
         logger.debug('Found reminders by using some of the constrains')
-        flow.end()
-        return generateMessageForReminders(reminders, slots.past_reminders ? true : false)
+        return reportReminders(flow, slots, reminders)
     }
 
     flow.end()
