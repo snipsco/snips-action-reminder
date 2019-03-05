@@ -1,4 +1,5 @@
 node_modules/
+reminder_records/
 config.ini
 .ftpconfig
 .ftpignore
