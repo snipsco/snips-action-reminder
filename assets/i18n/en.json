@@ -27,8 +27,8 @@
         "noReminderFor": "Seems like you have no reminder set for {{ date_time }} {{ recurrence }}. ",
         "noRmeinderNamedFor": "Seems like you have no reminder named {{ name }}. ",
         "noReminderNamedAndFor": "Seems like you have no reminder named {{ name }} and set for {{ date_time }} {{ recurrence }}",
-        "numberOfComingReminders": "I'v found {{ number }} coming reminders. ",
-        "numberOfPastReminders": "I'v found {{ number }} past reminders. ",
+        "numberOfComingReminders": "I'v found {{ number }} coming reminder{{odd}}. ",
+        "numberOfPastReminders": "I'v found {{ number }} past reminder{{odd}}. ",
         "reminderSetFor": "Reminder: {{ reminder_name }} is set for {{ date_time }} {{ recurrence }}. ",
         "reminderSetForRecurrence": "",
         "doNotUnderstantd": "Sorry, I dont quite understant, please try again later. ",
@@ -61,9 +61,10 @@
         },
         "info": {
             "noReminderFound": "Seems like you have no reminder set for the monment. ",
-            "foundReminders": "I'v found {{ number }} reminders. ",
-            "foundComingReminders": "I'v found {{ number }} coming reminders. ",
-            "foundPastReminders": "I'v found {{ number }} past reminders. "
+            "foundReminders": "I'v found {{ number }} reminder{{odd}}. ",
+            "foundComingReminders": "I'v found {{ number }} coming reminder{{odd}}. ",
+            "foundPastReminders": "I'v found {{ number }} past reminder{{odd}}. ",
+            "reminderSetFor": "{{ name }} set for {{ datetime }} {{ recurrence }}"
         }
     },
     "rescheduleReminder": {

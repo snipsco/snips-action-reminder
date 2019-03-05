@@ -39,7 +39,8 @@ module.exports = async function (msg, flow) {
             flow.end()
         })
         return i18n('getReminders.info.foundReminders', {
-            number: reminders.length
+            number: reminders.length,
+            odd: (reminders.length === 1) ? '' : 's' 
         }) + i18n ('cancelReminder.ask.confirmToCancelAll')
     }
 

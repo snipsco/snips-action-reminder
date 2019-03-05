@@ -81,7 +81,8 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
             return require('./index').rescheduleReminder(msg, flow, slots)
         })
         return i18n('getReminders.info.foundReminders', {
-            number: reminders.length
+            number: reminders.length,
+            odd: (reminders.length === 1) ? '' : 's' 
         }) + i18n('rescheduleReminder.ask.whichToReschedule')
     }
 
