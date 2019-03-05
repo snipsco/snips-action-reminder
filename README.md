@@ -69,7 +69,7 @@ Working in progress.
 ## Nice to have
 
 - [ ] When a reminder arrives, we should be able to reschedule it. (RescheduleReminder for the non-recurrence, create new for recurrence one)
-- [ ]
+- [ ] `What reminder do I have next?`, `What's my previous reminder?`
 
 ## Known Issues
 
