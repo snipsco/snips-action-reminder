@@ -7,6 +7,11 @@ module.exports = (reminders, pastRemidners = false) => {
     let message = i18n(pastRemidners ? 'inform.numberOfPastReminders' : 'inform.numberOfComingReminders', {
         number: reminders.length
     })
+    
+    // always report the latest coming reminder first, then later
+    reminders.sort( (a, b) => {
+        return (a.datetime.getTime() - b.datetime.getTime())
+    })
 
     reminders.forEach(reminder => {
         message += i18n('inform.reminderSetFor', {
