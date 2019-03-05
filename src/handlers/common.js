@@ -56,9 +56,9 @@ async function extractSlots(msg, knownSlots = {}) {
 }
 
 function flowContinueBuiltin(flow, knownSlots, notRecognizedCallback) {
-    flow.continue('snips-assistant:No', (msg, flow) => {
-        flow.end()
-    })
+    // flow.continue('snips-assistant:No', (msg, flow) => {
+    //     flow.end()
+    // })
     flow.continue('snips-assistant:Cancel', (msg, flow) => {
         flow.end()
     })
