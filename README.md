@@ -46,11 +46,11 @@ Working in progress.
 ### `RescheduleReminder`
 
 #### Reschedule a reminder by using its name
-> You: *Hey Snips, I want to reschedule the reminder 'take out the pizza'*
+*`You: Hey Snips, I want to reschedule the reminder 'take out the pizza'`*
 
-> Snips: *How should I reschedule this reminder?*
+*`Snips: How should I reschedule this reminder?`*
 
-> You: *At 11 o'clock*
+*`You: At 11 o'clock`*
 
 ### `CancelReminder`
 
@@ -66,7 +66,42 @@ Working in progress.
 #### Cancel a reminder by its recurrence
 > *Hey Snips, cancel all the daily reminders*
 
+## Nice to have
+
+- [ ] When a reminder arrives, we should be able to reschedule it. (RescheduleReminder for the non-recurrence, create new for recurrence one)
+- [ ]
+
 ## Known Issues
+
+### :x: Assistant issue with key word `every week`
+
+### :x: TTS for all the recurrence reminders
+
+Now when we have a query like "Please remind me to call the back every weekend", tts will play: "reminder <reminder_name> is set for today at <time> weekends"
+
+### :x: TTS for `all_reminders` slots filled and non-filled
+
+Now when we have multi reminders in the system, it will always say `I'v found <number> reminders, reminder .. reminder .. `
+
+It's better change it to the following:
+
+If the slot `all_reminders` is filled: "I'v found <number> reminders, reminder .. reminder .. "
+
+If the slot `all_reminders` is not filled: "I'v found <number> reminders, the most recent one is <reminder_name> set for <time>, would you like to listen all the rest reminders?"
+
+### :x: Handle the reminders that is set for a past time
+
+Now when we have a query to set a reminder for "yesterday", this will work. But actually it shouldn't.
+
+### :x: Handle the time period case `TimeInterval`
+
+Now when a time period detected, like query "remind me to go to my parents this weekend", the `datetime` slot will be detected as time period. This should be handled.
+
+Same for the `start time`, probably for `end time` as well
+
+### :x: Keep the reminders only for a couple of days
+
+Now the system will keep all the created reminders. The design is the system should only keep the reminders expired for not more than some days (for example two weeks). This should be able to config in the user config file.
 
 ### :white_check_mark:[Solved] Datetime tts pronunciation
 
@@ -80,9 +115,13 @@ Test data with pico-tts:
 
 Solved by generating the tts that without any `,` , `:` and `00` in the sentence.
 
+New issue:
+
+This format should adapt to `local` setting. Same for recurrence.
+
 ### :x: Reminders that have recurrence
 
- This will work as a recurrence job, but still `datetime` needs to be updated after each execution to be clear for user's query
+This will work as a recurrence job, but still `datetime` needs to be updated after each execution to be clear for user's query
 
 ### :x: *"Remind me to 'do sth' today"*
 
