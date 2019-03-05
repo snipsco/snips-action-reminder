@@ -66,7 +66,7 @@ function flowContinueBuiltin(flow, knownSlots, notRecognizedCallback) {
         flow.end()
     })
     flow.notRecognized((msg, flow) => {
-        knownSlots.depth -= 1
+        //knownSlots.depth -= 1
         msg.slots = []
         return notRecognizedCallback(msg, flow, knownSlots)
     })
