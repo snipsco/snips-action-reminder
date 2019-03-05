@@ -67,7 +67,7 @@ function getScheduleString (datetime, recurrence=null) {
         wednesdays: '* * Wed',
         thursdays: '* * Thu',
         fridays: '* * Fri',
-        satuardays: '* * Sat',
+        saturdays: '* * Sat',
         sundays: '* * Sun',
         weekly: `* * ${datetime.getDay()}`,
         daily: '* * *',
