@@ -52,19 +52,37 @@
             "nameAndTime": "When should I set this reminder and how should I name it? "
         },
         "info": {
-            "confirmCreat": "Okay, reminder {{ name }} is set for {{ datetime }} {{ recurrence }}. "
+            "reminder_SetFor_": "Okay, reminder: {{ name }} is set for {{ time }} "
         }
     },
     "getReminders": {
-        "ask": {
-
-        },
         "info": {
             "noReminderFound": "Seems like you have no reminder set for the monment. ",
             "foundReminders": "I'v found {{ number }} reminder{{odd}}. ",
             "foundComingReminders": "I'v found {{ number }} coming reminder{{odd}}. ",
             "foundPastReminders": "I'v found {{ number }} past reminder{{odd}}. ",
-            "reminderSetFor": "{{ name }} set for {{ datetime }} {{ recurrence }}"
+            "reminderSetFor": "{{ name }} set for {{ datetime }} {{ recurrence }}",
+
+            "found_Reminders": "I'v found {{ number }} {{ adj }} reminder{{odd}}. ",
+            "found_RemindersNamed_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }}",
+            "found_RemindersSetFor_": "I'v found {{ number }} {{ adj }} reminder{{odd}} set for {{ datetime }}",
+            "found_RemindersSetForEvery_": "I'v found {{ number }} {{ adj }} reminder{{odd}} set for each {{ recurrence }}",
+            "found_RemindersNamed_AndSetFor_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }} set for {{ datetime }}",
+            "found_RemindersNamed_AndSetForEvery_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }} set for each {{ recurrence }}",
+
+            "theMostRecentIs": "The most recent one is: ",
+            "theRestRemindersAre": "The rest reminder{{odd}} {{ be }}: ",
+            "reminder_SetFor_": "{{ name }} set for {{ time }} ",
+
+            "thisTime": "this time ",
+            "today": "today ",
+            "tomorrow": "tomorrow ",
+            "monthDate": "{{ month }} {{ date }}",
+            "thisWeek": "this week ",
+            "nextWeek": "next week ",
+            "thisMonth": "this month ",
+            "nextMonth": "next month ",
+            "thisYear": "this year "
         }
     },
     "rescheduleReminder": {
@@ -97,6 +115,50 @@
             "confirmReminderCancelled" : "Successfully cancelled reminder: {{ name }}. ",
             "multiRemindersFound": "Seems like there are multiple reminders found. "
         }
+    },
+    "time": {
+            "todayAt_": "today at {{ time }}",
+            "tomorrowAt_": "tomorrow at {{ time }}",
+            "oneDayAt_": "{{ month }} {{ date }} at {{ time }} {{ year }}",
+            "every_At_": "every {{ day }} at {{ time }}",
+            "every_ofMonthAt_": "every {{ day }} of month at {{ time }}"
+    },
+    "months": {
+        "0": "January",
+        "1": "February",
+        "2": "March",
+        "3": "April",
+        "4": "May",
+        "5": "June",
+        "6": "July",
+        "7": "August",
+        "8": "September",
+        "9": "October",
+        "10": "November",
+        "11": "December"
+    },
+    "weekdays": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+    },
+    "recurrences": {
+        "sundays": "Sunday",
+        "mondays": "Monday",
+        "tuesdays": "Tuesday",
+        "wednesdays": "Wednesday",
+        "thursdays": "Thursday",
+        "fridays": "Friday",
+        "saturdays": "Saturday",
+        "daily": "day",
+        "weekends": "Saturday and Sunday",
+        "weekdays": "Weekdays",
+        "weekly": "Week",
+        "monthly": "Month"
     },
     "debug": {
         "caseNotRecognized": "Oh lala! This case is not addressed! Please check as soon as possible!"
