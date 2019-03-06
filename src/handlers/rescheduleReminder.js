@@ -1,7 +1,8 @@
 const { logger } = require('../utils')
 const { extractSlots, flowContinueBuiltin } = require('./common')
 const i18nFactory = require('../factories/i18nFactory')
-const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
+//const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
+const { getTimeHuman } = require('../tts/generateTime')
 const {
     getReminders,
     getReminderById,
@@ -82,7 +83,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
         })
         return i18n('getReminders.info.foundReminders', {
             number: reminders.length,
-            odd: (reminders.length === 1) ? '' : 's' 
+            odd: (reminders.length === 1) ? '' : 's'
         }) + i18n('rescheduleReminder.ask.whichToReschedule')
     }
 

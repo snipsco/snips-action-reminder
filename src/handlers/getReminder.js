@@ -1,4 +1,5 @@
-const { logger, arrayIntersection, generateMessageForReminders } = require('../utils')
+const { logger } = require('../utils')
+const generateReport = require('../tts/generateReport')
 const i18nFactory = require('../factories/i18nFactory')
 const { extractSlots, flowContinueBuiltin } = require('./common')
 const {
@@ -8,7 +9,8 @@ const {
 // Sub-handler, report all the found reminders
 function reportReminders(flow, slots, reminders) {
     flow.end()
-    return generateMessageForReminders(reminders, slots.past_reminders ? true : false)
+    return generateReport(reminders, slots, slots.past_reminders ? true : false)
+    //return generateMessageForReminders(reminders, slots.past_reminders ? true : false)
 }
 
 // Sub-handler, ask to create reminder

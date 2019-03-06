@@ -6,6 +6,5 @@ module.exports = {
     parser: require('./parser'),
     arrayIntersection: require('./arrayIntersection'),
     arrayUnique: require('./arrayUnique'),
-    generateMessageForReminders: require('./generateMessageForReminders'),
     matchDatetime: require('./matchDatetime')
 }

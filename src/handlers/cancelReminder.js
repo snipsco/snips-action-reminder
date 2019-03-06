@@ -1,7 +1,8 @@
 const { logger, arrayIntersection, generateMessageForReminders } = require('../utils')
 const i18nFactory = require('../factories/i18nFactory')
 const { extractSlots, flowContinueBuiltin } = require('./common')
-const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
+//const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
+const { getTimeHuman } = require('../tts/generateTime')
 const {
     deleteReminderById,
     getReminders
@@ -40,7 +41,7 @@ module.exports = async function (msg, flow) {
         })
         return i18n('getReminders.info.foundReminders', {
             number: reminders.length,
-            odd: (reminders.length === 1) ? '' : 's' 
+            odd: (reminders.length === 1) ? '' : 's'
         }) + i18n ('cancelReminder.ask.confirmToCancelAll')
     }
 
