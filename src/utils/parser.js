@@ -72,7 +72,7 @@ function getScheduleString (datetime, recurrence=null) {
         weekly: `* * ${datetime.getDay()}`,
         daily: '* * *',
         monthly: `${datetime.getDate()} * *`,
-        weekend: '* * Sat,Sun',
+        weekends: '* * Sat,Sun',
     }
 
     let schedule = `${datetime.getSeconds()} ${datetime.getMinutes()} ${datetime.getHours()} `
