@@ -36,5 +36,8 @@ function getDatetimeRange(datetimeSnips) {
  */
 module.exports = (datetimeSnips, datetimeObj) => {
     const range = getDatetimeRange(datetimeSnips)
-    return (datetimeObj.getTime() >= range.min) && (datetimeObj.getTime() < range.max) ? true : false
+    return (
+        (datetimeObj.getTime() >= range.min) &&
+        (datetimeObj.getTime() < range.max)
+    ) ? true : false
 }
