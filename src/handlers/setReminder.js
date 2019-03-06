@@ -2,7 +2,7 @@ const i18nFactory = require('../factories/i18nFactory')
 const { logger } = require('../utils')
 const { extractSlots, flowContinueBuiltin} = require('./common')
 const { createReminder } = require('../reminders')
-const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
+const { getTimeHuman } = require('../tts/generateTime')
 
 // Sub-handler, create a new reminder
 function newReminder (flow, slots) {
@@ -13,10 +13,9 @@ function newReminder (flow, slots) {
                                   slots.datetime,
                                   slots.recurrence)
     if (reminder){
-        return i18n('inform.confirmReminderSet', {
+        return i18n('setReminder.info.reminder_SetFor_', {
             name: reminder.name,
-            date_time: generateDatetimeTTS(reminder.datetime),
-            recurrence: reminder.recurrence
+            time: getTimeHuman(reminder.datetime, slots.recurrence)
         })
     } else {
         return i18n('inform.canNotCreateReminder')
