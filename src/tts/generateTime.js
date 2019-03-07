@@ -20,24 +20,35 @@ function isTomorrow(datetime) {
 }
 
 function isThisWeek(datetime) {
-    // calculate the week number from the first day of year
-    // if they own the same year and same week number, then it's the same week
-    // make it work tomorrow
-    const today = new Date(Date.now())
-    const weekStart = today.getTi()
-    const weekEnd =
+    let thisWeek = new Date(Date.now())
+    thisWeek.setDate(thisWeek.getDate() - thisWeek.getDay())
+    let thatWeek = datetime
+    thatWeek.setDate(thatWeek.getDate() - thatWeek.getDay())
+    return (
+        thisWeek.getDate() === thatWeek.getDate() &&
+        thisWeek.getMonth() === thatWeek.getMonth() &&
+        thisWeek.getFullYear() === thatWeek.getFullYear()
+    )
 }
 
 function isNextWeek(datetime) {
-
+    let nextWeek = new Date(Date.now())
+    nextWeek.setDate(nextWeek.getDate() - nextWeek.getDay() + 7)
+    let thatWeek = datetime
+    thatWeek.setDate(thatWeek.getDate() - thatWeek.getDay())
+    return (
+        nextWeek.getDate() === thatWeek.getDate() &&
+        nextWeek.getMonth() === thatWeek.getMonth() &&
+        nextWeek.getFullYear() === thatWeek.getFullYear()
+    )
 }
 
 function isThisMonth(datetime) {
-
-}
-
-function isNextMonth(datetime) {
-
+    const today = new Date(Date.now())
+    return (
+        today.getMonth() === datetime.getMonth() &&
+        today.getFullYear() === datetime.getFullYear()
+    )
 }
 
 function isThisYear(datetime) {
@@ -68,12 +79,14 @@ function isThisYear(datetime) {
  * @param {String} recurence
  * @return {String} tts message that is ready to play
  */
- function getTimeHuman(datetime, recurrence) {
+
+ function getTimeHuman(datetime, recurrence, grain = 'Year') {
      const i18n = i18nFactory.get()
 
      const year = isThisYear(datetime) ? '' : datetime.getFullYear()
      const month = i18n(`months.${datetime.getMonth()}`)
      const date = datetime.getDate()
+     const day = datetime.getDay()
      const time = datetime.toLocaleString('en-US', {
          hour12: true,
          hour: 'numeric',
@@ -102,33 +115,59 @@ function isThisYear(datetime) {
              })
          }
      } else {
-         if (isToday(datetime)) {
-             // "Today at 11 55 PM"
-             return i18n('time.todayAt_', {
+         // if the grain is 'year', 'quarter', 'month', then pronounce everyting
+         // if the grain is 'week', then don't pronounce date but weekday
+         // if the grain is 'day', then don't pronounce date
+         // if the grain is 'hour' or 'minute', then don't pronounce time at all
+         if (
+             grain === 'Year'    ||
+             grain === 'Quarter' ||
+             grain === 'Month'   ||
+             grain === 'Hour'    ||
+             grain === 'Minute'  ||
+             grain === 'Second'
+         ) {
+             if (isToday(datetime)) {
+                 // "Today at 11 55 PM"
+                 return i18n('time.todayAt_', {
+                     time: time
+                 })
+             } else if (isTomorrow(datetime)) {
+                 // "Tomorrow at 11 55 PM"
+                 return i18n('time.tomorrowAt_', {
+                     time: time
+                 })
+             } else {
+                 // "March 2 at 11 55 PM"
+                 return i18n('time.oneDayAt_', {
+                     month: month,
+                     date: date,
+                     time: time,
+                     year: year
+                 })
+             }
+         } else if (grain === 'Week') {
+             // "Monday at 11 55 PM"
+             return i18n('time._At_', {
+                 day: i18n(`weekdays.${day}`),
                  time: time
              })
-         } else if (isTomorrow(datetime)) {
-             // "Tomorrow at 11 55 PM"
-             return i18n('time.tomorrowAt_', {
-                 time: time
-             })
-         } else {
-             // "March 2 at 11 55 PM"
-             return i18n('time.oneDayAt_', {
-                 month: month,
-                 date: date,
-                 time: time,
-                 year: year
-             })
+         } else if (grain === 'Day') {
+             // "11 55 PM"
+             return time
          }
      }
  }
 
-// instant time input
 function getTimeHumanRough(datetimeSnips) {
     const i18n = i18nFactory.get()
-    const datetime = new Date(datetimeSnips)
-    if (datetimeSnips.grain === 'Minute') {
+    const datetime = new Date(datetimeSnips.value)
+    if (
+        datetimeSnips.grain === 'Hour'   ||
+        datetimeSnips.grain === 'Minute' ||
+        datetimeSnips.grain === 'Second' ||
+        datetimeSnips.grain === 'Quarter'
+    ) {
         // "this time"
         return i18n('getReminders.info.thisTime')
     }
@@ -146,18 +185,35 @@ function getTimeHumanRough(datetimeSnips) {
         }
     }
     if (datetimeSnips.grain === 'Week') {
-        // "this week" / "next week"
-
+        // "this week" / "next week" / "April 4"
+        if (isThisWeek(datetime)) {
+            return i18n('getReminders.info.thisWeek')
+        } else if (isNextWeek(datetime)) {
+            return i18n('getReminders.info.nextWeek')
+        } else {
+            return i18n('getReminders.info.monthDate', {
+                month: i18n(`months.${datetime.getMonth()}`),
+                date: datetime.getDate()
+            })
+        }
     }
 
     if (datetimeSnips.grain === 'Month') {
-        // "this month" / "next month" / "april"
-
+        // "this month" / "April"
+        if (isThisMonth(datetime)) {
+            return i18n('getReminders.info.thisMonth')
+        } else {
+            return i18n(`months.${datetime.getMonth()}`)
+        }
     }
 
     if (datetimeSnips.grain === 'Year') {
         // "this year" / "2020"
-
+        if (isThisYear(datetime)) {
+            return i18n('getReminders.info.thisYear')
+        } else {
+            return datetime.getFullYear()
+        }
     }
 }
 
