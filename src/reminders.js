@@ -145,7 +145,9 @@ module.exports = {
             (!datetime || matchDatetime(datetime, reminder.datetime)) &&
             (!recurrence || recurrence === reminder.recurrence) &&
             (expired === reminder.expired)
-        )
+        ).sort( (a, b) => {
+            return (a.datetime.getTime() - b.datetime.getTime())
+        })
     },
     getReminderById,
     getRemindersByName(name) {
