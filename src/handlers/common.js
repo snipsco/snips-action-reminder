@@ -39,7 +39,17 @@ async function extractSlots(msg, knownSlots = {}) {
             })
             if (tempSlot) {
                 if (tempSlot.entity == 'snips/datetime') {
-                    res[slot] = tempSlot.value
+                    // If 'kind' is 'TimeInterval', then take the 'from' point
+                    if (tempSlot.value.kind === 'TimeInterval') {
+                        res[slot] = {
+                            kind: 'InstantTime',
+                            value: tempSlot.value.from,
+                            grain: 'Minute',
+                            precision: 'Exact'
+                        }
+                    } else {
+                        res[slot] = tempSlot.value
+                    }
                 } else {
                     res[slot] = tempSlot.value.value
                 }
