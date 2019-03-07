@@ -8,9 +8,21 @@ const {
 
 // Sub-handler, report all the found reminders
 function reportReminders(flow, slots, reminders) {
-    flow.end()
-    return generateReport(reminders, slots, slots.past_reminders ? true : false)
-    //return generateMessageForReminders(reminders, slots.past_reminders ? true : false)
+    const report = generateReport(reminders, slots, slots.past_reminders ? true : false)
+
+    if (reminders.length > 2) {
+        flow.continue('snips-assistant:Yes', (msg, flow) => {
+            flow.end()
+            return report.rest
+        })
+        flow.continue('snips-assistant:No', (msg, flow) => {
+            flow.end()
+        })
+        return report.head + report.recent + 'Would you like to list all the rest reminders?'
+    } else {
+        flow.end()
+        return report.all
+    }
 }
 
 // Sub-handler, ask to create reminder
@@ -25,7 +37,7 @@ function askToCreateReminder(flow, slots, depth) {
     flow.continue('snips-assistant:No', (msg, flow) => {
         flow.end()
     })
-    return i18n('getReminders.info.noReminderFound') + i18n('setReminder.ask.createReminder')
+    return i18n('getReminders.info.noSuchRemindersFound') + i18n('setReminder.ask.createReminder')
 }
 
 module.exports = async function(msg, flow, knownSlots = { depth: 2 }) {
