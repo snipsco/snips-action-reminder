@@ -1,5 +1,6 @@
 const path = require('path')
 const cron = require('node-cron')
+const cronPaser = require('cron-parser')
 const timestamp = require('time-stamp')
 const fs = require('fs')
 const { getCompletedDatetime, getScheduleString } = require('./utils/parser')
@@ -16,8 +17,10 @@ function initReminder(name, datetime, recurrence, id = null, schedule = null, ex
     }
 
     const _id = (id) ? id : timestamp('YYYYMMDD-HHmmss-ms')
-    const _datetime = (id) ? (new Date(datetime)) : (new Date((datetime) ? getCompletedDatetime(datetime) : Date.now()))
-    const _schedule = (schedule) ? schedule : getScheduleString(_datetime, recurrence)
+    const _datetimeForSchedule = (id) ? (new Date(datetime)) : (new Date((datetime) ? getCompletedDatetime(datetime) : Date.now()))
+    const _schedule = (schedule) ? schedule : getScheduleString(_datetimeForSchedule, recurrence)
+
+    const _datetime = recurrence ? new Date(cronPaser.parseExpression(_schedule).next().toString()) : _datetimeForSchedule
 
     const taskReminder = cron.schedule(_schedule, () => {
         createAlarm(name, _id)

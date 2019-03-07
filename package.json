@@ -29,6 +29,7 @@
     "wretch": "^1.4.2",
     "wretch-middlewares": "^0.1.8",
     "node-cron": "^2.0.3",
+    "cron-parser": "^2.7.3",
     "time-stamp": "^2.2.0"
   }
 }
