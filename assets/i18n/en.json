@@ -57,31 +57,33 @@
     },
     "getReminders": {
         "info": {
-            "noReminderFound": "Seems like you have no reminder set for the monment. ",
+
             "foundReminders": "I'v found {{ number }} reminder{{odd}}. ",
             "foundComingReminders": "I'v found {{ number }} coming reminder{{odd}}. ",
             "foundPastReminders": "I'v found {{ number }} past reminder{{odd}}. ",
-            "reminderSetFor": "{{ name }} set for {{ datetime }} {{ recurrence }}",
+            "reminderSetFor": "Reminder: {{ name }}, set for {{ datetime }} {{ recurrence }} ",
+
+            "noReminderFound": "Seems like you have no reminder set for the monment. ",
+            "noSuchRemindersFound": "Seems like you have no such reminder set for the monment. ",
 
             "found_Reminders": "I'v found {{ number }} {{ adj }} reminder{{odd}}. ",
-            "found_RemindersNamed_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }}",
-            "found_RemindersSetFor_": "I'v found {{ number }} {{ adj }} reminder{{odd}} set for {{ datetime }}",
-            "found_RemindersSetForEvery_": "I'v found {{ number }} {{ adj }} reminder{{odd}} set for each {{ recurrence }}",
-            "found_RemindersNamed_AndSetFor_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }} set for {{ datetime }}",
-            "found_RemindersNamed_AndSetForEvery_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }} set for each {{ recurrence }}",
+            "found_RemindersNamed_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }}. ",
+            "found_RemindersSetFor_": "I'v found {{ number }} {{ adj }} reminder{{odd}} set for {{ time }}. ",
+            "found_RemindersSetForEvery_": "I'v found {{ number }} {{ adj }} reminder{{odd}} set for each {{ recurrence }}. ",
+            "found_RemindersNamed_AndSetFor_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }} set for {{ time }}. ",
+            "found_RemindersNamed_AndSetForEvery_": "I'v found {{ number }} {{ adj }} reminder{{odd}} named {{ name }} set for each {{ recurrence }}. ",
 
             "theMostRecentIs": "The most recent one is: ",
             "theRestRemindersAre": "The rest reminder{{odd}} {{ be }}: ",
-            "reminder_SetFor_": "{{ name }} set for {{ time }} ",
+            "reminder_SetFor_": "{{ name }}, set for {{ time }}. ",
 
             "thisTime": "this time ",
             "today": "today ",
             "tomorrow": "tomorrow ",
-            "monthDate": "{{ month }} {{ date }}",
+            "monthDate": "{{ month }} {{ date }} ",
             "thisWeek": "this week ",
             "nextWeek": "next week ",
             "thisMonth": "this month ",
-            "nextMonth": "next month ",
             "thisYear": "this year "
         }
     },
@@ -117,11 +119,12 @@
         }
     },
     "time": {
-            "todayAt_": "today at {{ time }}",
-            "tomorrowAt_": "tomorrow at {{ time }}",
-            "oneDayAt_": "{{ month }} {{ date }} at {{ time }} {{ year }}",
-            "every_At_": "every {{ day }} at {{ time }}",
-            "every_ofMonthAt_": "every {{ day }} of month at {{ time }}"
+            "_At_": "{{ day }} at {{ time }}. ",
+            "todayAt_": "today at {{ time }}. ",
+            "tomorrowAt_": "tomorrow at {{ time }}. ",
+            "oneDayAt_": "{{ month }} {{ date }} at {{ time }} {{ year }}. ",
+            "every_At_": "every {{ day }} at {{ time }}. ",
+            "every_ofMonthAt_": "every {{ day }} of month at {{ time }}. "
     },
     "months": {
         "0": "January",
