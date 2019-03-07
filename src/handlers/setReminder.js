@@ -3,12 +3,22 @@ const { logger } = require('../utils')
 const { extractSlots, flowContinueBuiltin} = require('./common')
 const { createReminder } = require('../reminders')
 const { getTimeHuman } = require('../tts/generateTime')
+const { getCompletedDatetime } = require('../utils/parser')
 
 // Sub-handler, create a new reminder
 function newReminder (flow, slots) {
     logger.debug('createReminder')
     flow.end()
     const i18n = i18nFactory.get()
+
+    // Validate the datetime, if is in the future
+    const thisMoment = new Date(Date.now())
+    const thatMoment = getCompletedDatetime(slots.datetime)
+
+    if (thatMoment.getTime() < thisMoment.getTime() + 15000 && !slots.recurrence) {
+        return i18n('common.error.pastReminderTime')
+    }
+
     let reminder = createReminder(slots.reminder_name,
                                   slots.datetime,
                                   slots.recurrence)
@@ -65,6 +75,8 @@ function newReminderMissingNameAndTime (flow, slots, depth) {
 }
 
 // Create a new reminder and save it into the file system
+
+// To Do: Datetime need to be valie before create the reminder
 module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     logger.debug(`SetReminder, depth: ${knownSlots.depth}`)
     const i18n = i18nFactory.get()

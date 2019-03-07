@@ -37,11 +37,8 @@
         "multiRemindersFound": "Seems like there are multiple reminders found. "
     },
     "common": {
-        "ask": {
-
-        },
-        "info" : {
-
+        "error": {
+            "pastReminderTime": "Sorry, please set the reminder to a future time. "
         }
     },
     "setReminder": {
