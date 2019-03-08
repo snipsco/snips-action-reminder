@@ -12,13 +12,15 @@ function newReminder (flow, slots) {
     const i18n = i18nFactory.get()
 
     // Validate the datetime, if is in the future
-    const thisMoment = new Date(Date.now())
-    const thatMoment = getCompletedDatetime(slots.datetime)
+    if (!slots.recurrence) {
+        const thisMoment = new Date(Date.now())
+        const thatMoment = getCompletedDatetime(slots.datetime)
 
-    if (thatMoment.getTime() < thisMoment.getTime() + 15000 && !slots.recurrence) {
-        return i18n('common.error.pastReminderTime')
+        if (thatMoment.getTime() < thisMoment.getTime() + 15000 && !slots.recurrence) {
+            return i18n('common.error.pastReminderTime')
+        }
     }
-
+    
     let reminder = createReminder(slots.reminder_name,
                                   slots.datetime,
                                   slots.recurrence)
