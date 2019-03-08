@@ -53,6 +53,9 @@
         }
     },
     "getReminders": {
+        "ask": {
+            "ifListRestReminders": "Would you like to list all the rest reminders? "
+        },
         "info": {
 
             "foundReminders": "I'v found {{ number }} reminder{{odd}}. ",
@@ -91,7 +94,7 @@
         },
         "info": {
             "noReminderFound": "I could not find this reminder. ",
-            "reminderRescheduled": "Okay, reminder {{ name }} has been rescheduled for {{ newDatetime }}. "
+            "reminder_RescheduledTo_": "Okay, reminder: {{ name }} has been rescheduled for {{ newDatetime }}. "
         }
     },
     "renameReminder": {
@@ -100,18 +103,18 @@
             "whichToRename": "Which one would you like to rename and how? "
         },
         "info": {
-            "noReminderFound": "I could not find this reminder. ",
-            "reminderRenamed": "Okay, reminder {{ oldName }} has been renamed to {{ newName }}"
+            "reminder_RenamedTo_": "Okay, reminder: {{ oldName }} has been renamed to {{ newName }}. "
         }
     },
     "cancelReminder": {
         "ask": {
+            "whichToCancel": "Which one would you like to cancel? ",
             "confirmToCancelAll": "Are you sure you want to cancel all these reminders? ",
-            "confirmToCancelReminder": "Are you sure you want to cancel the reminder {{ name }} set for {{ datetime }}"
+            "confirmToCancelReminder": "Are you sure to cancel the reminder: {{ name }}, set for {{ time }}? "
         },
         "info": {
-            "confirmRemindersCancelled" : "Successfully cancelled all these reminders. ",
-            "confirmReminderCancelled" : "Successfully cancelled reminder: {{ name }}. ",
+            "confirmRemindersCancelled" : "I'v cancelled all these reminders. ",
+            "successfullyCancelled_" : "I'v cancelled reminder: {{ name }}. ",
             "multiRemindersFound": "Seems like there are multiple reminders found. "
         }
     },
@@ -155,10 +158,42 @@
         "fridays": "Friday",
         "saturdays": "Saturday",
         "daily": "day",
+        "mornings": "morning",
+        "afternoons": "afternoon",
+        "evenings": "evening",
+        "nights": "night",
         "weekends": "Saturday and Sunday",
-        "weekdays": "Weekdays",
         "weekly": "Week",
-        "monthly": "Month"
+        "weekdays": "Weekdays",
+        "monthly": "Month",
+        "monday mornings": "Monday morning",
+        "monday afternoons": "Monday afternoon",
+        "monday evenings": "Monday evening",
+        "monday nights": "Monday night",
+        "tuesday mornings": "Tuesday morning",
+        "tuesday afternoons": "Tuesday afternoon",
+        "tuesday evenings": "Tuesday evening",
+        "tuesday nights": "Tuesday night",
+        "wednesday mornings": "Wednesday morning",
+        "wednesday afternoons": "Wednesday afternoon",
+        "wednesday evenings": "Wednesday evening",
+        "wednesday nights": "Wednesday night",
+        "thursday mornings": "Thursday morning",
+        "thursday afternoons": "Thursday afternoon",
+        "thursday evenings": "Thursday evening",
+        "thursday nights": "Thursday night",
+        "friday mornings": "Friday morning",
+        "friday afternoons": "Friday afternoon",
+        "friday evenings": "Friday evening",
+        "friday nights": "Friday night",
+        "saturday mornings": "Saturday morning",
+        "saturday afternoons": "Saturday afternoon",
+        "saturday evenings": "Saturday evening",
+        "saturday nights": "Saturday night",
+        "sunday mornings": "Sunday morning",
+        "sunday afternoons": "Sunday afternoon",
+        "sunday evenings": "Sunday evening",
+        "sunday nights": "Sunday night"
     },
     "debug": {
         "caseNotRecognized": "Oh lala! This case is not addressed! Please check as soon as possible!"
