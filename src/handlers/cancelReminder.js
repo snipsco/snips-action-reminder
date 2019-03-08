@@ -10,9 +10,26 @@ const {
 } = require('../reminders')
 
 module.exports = async function (msg, flow, knownSlots = { depth: 2}, reminders = null ) {
-    logger.debug('cancelReminder')
+    logger.debug(`cancelReminder, depth: ${knownSlots.depth}`)
     const i18n = i18nFactory.get()
     const slots = await extractSlots(msg)
+
+    // Reached the max re-try times
+    if (knownSlots.depth === 0) {
+        logger.debug('Reached the max re-try times')
+        flow.end()
+        return i18n('inform.doNotUnderstantd')
+    }
+
+    if (!(slots.reminder_name || slots.datetime || slots.recurrence)) {
+        logger.debug('No constrain')
+        knownSlots.depth -= 1
+        flowContinueBuiltin(flow, knownSlots, require('./index').cancelReminder)
+        flow.continue('snips-assistant:CancelReminder', (msg, flow) => {
+            return require('./index').cancelReminder(msg, flow, knownSlots)
+        })
+        return i18n('cancelReminder.ask.whichToCancel')
+    }
 
     if (!reminders) {
         return require('./index').getReminder(msg, flow, { depth: 3}, (msg, flow, knownSlots, reminders) => {
