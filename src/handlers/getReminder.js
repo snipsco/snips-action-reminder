@@ -9,7 +9,7 @@ const {
 // Sub-handler, report all the found reminders
 function reportReminders(flow, slots, reminders) {
     const report = generateReport(reminders, slots, slots.past_reminders ? true : false)
-
+    const i18n = i18nFactory.get()
     if (reminders.length > 2) {
         flow.continue('snips-assistant:Yes', (msg, flow) => {
             flow.end()
@@ -18,7 +18,7 @@ function reportReminders(flow, slots, reminders) {
         flow.continue('snips-assistant:No', (msg, flow) => {
             flow.end()
         })
-        return report.head + report.recent + 'Would you like to list all the rest reminders?'
+        return report.head + report.recent + i18n('getReminders.ask.ifListRestReminders')
     } else {
         flow.end()
         return report.all
@@ -40,7 +40,7 @@ function askToCreateReminder(flow, slots, depth) {
     return i18n('getReminders.info.noSuchRemindersFound') + i18n('setReminder.ask.createReminder')
 }
 
-module.exports = async function(msg, flow, knownSlots = { depth: 2 }) {
+module.exports = async function(msg, flow, knownSlots = { depth: 2 }, afterCallback = null) {
     logger.debug(`getReminder, depth: ${knownSlots.depth}`)
     const i18n = i18nFactory.get()
     const slots = await extractSlots(msg, knownSlots)
@@ -64,10 +64,11 @@ module.exports = async function(msg, flow, knownSlots = { depth: 2 }) {
         return askToCreateReminder(flow, slots, --knownSlots.depth)
     }
 
-    // Found reminders by using some of the constrains
+    // Found reminders by using some of the constrains, no need to continue
     if (reminders.length) {
         logger.debug('Found reminders by using some of the constrains')
-        return reportReminders(flow, slots, reminders)
+        slots.depth = knownSlots.depth
+        return afterCallback ? afterCallback(msg, flow, slots, reminders) : reportReminders(flow, slots, reminders)
     }
 
     flow.end()
