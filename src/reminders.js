@@ -1,6 +1,6 @@
 const path = require('path')
 const cron = require('node-cron')
-const cronPaser = require('cron-parser')
+const { parseExpression } = require('cron-parser')
 const timestamp = require('time-stamp')
 const fs = require('fs')
 const { getCompletedDatetime, getScheduleString } = require('./utils/parser')
@@ -20,7 +20,7 @@ function initReminder(name, datetime, recurrence, id = null, schedule = null, ex
     const _datetimeForSchedule = (id) ? (new Date(datetime)) : (new Date((datetime) ? getCompletedDatetime(datetime) : Date.now()))
     const _schedule = (schedule) ? schedule : getScheduleString(_datetimeForSchedule, recurrence)
 
-    const _datetime = recurrence ? new Date(cronPaser.parseExpression(_schedule).next().toString()) : _datetimeForSchedule
+    const _datetime = recurrence ? new Date(parseExpression(_schedule).next().toString()) : _datetimeForSchedule
 
     const taskReminder = cron.schedule(_schedule, () => {
         createAlarm(name, _id)
@@ -87,6 +87,24 @@ function getReminderById(id) {
         return reminder[0]
     }
     return null
+}
+
+function setExpiredOrNewDatetimeById(id) {
+    const reminder = getReminderById(id)
+    if (!reminder) {
+        throw `canNotFindReminder: ${id}`
+    }
+
+    if (reminder.recurrence) {
+        // update next execution datetime
+        reminder.datetime = new Date(parseExpression(reminder.schedule).next().toString())
+        logger.debug(`Set reminder: ${reminder.id} datetime to ${reminder.datetime}`)
+    } else {
+        // set expired
+        reminder.expired = true
+        logger.debug(`Set reminder: ${reminder.id} to expired`)
+    }
+    reminder.save()
 }
 
 function checkExpiredById(id) {
@@ -163,6 +181,7 @@ module.exports = {
         return reminders.filter(reminder => reminder.recurrence === recurrence)
     },
     checkExpiredById,
+    setExpiredOrNewDatetimeById,
     deleteAllReminders() {
         reminders.forEach(reminder => {
             reminder.delete()
