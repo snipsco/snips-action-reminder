@@ -4,3 +4,4 @@ config.ini
 .ftpconfig
 .ftpignore
 test_local/
+bundle_backup/

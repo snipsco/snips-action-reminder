@@ -73,6 +73,13 @@ Working in progress.
 - [ ] `What reminder do I have next?`, `What's my previous reminder?`
 
 ## Known Issues
+### :x: `Remind me to call the bank every monday morning`
+
+Training example doest not really represent the output
+
+### :x: set a reminder in the morning / afternoon
+
+Now when set the reminder by saying 'Morning', 'Afternoon' or 'Evening', it will only take the start time. Which means that the morning will be at 4 AM, afternoon will be at 12 PM, night will be at 6 PM.
 
 ### :x: Assistant issue with key word `every week`
 
