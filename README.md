@@ -69,15 +69,18 @@ Working in progress.
 ## Nice to have
 
 - [ ] When a reminder arrives, we should be able to reschedule it. (RescheduleReminder for the non-recurrence, create new for recurrence one)
+- [ ] When a reminder arrives, it should be able to be postponed, add more time. But this feature doesn't exist in alxa.
 - [ ] `What reminder do I have next?`, `What's my previous reminder?`
 
 ## Known Issues
 
 ### :x: Assistant issue with key word `every week`
 
-### :x: TTS for all the recurrence reminders
+### :white_check_mark:[Solved] TTS for all the recurrence reminders
 
 Now when we have a query like "Please remind me to call the back every weekend", tts will play: "reminder <reminder_name> is set for today at <time> weekends"
+
+Solution: more powerful tts generator
 
 ### :x: TTS for `all_reminders` slots filled and non-filled
 
@@ -89,15 +92,19 @@ If the slot `all_reminders` is filled: "I'v found <number> reminders, reminder .
 
 If the slot `all_reminders` is not filled: "I'v found <number> reminders, the most recent one is <reminder_name> set for <time>, would you like to listen all the rest reminders?"
 
-### :x: Handle the reminders that is set for a past time
+### :white_check_mark:[Solved] Handle the reminders that is set for a past time
 
 Now when we have a query to set a reminder for "yesterday", this will work. But actually it shouldn't.
 
-### :x: Handle the time period case `TimeInterval`
+Solution: checking datetime before create / reschedule a reminder
+
+### :white_check_mark:[Solved] Handle the time period case `TimeInterval`
 
 Now when a time period detected, like query "remind me to go to my parents this weekend", the `datetime` slot will be detected as time period. This should be handled.
 
 Same for the `start time`, probably for `end time` as well
+
+Solution: always take the `start` point as the value of a `InstantTime` class
 
 ### :x: Keep the reminders only for a couple of days
 
@@ -119,19 +126,23 @@ New issue:
 
 This format should adapt to `local` setting. Same for recurrence.
 
-### :x: Reminders that have recurrence
+### :white_check_mark:[Solved] Reminders that have recurrence
 
 This will work as a recurrence job, but still `datetime` needs to be updated after each execution to be clear for user's query
 
-### :x: *"Remind me to 'do sth' today"*
+### :negative_squared_cross_mark:[Half solved] *"Remind me to 'do sth' today"*
 
 This query will create a reminder by using the current date and time. It doesn't make any sense. This case need to be handled as a special.
 
-### :interrobang: *"Please cancel all the reminders"*
+Solution: this is prevented by checking if the time is in the past. But nor perfect, the right logic is ask: what time for today ?
+
+### :white_check_mark:[Solved] *"Please cancel all the reminders"*
 
 Not sure if this is an issue.
 
 This action will delete all the coming reminders, the past reminders will be kept for checking.
+
+Solution: perform a double checking
 
 ### :interrobang: Bundle and flow chart
 
