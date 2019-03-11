@@ -3,7 +3,6 @@ const generateReport = require('../tts/generateReport')
 const { extractSlots, flowContinueBuiltin } = require('./common')
 const i18nFactory = require('../factories/i18nFactory')
 const {
-    getReminders,
     renameReminderById
 } = require('../reminders')
 
@@ -18,7 +17,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }, reminders
         flow.end()
         return i18n('inform.doNotUnderstantd')
     }
-    
+
     if (!(slots.former_reminder_name || slots.datetime || slots.recurrence)) {
         logger.debug('No constrain')
         knownSlots.depth -= 1

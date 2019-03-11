@@ -1,6 +1,6 @@
 const { logger } = require('../utils')
 const { deleteAlarm } = require('../alarms')
-const { checkExpiredById, setExpiredOrNewDatetimeById } = require('../reminders')
+const { setExpiredOrNewDatetimeById } = require('../reminders')
 
 module.exports = async function (msg, flow) {
     logger.debug('Stop')
@@ -12,7 +12,6 @@ module.exports = async function (msg, flow) {
 
     const customData = JSON.parse(msg.customData)
     deleteAlarm(customData.reminder_id)
-    //checkExpiredById(customData.reminder_id)
     setExpiredOrNewDatetimeById(customData.reminder_id)
     flow.end()
 }

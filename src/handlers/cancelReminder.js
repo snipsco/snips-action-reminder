@@ -1,12 +1,10 @@
-const { logger, arrayIntersection } = require('../utils')
+const { logger } = require('../utils')
 const generateReport = require('../tts/generateReport')
 const i18nFactory = require('../factories/i18nFactory')
 const { extractSlots, flowContinueBuiltin } = require('./common')
-//const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
 const { getTimeHuman } = require('../tts/generateTime')
 const {
-    deleteReminderById,
-    getReminders
+    deleteReminderById
 } = require('../reminders')
 
 module.exports = async function (msg, flow, knownSlots = { depth: 2}, reminders = null ) {
@@ -39,8 +37,6 @@ module.exports = async function (msg, flow, knownSlots = { depth: 2}, reminders 
 
     const report = generateReport(reminders, slots)
 
-    // Cancel all the found reminders
-    //if (reminders) {
     logger.debug('Cancel all the found reminders')
     flow.continue('snips-assistant:Yes', (msg, flow) => {
         flow.end()
@@ -55,33 +51,8 @@ module.exports = async function (msg, flow, knownSlots = { depth: 2}, reminders 
         flow.end()
     })
 
-    return reminders.length === 1 ? i18n('cancelReminder.ask.confirmToCancelReminder', {
+    return (reminders.length === 1) ? i18n('cancelReminder.ask.confirmToCancelReminder', {
         name: reminders[0].name,
         time: getTimeHuman(reminders[0].datetime, reminders[0].recurrence)
-    }) : report.head + i18n('cancelReminder.ask.confirmToCancelAll')
-    //}
-
-    // Found reminders by using some of the constrains
-    // if (reminders.length === 1) {
-    //     flow.continue('snips-assistant:Yes', (msg, flow) => {
-    //         flow.end()
-    //         deleteReminderById(reminders[0].id)
-    //         return i18n('cancelReminder.info.successfullyCancelled_', {
-    //             name: reminders[0].name
-    //         })
-    //     })
-    //     flow.continue('snips-assistant:No', (msg, flow) => {
-    //         flow.end()
-    //     })
-    //     return i18n('cancelReminder.ask.confirmToCancelReminder', {
-    //         name: reminders[0].name,
-    //         time: getTimeHuman(reminders[0].datetime, reminders[0].recurrence)
-    //     })
-    // } else {
-    //     flow.end()
-    //     return i18n('cancelReminder.info.multiRemindersFound')
-    // }
-
-    flow.end()
-    return i18n('debug.caseNotRecognized')
+    }) : (report.head + i18n('cancelReminder.ask.confirmToCancelAll'))
 }

@@ -2,14 +2,11 @@ const { logger } = require('../utils')
 const { extractSlots, flowContinueBuiltin } = require('./common')
 const generateReport = require('../tts/generateReport')
 const i18nFactory = require('../factories/i18nFactory')
-//const generateDatetimeTTS = require('../tts/generateDatetimeTTS')
 const { getTimeHuman } = require('../tts/generateTime')
 const { getCompletedDatetime } = require('../utils/parser')
 const {
-    getReminders,
     getReminderById,
     rescheduleReminderById
-    //renameReminderById
 } = require('../reminders')
 
 module.exports = async function (msg, flow, knownSlots = { depth: 3 }, reminders = null) {
@@ -90,33 +87,8 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }, reminders
         flow.continue('snips-assistant:RescheduleReminder', (msg, flow) => {
             return require('./index').rescheduleReminder(msg, flow, slots)
         })
-        return i18n('getReminders.info.foundReminders', {
-            number: reminders.length,
-            odd: (reminders.length === 1) ? '' : 's'
-        }) + i18n('rescheduleReminder.ask.whichToReschedule')
+        return report.head + i18n('rescheduleReminder.ask.whichToReschedule')
     }
-
-    // // No reminders, no slots
-    // if (!reminders.length && !Object.keys(slots).length) {
-    //     logger.debug('No reminders, no slots')
-    //     flow.end()
-    //     return i18n('getReminders.info.noReminderFound')
-    // }
-    //
-    // // No reminder found, former_reminder_datetime or new_reminder_datetime provided
-    // // No reminder found, one of the slots provided
-    // if (!reminders.length && Object.keys(slots).length) {
-    //     logger.debug('No reminder found, one of the slots provided')
-    //     flowContinueBuiltin(flow, knownSlots, require('./index').rescheduleReminder)
-    //     flow.continue('snips-assistant:Yes', (msg, flow) => {
-    //         slots.depth = 3
-    //         return require('./index').setReminder(msg, flow, slots)
-    //     })
-    //     flow.continue('snips-assistant:No', (msg, flow) => {
-    //         flow.end()
-    //     })
-    //     return i18n('rescheduleReminder.info.noReminderFound') + i18n('setReminder.ask.createReminder')
-    // }
 
     flow.end()
     return i18n('debug.caseNotRecognized')
