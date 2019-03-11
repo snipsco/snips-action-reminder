@@ -20,7 +20,7 @@ function newReminder (flow, slots) {
             return i18n('common.error.pastReminderTime')
         }
     }
-    
+
     let reminder = createReminder(slots.reminder_name,
                                   slots.datetime,
                                   slots.recurrence)
@@ -30,7 +30,7 @@ function newReminder (flow, slots) {
             time: getTimeHuman(reminder.datetime, slots.recurrence)
         })
     } else {
-        return i18n('inform.canNotCreateReminder')
+        return i18n('common.error.canNotCreateReminder')
     }
 }
 
@@ -45,7 +45,7 @@ function newReminderMissingTime (flow, slots, depth) {
         return require('./index').setReminder(msg, flow, slots)
     })
 
-    return i18n('ask.time')
+    return i18n('setReminder.ask.time')
 }
 
 // Sub-handler, asking for name
@@ -59,7 +59,7 @@ function newReminderMissingName (flow, slots, depth) {
         return require('./index').setReminder(msg, flow, slots)
     })
 
-    return i18n('ask.name')
+    return i18n('setReminder.ask.name')
 }
 
 // Sub-handler, asking for both name and time
@@ -73,12 +73,10 @@ function newReminderMissingNameAndTime (flow, slots, depth) {
         return require('./index').setReminder(msg, flow, slots)
     })
 
-    return i18n('ask.nameAndTime')
+    return i18n('setReminder.ask.nameAndTime')
 }
 
 // Create a new reminder and save it into the file system
-
-// To Do: Datetime need to be valie before create the reminder
 module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     logger.debug(`SetReminder, depth: ${knownSlots.depth}`)
     const i18n = i18nFactory.get()

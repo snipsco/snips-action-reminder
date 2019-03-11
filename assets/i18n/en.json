@@ -38,7 +38,8 @@
     },
     "common": {
         "error": {
-            "pastReminderTime": "Sorry, please set the reminder to a future time. "
+            "pastReminderTime": "Sorry, please set the reminder to a future time. ",
+            "canNotCreateReminder": "Sorry, I can't create this reminder. "
         }
     },
     "setReminder": {
