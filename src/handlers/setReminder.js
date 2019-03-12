@@ -90,7 +90,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }) {
     // intent not recognized
     if (knownSlots.depth === 0) {
         flow.end()
-        return i18n('inform.doNotUnderstantd')
+        return i18n('common.error.doNotUnderstantd')
     }
 
     // slot name not provided

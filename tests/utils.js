@@ -41,7 +41,7 @@ module.exports = {
             slotName: 'datetime',
             entity: 'snips/datetime',
             confidenceScore: 1,
-            rawValue: "at ",
+            rawValue: 'at ',
             value: {
                 kind: 'InstantTime',
                 value: datetime,

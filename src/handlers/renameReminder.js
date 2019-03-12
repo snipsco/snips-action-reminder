@@ -15,7 +15,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }, reminders
     if (knownSlots.depth === 0) {
         logger.debug('Reached the max re-try times')
         flow.end()
-        return i18n('inform.doNotUnderstantd')
+        return i18n('common.error.doNotUnderstantd')
     }
 
     if (!(slots.former_reminder_name || slots.datetime || slots.recurrence)) {
@@ -58,7 +58,7 @@ module.exports = async function (msg, flow, knownSlots = { depth: 3 }, reminders
     if (knownSlots.depth === 0) {
         logger.debug('Reached the max re-try times')
         flow.end()
-        return i18n('inform.doNotUnderstantd')
+        return i18n('common.error.doNotUnderstantd')
     }
 
     // One reminder found, new name not provided

@@ -8,7 +8,7 @@ const alarmSchedule = '*/15 * * * * *'
 function initAlarm(name, id) {
     const taskAlarm = cron.schedule(alarmSchedule, () => {
         const i18n = i18nFactory.get()
-        let message = i18n('inform.remind', {
+        let message = i18n('alarm.info.itsTimeTo', {
             name: name
         })
         const tts = require('./tts')

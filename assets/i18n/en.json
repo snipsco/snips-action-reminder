@@ -8,38 +8,16 @@
         "APIRequest": "Sorry, the service provider is unreachable.",
         "unspecific": "Oops, something went wrong."
     },
-    "ask": {
-        "create": "Would you like to create one?",
-        "nameAndTime": "When should I set this reminder and how should I name it?",
-        "name": "How should I name this reminder?",
-        "time": "When should I set this reminder for?",
-        "confirmToCancelAll": "Are you sure you want to cancel all the reminders?",
-        "confirmToDeleteReminder": "Are you sure you want to cancel the reminder {{ name }} at {{ date_time }} {{ recurrence }}"
-    },
-    "inform": {
-        "canNotCreateReminder": "Sorry, I cant create this reminder. ",
-        "briefReady": "Reminder APP is ready to use. ",
-        "remind": "It's time for your reminder: {{ name }}. ",
-        "confirmReminderSet": "Okay, reminder: {{ name }} is set for {{ date_time }} {{ recurrence }}. ",
-        "noComingReminder": "Seems like you have no coming reminder set for the moment. ",
-        "noPastReminder": "Seems like you have no past reminder set for the moment. ",
-        "noReminderFound": "Seems like you have no reminder set for this condition. ",
-        "noReminderFor": "Seems like you have no reminder set for {{ date_time }} {{ recurrence }}. ",
-        "noRmeinderNamedFor": "Seems like you have no reminder named {{ name }}. ",
-        "noReminderNamedAndFor": "Seems like you have no reminder named {{ name }} and set for {{ date_time }} {{ recurrence }}",
-        "numberOfComingReminders": "I'v found {{ number }} coming reminder{{odd}}. ",
-        "numberOfPastReminders": "I'v found {{ number }} past reminder{{odd}}. ",
-        "reminderSetFor": "Reminder: {{ reminder_name }} is set for {{ date_time }} {{ recurrence }}. ",
-        "reminderSetForRecurrence": "",
-        "doNotUnderstantd": "Sorry, I dont quite understant, please try again later. ",
-        "confirmAllCancelled": "Successfully cancelled all the reminders",
-        "confirmCancelledReminder": "Successfully cancelled reminder: {{ name }}",
-        "multiRemindersFound": "Seems like there are multiple reminders found. "
+    "alarm": {
+        "info": {
+            "itsTimeTo": "It's time for your reminder: {{ name }}. "
+        }
     },
     "common": {
         "error": {
             "pastReminderTime": "Sorry, please set the reminder to a future time. ",
-            "canNotCreateReminder": "Sorry, I can't create this reminder. "
+            "canNotCreateReminder": "Sorry, I can't create this reminder. ",
+            "doNotUnderstantd": "Sorry, I dont quite understant, please try again later. "
         }
     },
     "setReminder": {

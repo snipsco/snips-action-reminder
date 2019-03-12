@@ -2,7 +2,6 @@ require('./helpers/setup').bootstrap()
 const Session = require('./helpers/session')
 const {
     getMessageKey,
-    getMessageOptions
 } = require('./helpers/tools')
 const {
     getTimeHuman
@@ -20,7 +19,7 @@ const testDatetime = getTestDatetime() // 24 hours later
 const testRecurrence = 'mondays'
 
 //  all slots are filled with good values
-it(`should create a reminder which has name ${testName}`, async () => {
+it('should create a reminder', async () => {
     const session = new Session()
     await session.start({
         intentName: 'snips-assistant:SetReminder',
@@ -39,7 +38,7 @@ it(`should create a reminder which has name ${testName}`, async () => {
 })
 
 // no slots provided
-it(`should create a reminder by asking necessary data`, async () => {
+it('should create a reminder by asking necessary data', async () => {
     const session = new Session()
     await session.start({
         intentName: 'snips-assistant:SetReminder',
@@ -63,7 +62,7 @@ it(`should create a reminder by asking necessary data`, async () => {
 })
 
 // only name provided
-it(`should create a reminder by asking datetime/recurrence`, async () => {
+it('should create a reminder by asking datetime/recurrence', async () => {
     const session = new Session()
     await session.start({
         intentName: 'snips-assistant:SetReminder',
@@ -89,7 +88,7 @@ it(`should create a reminder by asking datetime/recurrence`, async () => {
 })
 
 // only datetime provided
-it(`should create a reminder by asking name`, async () => {
+it('should create a reminder by asking name', async () => {
     const session = new Session()
     await session.start({
         intentName: 'snips-assistant:SetReminder',
@@ -115,7 +114,7 @@ it(`should create a reminder by asking name`, async () => {
 })
 
 // only recurrence provided
-it(`should create a reminder by asking name`, async () => {
+it('should create a reminder by asking name', async () => {
     const session = new Session()
     await session.start({
         intentName: 'snips-assistant:SetReminder',

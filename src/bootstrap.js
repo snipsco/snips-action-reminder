@@ -1,4 +1,4 @@
-const { configFactory, i18nFactory, httpFactory } = require('./factories')
+const { configFactory, i18nFactory } = require('./factories')
 const { loadAllReminders, enableAllReminders, destroyAllReminders } = require('./reminders')
 const { destroyAllAlarm } = require('./alarms')
 const { LANGUAGE_MAPPINGS } = require('./constants')
@@ -9,7 +9,6 @@ module.exports = async (bootstrapOptions) => {
     const config = configFactory.get(bootstrapOptions.config)
     const language = LANGUAGE_MAPPINGS[config.locale]
     await i18nFactory.init(language, bootstrapOptions.i18n)
-    httpFactory.init(bootstrapOptions.http)
 
     loadAllReminders()
     enableAllReminders()
