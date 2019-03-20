@@ -1,5 +1,4 @@
 module.exports = {
     configFactory: require('./configFactory'),
-    i18nFactory: require('./i18nFactory'),
-    httpFactory: require('./httpFactory')
+    i18nFactory: require('./i18nFactory')
 }
