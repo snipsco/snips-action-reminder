@@ -1,26 +1,55 @@
-import { translation, logger } from '../utils'
-import { pokemonHandler } from './pokemon'
-import { FlowContinuation, IntentMessage, FlowActionReturn } from 'hermes-javascript'
+import { translation, logger, message } from '../utils'
+import { FlowContinuation, IntentMessage, FlowActionReturn, Hermes } from 'hermes-javascript'
+
+import { setReminderHandler } from './setReminder'
+import { getReminderHandler } from './getReminder'
+import { cancelReminderHandler } from './cancelReminder'
+import { renameReminderHandler } from './renameReminder'
+import { rescheduleReminderHandler } from './rescheduleReminder'
 
 export type Handler = (
     message: IntentMessage,
     flow: FlowContinuation,
-    ...args: any[]
+    hermes: Hermes,
+    options: HandlerOptions
 ) => FlowActionReturn
+
+export interface HandlerOptions {
+    confidenceScore: ConfidenceScore
+} 
+
+interface ConfidenceScore {
+    intentStandard: number
+    intentDrop: number
+    slotStandard?: number
+    slotDrop: number
+    asrStandard?: number
+    asrDrop: number
+}
 
 // Wrap handlers to gracefully capture errors
 const handlerWrapper = (handler: Handler): Handler => (
-    async (message, flow, ...args) => {
-        logger.debug('message: %O', message)
+    async (msg, flow, hermes, options) => {
+        //logger.debug('message: %O', msg)
         try {
-            // Run handler until completion
-            const tts = await handler(message, flow, ...args)
-            // And make the TTS speak
+            // Check confidenceScore before call the handler
+            if (msg.intent.confidenceScore < options.confidenceScore.intentDrop) {
+                throw new Error('nluIntentErrorBad')
+            }
+
+            if (msg.intent.confidenceScore < options.confidenceScore.intentStandard) {
+                throw new Error('nluIntentErrorStanderd')
+            }
+        
+            if (message.getAsrConfidence(msg) < options.confidenceScore.asrDrop) {
+                throw new Error('asrError')
+            }
+
+            const tts = await handler(msg, flow, hermes, options)
+
             return tts
         } catch (error) {
-            // If an error occurs, end the flow gracefully
             flow.end()
-            // And make the TTS output the proper error message
             logger.error(error)
             return await translation.errorMessage(error)
         }
@@ -29,5 +58,9 @@ const handlerWrapper = (handler: Handler): Handler => (
 
 // Add handlers here, and wrap them.
 export default {
-    pokemon: handlerWrapper(pokemonHandler)
+    setReminder: handlerWrapper(setReminderHandler),
+    getReminder: handlerWrapper(getReminderHandler),
+    cancelReminder: handlerWrapper(cancelReminderHandler),
+    renameReminder: handlerWrapper(renameReminderHandler),
+    rescheduleReminder: handlerWrapper(rescheduleReminderHandler)
 }
