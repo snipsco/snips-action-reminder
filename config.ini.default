@@ -1,4 +1,12 @@
 [global]
 locale=french
 
+[parameters]
+confidence_intent_standerd=0.5
+confidence_intent_drop=0.3
+confidence_slot_drop=0.5
+confidence_asr_drop=0.5
+
+#intent_prefix=snips-assistant
+
 [secret]
