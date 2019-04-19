@@ -19,3 +19,4 @@ export const CONFIDENCE_DEFAULT = {
     SLOT_DROP: 0.5,
     ASR: 0.2
 }
+export const ALARM_CRON_EXP = '*/15 * * * * *'
