@@ -2,24 +2,18 @@ import fs from 'fs'
 import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
-import { getCompletedDatetime, getScheduleString, logger } from '../utils'
+import { getScheduleString, logger } from '../utils'
 import { 
     InstantTimeSlotValue, 
     Hermes, 
     slotType, 
-    Dialog, 
-    IntentMessage,
-    IntentNotRecognizedMessage,
-    FlowContinuation
+    Dialog
 } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../factories'
-import { ALARM_CRON_EXP } from '../constants'
-import { handlerWrapper } from '../handlers'
+import { ALARM_CRON_EXP, DIR_DB } from '../constants'
 
-const DIR_DB = '/../db_reminders/'
-
-export interface ReminderInit {
+export type ReminderInit = {
     name: string
     datetime?: string
     recurrence?: string
@@ -102,7 +96,11 @@ export class Reminder {
         this.__make_alive(hermes)
     }
 
-    // create and start cron task
+    /**
+     * Create and start cron task
+     * 
+     * @param hermes 
+     */
     __make_alive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:reminder:${this.id}`
 
@@ -142,17 +140,19 @@ export class Reminder {
             //flow.notRecognized()
         })
 
-            
         this.taskReminderAlarm = cron.schedule(ALARM_CRON_EXP, onReminderArrive, { scheduled: false })
         this.taskReminder = cron.schedule(this.schedule, () => {
             if (this.taskReminderAlarm) {
                 this.taskReminderAlarm.start()
             } else {
-                throw new Error('noTaskReminderAlarm')
+                throw new Error('noTaskReminderAlarmFound')
             }
         })
     }
 
+    /**
+     * Elicit reminder info to string
+     */
     toString() {
         return JSON.stringify({
             id: this.id,
@@ -165,6 +165,9 @@ export class Reminder {
         })
     }
 
+    /**
+     * Save reminder info to fs
+     */
     save() {
         fs.writeFile(path.resolve(DIR_DB, `${this.id}.json`), this.toString(), 'utf8', (err) => {
             if (err) {
@@ -173,8 +176,55 @@ export class Reminder {
             logger.info(`Saved reminder: ${this.name} - ${this.id}`)
         })
     }
+
     /**
-     * Deactivate the reminder, keep the copy saved
+     * Remove the saved copy from fs
+     */
+    delete() {
+        this.destory()
+        
+        fs.unlink(path.resolve(DIR_DB, `${this.id}.json`), (err) => {
+            if (err) {
+                throw new Error(err.message)
+            }
+            logger.info(`Deleted reminder: ${this.name} - ${this.id}`)
+        })
+    }
+
+    /**
+     * Distory all the task cron, release memory
+     */
+    destory() {
+        if (this.taskReminder) {
+            this.taskReminder.stop()
+            this.taskReminder.destroy()
+        }
+
+        if (this.taskReminderAlarm) {
+            this.taskReminderAlarm.stop()
+            this.taskReminderAlarm.destroy()
+        }
+    }
+
+    /**
+     * Reset alarm, update nextExecution
+     */
+    reset() {
+        if (!this.rawRecurrence) {
+            this.setExpired()
+        }
+
+        if (this.taskReminderAlarm) {
+            this.taskReminderAlarm.stop()
+        } else {
+            throw new Error('noTaskReminderAlarmFound')
+        }
+        
+        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+    }
+
+    /**
+     * Deactivate reminder, keep the copy saved
      */
     setExpired() {
         if (this.taskReminder) {
@@ -190,37 +240,6 @@ export class Reminder {
         }
 
         this.isExpired = true
-    }
-
-    /**
-     * Remove the saved copy from HD
-     */
-    delete() {
-        if (this.taskReminder) {
-            this.taskReminder.stop()
-            this.taskReminder.destroy()
-        }
-
-        if (this.taskReminderAlarm) {
-            this.taskReminderAlarm.stop()
-            this.taskReminderAlarm.destroy()
-        }
-        
-        fs.unlink(path.resolve(DIR_DB, `${this.id}.json`), (err) => {
-            if (err) {
-                throw new Error(err.message)
-            }
-            logger.info(`Deleted reminder: ${this.name} - ${this.id}`)
-        })
-    }
-
-    reset() {
-        if (!this.rawRecurrence) {
-            this.setExpired()
-        }
-
-        // stop alarm
-        // update nextExecutionTime
     }
 
     addTime(duration: number) {
