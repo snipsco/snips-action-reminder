@@ -6,19 +6,21 @@ import { getReminderHandler } from './getReminder'
 import { cancelReminderHandler } from './cancelReminder'
 import { renameReminderHandler } from './renameReminder'
 import { rescheduleReminderHandler } from './rescheduleReminder'
+import { Database } from '../class/Database'
 
 export type Handler = (
     message: IntentMessage,
     flow: FlowContinuation,
-    hermes: Hermes,
+    database: Database,
     options: HandlerOptions
 ) => FlowActionReturn
 
-export interface HandlerOptions {
+export type HandlerOptions = {
     confidenceScore: ConfidenceScore
+    knownSlots?: any
 } 
 
-interface ConfidenceScore {
+type ConfidenceScore = {
     intentStandard: number
     intentDrop: number
     slotStandard?: number
