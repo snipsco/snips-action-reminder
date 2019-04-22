@@ -13,6 +13,19 @@ export const INTENTS_MAIN = [
     'RenameReminder',
     'RescheduleReminder'
 ]
+export const SLOTS_CUSTOM = [
+    'reminder_name',
+    'recurrence',
+    'all_reminders',
+    'past_reminders',
+    'former_reminder_name',
+    'new_reminder_name',
+]
+export const SLOTS_TIME = [
+    'datetime',
+    'former_reminder_datetime',
+    'new_reminder_datetime'
+]
 export const CONFIDENCE_DEFAULT = {
     INTENT_STANDARD: 0.5,
     INTENT_DROP: 0.3,
@@ -20,3 +33,4 @@ export const CONFIDENCE_DEFAULT = {
     ASR: 0.2
 }
 export const ALARM_CRON_EXP = '*/15 * * * * *'
+export const DIR_DB = '/../../.db_reminders'
