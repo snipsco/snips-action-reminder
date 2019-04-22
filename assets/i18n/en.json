@@ -1,12 +1,52 @@
 {
     "error": {
-        "mqtt": "Sorry, there was a communication error with the Snips platform",
-        "config": "Sorry, there was an error with your config file.",
-        "locale": "Sorry, there was an error with your language settings.",
-        "intentNotRecognized": "Sorry, I did not understand your request.",
-        "APIResponse": "Sorry, there was an issue with the service provider.",
-        "APIRequest": "Sorry, the service provider is unreachable.",
-        "unspecific": "Oops, something went wrong."
+        "mqtt": [
+            "Sorry, there was a communication error with the Snips platform."
+        ],
+        "mpdConnectionFaild": [
+            "Sorry, mpd connection faild."
+        ],
+        "mpdConnectionEnd": [
+            "Sorry, mpd connection lost."
+        ],
+        "config": [
+            "Sorry, there was an error with your config file."
+        ],
+        "locale": [
+            "Sorry, there was an error with your language settings."
+        ],
+        "unspecific": [
+            "Oops, something went wrong."
+        ],
+        "asrError": [
+            "I don't think I understood.",
+            "I'm not sure I understood.",
+            "Sorry I didn't get that."
+        ],
+        "noSlotValueFound": [
+            "Sorry I don't know how to help you with that.",
+            "I don't think I can help you with that.",
+            "Sorry, I dont't think I understood.",
+            "Em, I dont't know that one."
+        ],
+        "nluIntentErrorStanderd": [
+            "Sorry I don't know how to help you with that.",
+            "I don't think I can help you with that.",
+            "Sorry, I dont't think I understood.",
+            "Em, I dont't know that one."
+        ],
+        "nluIntentErrorBad": [
+            "Sorry I don't think I understood.",
+            "I don't think I understood."
+        ],
+        "nluSlotErrorStanderd": [
+            "Sorry I didn't quite get that, Feel free to try again when you are ready.",
+            "Sorry I didn't quite get that."
+        ],
+        "nluSlotErrorBad": [
+            "Sorry I didn't quite get that."
+        ]
+    },
     },
     "pokemon": {
         "info": "{{ name }}'s weight is {{ weight }} and its height is {{ height }}."
