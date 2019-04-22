@@ -4,6 +4,7 @@ import { configFactory } from './factories'
 import { translation, logger, camelize } from './utils'
 import { CONFIDENCE_DEFAULT, INTENT_PREFIX_DEFAULT, INTENTS_MAIN } from './constants'
 import handlers, { HandlerOptions } from './handlers'
+import { Database } from './class/Database'
 
 export default function ({
     hermesOptions = {},
@@ -15,6 +16,9 @@ export default function ({
                 await bootstrap(bootstrapOptions)
                 
                 const config = configFactory.get()
+
+                const database = new Database(hermes)
+
                 // Construct handler options
                 const handlerOptions: HandlerOptions = {
                     confidenceScore: {
@@ -22,6 +26,9 @@ export default function ({
                         intentDrop: Number(config.confidenceIntentDrop) || CONFIDENCE_DEFAULT.INTENT_DROP,
                         slotDrop: Number(config.confidenceSlotDrop) || CONFIDENCE_DEFAULT.SLOT_DROP,
                         asrDrop: Number(config.confidenceAsrDrop) || CONFIDENCE_DEFAULT.ASR
+                    },
+                    knownSlots: {
+                        depth: 3
                     }
                 }
 
@@ -30,7 +37,7 @@ export default function ({
                 INTENTS_MAIN.forEach( (intent) => {
                     dialog.flow(
                         `${config.intentPrefix || INTENT_PREFIX_DEFAULT}${intent}`, 
-                        (msg, flow) => handlers[camelize.camelize(intent)](msg, flow, hermes, handlerOptions)
+                        (msg, flow) => handlers[camelize.camelize(intent)](msg, flow, database, handlerOptions)
                     )
                 })
     
