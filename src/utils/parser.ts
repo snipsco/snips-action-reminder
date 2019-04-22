@@ -1,5 +1,33 @@
 import cron from 'node-cron'
 import { InstantTimeSlotValue, slotType } from 'hermes-javascript'
+import { logger } from './logger';
+
+export type DatetimeRange = {
+    min: number
+    max: number
+}
+
+export const getDatetimeRange = (datetimeSnips: InstantTimeSlotValue<slotType.instantTime>): DatetimeRange => {
+    const datetime = new Date(datetimeSnips.value)
+    const min = datetime.getTime()
+    switch (datetimeSnips.grain) {
+        case 'Minute':
+            return {min, max: min + 1000 * 60}
+        case 'Hour':
+            return {min, max: min + 1000 * 60 * 60}
+        case 'Day':
+            return {min, max: min + 1000 * 60 * 60 * 24}
+        case 'Week':
+            return {min, max: min + 1000 * 60 * 60 * 24 * 7}
+        case 'Month':
+            return {min, max: min + 1000 * 60 * 60 * 24 * 30}
+        case 'Year':
+            return {min, max: min + 1000 * 60 * 60 * 24 * 365}
+        default:
+            // Not sure which will be this case
+            return {min, max: min + 1000 * 60}
+    }
+}
 
 /**
  * Convert a incompleted datetime to a exact time, filling the unclear parts by current time sub-segments
@@ -53,6 +81,7 @@ import { InstantTimeSlotValue, slotType } from 'hermes-javascript'
  *     * * * * * *
  */
 export const getScheduleString = (datetime: Date, recurrence: string | null): string => {
+    logger.debug('getScheduleString', typeof datetime)
     const mapper = new Map([
         ['mondays', '* * Mon'],
         ['tuesdays', '* * Tue'],

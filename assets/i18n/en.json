@@ -61,7 +61,7 @@
             "nameAndTime": [
                 "When should I set this reminder and how should I name it? "
             ]
-    },
+        },
         "info": {
             "reminder_SetFor_": [
                 "Okay, reminder: {{ name }} is set for {{ time }} "
