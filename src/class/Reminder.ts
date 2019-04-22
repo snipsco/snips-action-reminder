@@ -15,7 +15,7 @@ import { ALARM_CRON_EXP, DIR_DB } from '../constants'
 
 export type ReminderInit = {
     name: string
-    datetime?: string
+    datetime?: Date
     recurrence?: string
 }
 
@@ -81,7 +81,7 @@ export class Reminder {
         this.id = timestamp('YYYYMMDD-HHmmss-ms')
         this.name = initData.name
 
-        this.rawDatetime = initData.datetime ? new Date(initData.datetime) : new Date()
+        this.rawDatetime = initData.datetime || new Date()
         this.rawRecurrence = initData.recurrence || null
 
         this.schedule = getScheduleString(this.rawDatetime, this.rawRecurrence)
@@ -169,7 +169,7 @@ export class Reminder {
      * Save reminder info to fs
      */
     save() {
-        fs.writeFile(path.resolve(DIR_DB, `${this.id}.json`), this.toString(), 'utf8', (err) => {
+        fs.writeFile(path.resolve(__dirname + DIR_DB, `${this.id}.json`), this.toString(), 'utf8', (err) => {
             if (err) {
                 throw new Error(err.message)
             }
@@ -183,7 +183,7 @@ export class Reminder {
     delete() {
         this.destory()
         
-        fs.unlink(path.resolve(DIR_DB, `${this.id}.json`), (err) => {
+        fs.unlink(path.resolve(__dirname + DIR_DB, `${this.id}.json`), (err) => {
             if (err) {
                 throw new Error(err.message)
             }
