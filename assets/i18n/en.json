@@ -47,8 +47,26 @@
             "Sorry I didn't quite get that."
         ]
     },
+    "setReminder": {
+        "ask": {
+            "createReminder": [
+                "Would you like to create one? "
+            ],
+            "name": [
+                "How should I name this reminder? "
+            ],
+            "time": [
+                "When should I set this reminder for? "
+            ],
+            "nameAndTime": [
+                "When should I set this reminder and how should I name it? "
+            ]
     },
-    "pokemon": {
-        "info": "{{ name }}'s weight is {{ weight }} and its height is {{ height }}."
+        "info": {
+            "reminder_SetFor_": [
+                "Okay, reminder: {{ name }} is set for {{ time }} "
+            ]
+        }
+    },
     }
 }
