@@ -31,7 +31,10 @@ export type ReminderString = {
 }
 
 /**
- * @exception <invalidTime> when the target time is in the past
+ * Reminder
+ * 
+ * @exception {pastReminderDatetime}
+ * @exception {noTaskReminderAlarmFound} 
  */
 export class Reminder {
     id: string = ''
