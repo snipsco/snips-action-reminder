@@ -1,4 +1,4 @@
-import { Handler } from './index'
+import handlers, { Handler } from './index'
 import { logger, translation, beautify } from '../utils'
 import { ReminderSlots, extractSltos } from './common'
 import { ReminderInit, Reminder } from '../class/Reminder'
@@ -7,6 +7,15 @@ import { ReminderInit, Reminder } from '../class/Reminder'
 export const setReminderHandler: Handler = async function (msg, flow, database, options) {
     logger.debug(`SetReminder, depth: ${options.knownSlots.depth}`)
 
+    // Add handler for intentNotRecognized
+    flow.notRecognized((_, flow) => {
+        if (options.knownSlots.depth) {
+            options.knownSlots.depth -= 1
+        }
+        return handlers.setReminder(msg, flow, database, options)
+    })
+
+    // Extract slots
     const slots: ReminderSlots = extractSltos(msg, options)
 
     // Create a new reminder
@@ -24,35 +33,36 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
         
         return translation.random('setReminder.info.reminder_SetFor_', {
             name: reminder.name,
-            time: beautify.date(reminder.nextExecution)
+            time: beautify.datetime(reminder.nextExecution)
         })
     }
 
-    // intent not recognized
+    // Intent not recognized
     if (options.knownSlots.depth === 0) {
         throw new Error('nluIntentErrorStanderd')
     }
 
-    // slot name not provided
+    // Require slot: name
     if (!slots.reminderName && (slots.recurrence || slots.datetime)) {
         // reserved 
         return
     }
 
-    // slot datetime or recurrence is not provided
+    // Require slot: datetime or recurrence
     if (slots.reminderName && !(slots.recurrence || slots.datetime)) {
         // reserved 
         return
     }
 
-    // no slot provided
+    // Require slot: name, datetime/recurrence
     if (!slots.reminderName && !(slots.recurrence || slots.datetime)) {
         flow.continue('snips-assistant:SetReminder', (msg, flow) => {
-            options.knownSlots.depth -= 1
-            return require('./index').setReminder(msg, flow, database, options)
+            if (options.knownSlots.depth) {
+                options.knownSlots.depth -= 1
+            }
+            return handlers.setReminder(msg, flow, database, options)
         })
-        // reserved 
-        return
+        return translation.random('setReminder.info.nameAndTime')
     }
 
     throw new Error('setReminderUnhandled')
