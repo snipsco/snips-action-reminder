@@ -1,7 +1,7 @@
 import { logger, message, camelize, getCompletedDatetime } from '../utils'
 import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
-import { IntentMessage, NluSlot, slotType, InstantTimeSlotValue, grain } from 'hermes-javascript'
-import { HandlerOptions } from '.'
+import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript'
+import { HandlerOptions, Handler } from '.'
 
 export type ReminderSlots = {
     reminderName?: string
@@ -102,4 +102,16 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
     })
 
     return res
+}
+
+export const flowContinueTerminate = (flow: FlowContinuation) => {
+    flow.continue('snips-assistant:Silence', (msg, flow) => {
+        flow.end()
+    })
+    flow.continue('snips-assistant:Cancel', (msg, flow) => {
+        flow.end()
+    })
+    flow.continue('snips-assistant:Stop', (msg, flow) => {
+        flow.end()
+    })
 }
