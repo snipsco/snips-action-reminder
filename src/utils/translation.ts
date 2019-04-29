@@ -9,6 +9,15 @@ function random (key: string | string[], opts: {[key: string]: any} = {}): strin
     return possibleValues[randomIndex]
 }
 
+function reportSetReminder(reminder: Reminder) {
+    return random('setReminder.info.reminder_SetFor_', {
+        name: reminder.name,
+        time: reminder.rawRecurrence ? 
+              beautify.recurrence(reminder.nextExecution, reminder.rawRecurrence) : 
+              beautify.datetime(reminder.nextExecution)
+    })
+}
+
 export const translation = {
     // Outputs an error message based on the error object, or a default message if not found.
     errorMessage: async (error: Error): Promise<string> => {
@@ -27,5 +36,6 @@ export const translation = {
         }
     },
     // Takes an array from the i18n and returns a random item.
-    random
+    random,
+    reportSetReminder
 }
