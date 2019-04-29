@@ -5,6 +5,13 @@ import fs from 'fs'
 import path from 'path'
 import { Hermes } from 'hermes-javascript'
 
+export type GetReminderObj = {
+    name?: string
+    datetimeRange?: DatetimeRange
+    recurrence?: string
+    isExpired?: boolean
+}
+
 function isDateInRange(datetimeRange: DatetimeRange, datetimeObj: Date) {
     return (
         (datetimeObj.getTime() >= datetimeRange.min) && 
@@ -52,17 +59,14 @@ export class Database {
     /**
      * Get reminders
      * 
-     * @param name 
-     * @param datetime 
-     * @param recurrence 
-     * @param isExpired 
+     * @param obj
      */
-    get(name?: string, datetimeRange?: DatetimeRange, recurrence?: string, isExpired?: boolean) {
+    get(obj: GetReminderObj) {
         return this.__reminders.filter( reminder =>
-            (!name || name === reminder.name) &&
-            (!datetimeRange || isDateInRange(datetimeRange, reminder.rawDatetime)) &&
-            (!recurrence || recurrence === reminder.rawRecurrence) &&
-            (isExpired === reminder.isExpired)
+            (!obj.name || obj.name === reminder.name) &&
+            (!obj.datetimeRange || isDateInRange(obj.datetimeRange, reminder.rawDatetime)) &&
+            (!obj.recurrence || obj.recurrence === reminder.rawRecurrence) &&
+            (obj.isExpired === reminder.isExpired)
         ).sort( (a, b) => {
             return (a.rawDatetime.getTime() - b.rawDatetime.getTime())
         })
