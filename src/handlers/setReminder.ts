@@ -6,7 +6,7 @@ import { INTENT_ELICITATION } from '../constants'
 import { IntentMessage, FlowContinuation } from 'hermes-javascript'
 
 export const setReminderHandler: Handler = async function (msg, flow, database, options) {
-    logger.debug(`SetReminder, depth: ${options.depth}`)
+    logger.debug(`${msg.intent.intentName}, depth: ${options.depth}`)
 
     flowContinueTerminate(flow)
 
@@ -31,10 +31,7 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
         
         const reminder: Reminder = database.add(reminderInitObj)
         
-        return translation.random('setReminder.info.reminder_SetFor_', {
-            name: reminder.name,
-            time: beautify.datetime(reminder.nextExecution)
-        })
+        return translation.reportSetReminder(reminder)
     }
 
     // Intent not recognized
