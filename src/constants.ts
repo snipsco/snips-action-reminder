@@ -15,16 +15,14 @@ export const INTENTS_MAIN = [
 ]
 export const SLOTS_CUSTOM = [
     'reminder_name',
-    'recurrence',
+    'new_reminder_name',
     'all_reminders',
     'past_reminders',
-    'former_reminder_name',
-    'new_reminder_name',
+    'recurrence'
 ]
 export const SLOTS_TIME = [
     'datetime',
-    'former_reminder_datetime',
-    'new_reminder_datetime'
+    'new_datetime'
 ]
 export const CONFIDENCE_DEFAULT = {
     INTENT_STANDARD: 0.5,

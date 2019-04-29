@@ -6,11 +6,10 @@ import { HandlerOptions, Handler } from '.'
 export type ReminderSlots = {
     reminderName?: string
     newReminderName?: string
-    formerReminderName?: string
 
     datetime?: Date
-    newReminderDatetime?: Date
-    formerReminderDatetime?: Date
+    datetimeRange?: DatetimeRange
+    newDatetime?: Date
 
     recurrence?: string
 
