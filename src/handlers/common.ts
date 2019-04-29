@@ -1,4 +1,4 @@
-import { logger, message, camelize, getCompletedDatetime } from '../utils'
+import { logger, message, camelize, getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
 import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
 import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript'
 import { HandlerOptions, Handler } from '.'
@@ -15,24 +15,6 @@ export type ReminderSlots = {
 
     allReminders?: string
     pastReminders?: string
-}
-
-export enum Recurrence {
-    mondays = "mondays",
-    tuesdays = "tuesdays",
-    wednesdays = "wednesdays",
-    thursdays = "thursdays",
-    fridays = "fridays",
-    saturdays = "saturdays",
-    sundays = "sundays",
-    weekends = "weekends",
-    mornings = "mornings",
-    evenings = "evenings",
-    nights = "nights",
-    daily = "daily",
-    weekly = "weekly",
-    weekdays = "weekdays",
-    monthly = "monthly"
 }
 
 /**
@@ -117,6 +99,12 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
     return res
 }
 
+/**
+ * Construct a new handler option for next recursion call
+ * 
+ * @param options 
+ * @param slots 
+ */
 export const nextOptions = (options: HandlerOptions, slots: ReminderSlots): HandlerOptions => {
     return {
         confidenceScore: options.confidenceScore,
