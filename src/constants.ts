@@ -13,6 +13,10 @@ export const INTENTS_MAIN = [
     'RenameReminder',
     'RescheduleReminder'
 ]
+export const INTENT_ELICITATION = {
+    name: 'ElicitReminderName',
+    time: 'ElicitReminderTime'
+}
 export const SLOTS_CUSTOM = [
     'reminder_name',
     'new_reminder_name',

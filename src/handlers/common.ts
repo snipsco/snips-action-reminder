@@ -47,7 +47,7 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
     SLOTS_CUSTOM.forEach(slotName => {
         const slotNameCam = camelize.camelize(slotName)
         // Check if it exists in knownSlots
-        if (slotNameCam in options.knownSlots) {
+        if (options.knownSlots && slotNameCam in options.knownSlots) {
             res[slotNameCam] = options.knownSlots[slotNameCam]
             return
         }
@@ -70,7 +70,7 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
     SLOTS_TIME.forEach(slotName => {
         const slotNameCam = camelize.camelize(slotName)
         // Check if it exists in knownSlots
-        if (slotNameCam in options.knownSlots) {
+        if (options.knownSlots && slotNameCam in options.knownSlots) {
             res[slotNameCam] = options.knownSlots[slotNameCam]
             return
         }
@@ -94,13 +94,35 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
                 grain: grain.minute,
                 precision: 'Exact'
             })
+            // Generate a DatetimeRange in case the handler needs
+            if (slotNameCam == 'datetime') {
+                res.datetimeRange = getDatetimeRange({
+                    kind: slotType.instantTime,
+                    value: tmp.value.from,
+                    grain: grain.minute,
+                    precision: 'Exact'
+                })
+            }
         } else if (tmp.value.kind === 'InstantTime') {
             // Complete time 
             res[slotNameCam] = getCompletedDatetime(tmp.value)
+
+            // Generate a DatetimeRange in case the handler needs
+            if (slotNameCam == 'datetime') {
+                res.datetimeRange = getDatetimeRange(tmp.value)
+            }
         }
     })
 
     return res
+}
+
+export const nextOptions = (options: HandlerOptions, slots: ReminderSlots): HandlerOptions => {
+    return {
+        confidenceScore: options.confidenceScore,
+        knownSlots: slots,
+        depth: options.depth - 1
+    }
 }
 
 export const flowContinueTerminate = (flow: FlowContinuation) => {

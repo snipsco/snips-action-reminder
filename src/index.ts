@@ -27,9 +27,7 @@ export default function ({
                         slotDrop: Number(config.confidenceSlotDrop) || CONFIDENCE_DEFAULT.SLOT_DROP,
                         asrDrop: Number(config.confidenceAsrDrop) || CONFIDENCE_DEFAULT.ASR
                     },
-                    knownSlots: {
-                        depth: 3
-                    }
+                    depth: 3
                 }
 
                 const dialog = hermes.dialog()

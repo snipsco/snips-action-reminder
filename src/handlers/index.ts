@@ -7,6 +7,7 @@ import { cancelReminderHandler } from './cancelReminder'
 import { renameReminderHandler } from './renameReminder'
 import { rescheduleReminderHandler } from './rescheduleReminder'
 import { Database } from '../class/Database'
+import { ReminderSlots } from './common';
 
 export type Handler = (
     message: IntentMessage,
@@ -17,7 +18,8 @@ export type Handler = (
 
 export type HandlerOptions = {
     confidenceScore: ConfidenceScore
-    knownSlots?: any
+    knownSlots?: ReminderSlots,
+    depth: number
 } 
 
 type ConfidenceScore = {
