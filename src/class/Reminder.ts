@@ -97,6 +97,7 @@ export class Reminder {
         }
 
         this.__make_alive(hermes)
+        this.save()
     }
 
     /**
