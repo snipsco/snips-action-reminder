@@ -81,7 +81,7 @@
         "datetime": {
             "sameDay": "[today] [at] h m A",
             "nextDay": "[tomorrow] [at] h m A",
-            "nextWeek": "dddd at h m A",
+            "nextWeek": "dddd [at] h m A",
             "sameElse": "[on] MMMM D [at] h m A"
         } 
     }
