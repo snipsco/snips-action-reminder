@@ -1,12 +1,14 @@
 import handlers, { Handler } from './index'
 import { logger, translation, beautify } from '../utils'
-import { ReminderSlots, extractSltos, nextOptions } from './common'
+import { ReminderSlots, extractSltos, nextOptions, flowContinueTerminate } from './common'
 import { ReminderInit, Reminder } from '../class/Reminder'
 import { INTENT_ELICITATION } from '../constants'
-import { IntentMessage, FlowContinuation } from 'hermes-javascript';
+import { IntentMessage, FlowContinuation } from 'hermes-javascript'
 
 export const setReminderHandler: Handler = async function (msg, flow, database, options) {
     logger.debug(`SetReminder, depth: ${options.depth}`)
+
+    flowContinueTerminate(flow)
 
     // Add handler for intentNotRecognized
     flow.notRecognized((_, flow) => {
