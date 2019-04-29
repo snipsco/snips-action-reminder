@@ -7,7 +7,7 @@ import { cancelReminderHandler } from './cancelReminder'
 import { renameReminderHandler } from './renameReminder'
 import { rescheduleReminderHandler } from './rescheduleReminder'
 import { Database } from '../class/Database'
-import { ReminderSlots } from './common';
+import { ReminderSlots } from './common'
 
 export type Handler = (
     message: IntentMessage,
