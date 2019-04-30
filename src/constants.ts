@@ -36,3 +36,4 @@ export const CONFIDENCE_DEFAULT = {
 }
 export const ALARM_CRON_EXP = '*/15 * * * * *'
 export const DIR_DB = '/../../.db_reminders'
+export const MAX_REPEAT = 3

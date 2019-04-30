@@ -11,7 +11,8 @@ import {
 } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../factories'
-import { ALARM_CRON_EXP, DIR_DB } from '../constants'
+import { ALARM_CRON_EXP, DIR_DB, MAX_REPEAT } from '../constants'
+import { EventEmitter } from 'events'
 
 export type ReminderInit = {
     name: string
@@ -48,6 +49,9 @@ export class Reminder {
 
     taskReminder: ScheduledTask | null = null
     taskReminderAlarm: ScheduledTask | null = null
+
+    // Used to count, only repeat for MAX_REPEAT times
+    repeat: number = 0
     
     constructor(obj: ReminderInit | string, hermes: Hermes) {
         if (typeof obj === 'string') {
@@ -109,10 +113,20 @@ export class Reminder {
         const dialogId: string = `snips-assistant:reminder:${this.id}`
 
         const onReminderArrive = () => {
+            // Check if its repeating time reach the limite
+            if (this.repeat < MAX_REPEAT) {
+                this.repeat += 1
+            } else {
+                this.reset()
+                return
+            }
+
+            // Get reminding message
             const message = translation.getRandom('alarm.info.itsTimeTo', {
                 name: this.name
             })
 
+            // Subscribe to the reminding session
             hermes.dialog().sessionFlow(dialogId, (msg, flow) => {
                 flow.continue('snips-assistant:Stop', (msg, flow) => {
                     this.reset()
@@ -128,6 +142,7 @@ export class Reminder {
                 })
             })
 
+            // Start a reminding session which play sound and tts
             hermes.dialog().publish('start_session', {
                 init: {
                     type: Dialog.enums.initType.action,
@@ -137,7 +152,7 @@ export class Reminder {
                         'snips-assistant:Silence',
                         'snips-assistant:AddTime'
                     ],
-                    canBeEnqueued: false,
+                    canBeEnqueued: true,
                     sendIntentNotRecognized: true
                 },
                 customData: dialogId,
@@ -223,6 +238,7 @@ export class Reminder {
 
         if (!this.rawRecurrence) {
             this.setExpired()
+            this.save()
         } else {
             this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
         }
