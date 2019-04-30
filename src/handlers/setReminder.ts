@@ -46,19 +46,19 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     // Require slot: name
     if (!slots.reminderName && (slots.recurrence || slots.datetime)) {
         flow.continue(INTENT_ELICITATION.name, elicitationCallback)
-        return translation.random('setReminder.ask.name')
+        return translation.getRandom('setReminder.ask.name')
     }
 
     // Require slot: datetime or recurrence
     if (slots.reminderName && !(slots.recurrence || slots.datetime)) {
         flow.continue(INTENT_ELICITATION.time, elicitationCallback)
-        return translation.random('setReminder.ask.time')
+        return translation.getRandom('setReminder.ask.time')
     }
 
     // Require slot: name, datetime/recurrence
     if (!slots.reminderName && !(slots.recurrence || slots.datetime)) {
         flow.continue('snips-assistant:SetReminder', elicitationCallback)
-        return translation.random('setReminder.ask.nameAndTime')
+        return translation.getRandom('setReminder.ask.nameAndTime')
     }
 
     throw new Error('setReminderUnhandled')

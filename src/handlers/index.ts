@@ -55,7 +55,7 @@ const handlerWrapper = (handler: Handler): Handler => (
         } catch (error) {
             flow.end()
             logger.error(error)
-            return await translation.errorMessage(error)
+            return await translation.getError(error)
         }
     }
 )

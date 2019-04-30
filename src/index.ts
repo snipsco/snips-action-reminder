@@ -42,7 +42,7 @@ export default function ({
                 resolve(done)
             } catch (error) {
                 // Output initialization errors to stderr and exit
-                const message = await translation.errorMessage(error)
+                const message = await translation.getError(error)
                 logger.error(message)
                 logger.error(error)
                 // Exit

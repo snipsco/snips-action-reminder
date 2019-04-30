@@ -18,7 +18,7 @@ export const getReminderHandler: Handler = async function (msg, flow, database, 
     
     // Get reminders
     const reminders: Reminder[] = database.get({
-        isExpired: false,
+        isExpired: slots.pastReminders ? true : false,
         name: slots.reminderName || undefined,
         datetimeRange: slots.datetimeRange || undefined,
         recurrence: slots.recurrence || undefined
@@ -27,7 +27,7 @@ export const getReminderHandler: Handler = async function (msg, flow, database, 
     // No reminders, no slots
     if (!reminders.length && !Object.keys(slots).length) {
         flow.end()
-        return translation.random('getReminder.info.noReminderFound')
+        return translation.getRandom('getReminder.info.noReminderFound')
     }
 
     // No reminders, slots detected
@@ -35,14 +35,14 @@ export const getReminderHandler: Handler = async function (msg, flow, database, 
         flow.continue('snips-assistant:Yes', (msg, flow) => {
             return handlers.setReminder(msg, flow, database, nextOptions(options, slots))
         })
-        return translation.random('getReminders.info.noSuchRemindersFound') + 
-               translation.random('setReminder.ask.createReminder')
+        return translation.getRandom('getReminders.info.noSuchRemindersFound') + 
+               translation.getRandom('setReminder.ask.createReminder')
     }
 
     // Found reminders by using some of the constrains, no need to continue
     if (reminders.length) {
         flow.end()
-        return
+        return translation.reportGetReminder(reminders, Boolean(slots.pastReminders))
     }
 
     flow.end()

@@ -1,6 +1,6 @@
 import { i18nFactory } from '../factories/i18nFactory'
 
-function random (key: string | string[], opts: {[key: string]: any} = {}): string {
+function getRandom(key: string | string[], opts: {[key: string]: any} = {}): string {
     const i18n = i18nFactory.get()
     const possibleValues = i18n(key, { returnObjects: true, ...opts })
     if(typeof possibleValues === 'string')
@@ -9,18 +9,7 @@ function random (key: string | string[], opts: {[key: string]: any} = {}): strin
     return possibleValues[randomIndex]
 }
 
-function reportSetReminder(reminder: Reminder) {
-    return random('setReminder.info.reminder_SetFor_', {
-        name: reminder.name,
-        time: reminder.rawRecurrence ? 
-              beautify.recurrence(reminder.nextExecution, reminder.rawRecurrence) : 
-              beautify.datetime(reminder.nextExecution)
-    })
-}
-
-export const translation = {
-    // Outputs an error message based on the error object, or a default message if not found.
-    errorMessage: async (error: Error): Promise<string> => {
+async function getError(error: Error) {
         let i18n = i18nFactory.get()
 
         if(!i18n) {
@@ -29,8 +18,7 @@ export const translation = {
         }
 
         if(i18n) {
-            //return i18n([`error.${error.message}`, 'error.unspecific'])
-            return random(`error.${error.message}`)
+            return getRandom(`error.${error.message}`)
         } else {
             return 'Oops, something went wrong.'
         }
