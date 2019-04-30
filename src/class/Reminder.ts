@@ -13,6 +13,7 @@ import { parseExpression } from 'cron-parser'
 import { i18nFactory } from '../factories'
 import { ALARM_CRON_EXP, DIR_DB, MAX_REPEAT } from '../constants'
 import { EventEmitter } from 'events'
+import { localeData } from 'moment';
 
 export type ReminderInit = {
     name: string
@@ -24,10 +25,9 @@ export type ReminderString = {
     id: string
     name: string
     schedule: string
-
     rawDatetime: string
     rawRecurrence?: string
-
+    nextExecution?: string
     isExpired: boolean
 }
 
@@ -45,7 +45,7 @@ export class Reminder {
 
     rawDatetime: Date = new Date()
     rawRecurrence: string | null = null
-    nextExecution: Date = new Date() 
+    nextExecution: Date | null = null 
 
     taskReminder: ScheduledTask | null = null
     taskReminderAlarm: ScheduledTask | null = null
@@ -73,13 +73,23 @@ export class Reminder {
         this.schedule = loadData.schedule
         this.isExpired = loadData.isExpired
 
-        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+        //this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+        this.nextExecution = loadData.nextExecution ? new Date(loadData.nextExecution) : null
 
-        if (this.nextExecution.getTime() < Date.now()) {
-            this.isExpired = true
+        if (this.isExpired) {
+            return
         }
 
-        if (!this.isExpired) {
+        if (!this.nextExecution) {
+            return
+        }
+
+        if (!this.rawRecurrence && this.nextExecution.getTime() < Date.now()) {
+            this.setExpired()
+            this.save()
+            return
+        } else if (this.rawRecurrence && this.nextExecution.getTime() < Date.now()) {
+            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
             this.__make_alive(hermes)
         }
     } 
