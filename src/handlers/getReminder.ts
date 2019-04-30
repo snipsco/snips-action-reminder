@@ -4,10 +4,8 @@ import { flowContinueTerminate, nextOptions, ReminderSlots, extractSltos } from 
 import { Reminder } from '../class/Reminder';
 
 export const getReminderHandler: Handler = async function (msg, flow, database, options) {
-    logger.debug(`${msg.intent.intentName}, depth: ${options.depth}`)
-
-    flowContinueTerminate(flow)
-
+    logger.debug(`${msg.intent.intentName} [${options.depth}]`)
+    
     // Add handler for intentNotRecognized
     flow.notRecognized((_, flow) => {
         return handlers.setReminder(msg, flow, database, nextOptions(options, slots))
@@ -23,7 +21,7 @@ export const getReminderHandler: Handler = async function (msg, flow, database, 
         datetimeRange: slots.datetimeRange || undefined,
         recurrence: slots.recurrence || undefined
     })
-    logger.debug('found: ', reminders)
+
     // No reminders, no slots
     if (!reminders.length && !Object.keys(slots).length) {
         flow.end()
@@ -32,10 +30,18 @@ export const getReminderHandler: Handler = async function (msg, flow, database, 
 
     // No reminders, slots detected
     if (!reminders.length && Object.keys(slots).length) {
-        flow.continue('snips-assistant:Yes', (msg, flow) => {
+        flow.continue(`${options.intentPrefix}Yes`, (msg, flow) => {
             return handlers.setReminder(msg, flow, database, nextOptions(options, slots))
         })
-        return translation.getRandom('getReminders.info.noSuchRemindersFound') + 
+        flow.continue(`${options.intentPrefix}No`, (msg, flow) => {
+            flow.end()
+            return
+        })
+        flowContinueTerminate(flow)
+        flow.notRecognized((_, flow) => {
+            return handlers.getReminder(msg, flow, database, nextOptions(options, slots))
+        })
+        return translation.getRandom('getReminder.info.noSuchRemindersFound') + 
                translation.getRandom('setReminder.ask.createReminder')
     }
 

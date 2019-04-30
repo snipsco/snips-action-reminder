@@ -108,6 +108,7 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
 export const nextOptions = (options: HandlerOptions, slots: ReminderSlots): HandlerOptions => {
     return {
         confidenceScore: options.confidenceScore,
+        intentPrefix: options.intentPrefix,
         knownSlots: slots,
         depth: options.depth - 1
     }

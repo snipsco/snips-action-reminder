@@ -18,7 +18,8 @@ export type Handler = (
 
 export type HandlerOptions = {
     confidenceScore: ConfidenceScore
-    knownSlots?: ReminderSlots,
+    knownSlots?: ReminderSlots
+    intentPrefix: string
     depth: number
 } 
 

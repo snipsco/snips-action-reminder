@@ -27,6 +27,7 @@ export default function ({
                         slotDrop: Number(config.confidenceSlotDrop) || CONFIDENCE_DEFAULT.SLOT_DROP,
                         asrDrop: Number(config.confidenceAsrDrop) || CONFIDENCE_DEFAULT.ASR
                     },
+                    intentPrefix: config.intentPrefix || INTENT_PREFIX_DEFAULT,
                     depth: 3
                 }
 
