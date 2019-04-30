@@ -60,18 +60,35 @@
                 "Would you like to create one? "
             ],
             "name": [
-                "How should I name this reminder? "
+                "How should I name this reminder? ",
+                "What you want it for? "
             ],
             "time": [
-                "When should I set this reminder for? "
+                "When should I set this reminder for? ",
+                "When should I reminde you? ",
+                "What time do you want it for? "
             ],
             "nameAndTime": [
-                "When should I set this reminder and how should I name it? "
+                "When should I set this reminder and how should I name it? ",
+                "How should I set this reminder"
             ]
         },
         "info": {
             "reminder_SetFor_": [
                 "Okay, reminder: {{ name }} is set for {{ time }} "
+            ]
+        }
+    },
+    "getReminder": {
+        "info": {
+            "noReminderFound": [
+                "Seems like you have no reminder set for the monment. "
+            ],
+            "noSuchRemindersFound": [
+                "Seems like you have no such reminder set for the monment. "
+            ],
+            "reminder_SetFor_": [
+                "{{ name }}, set for {{ time }}; "
             ]
         }
     },
@@ -89,7 +106,16 @@
             "sameDay": "[today] [at] h m A",
             "nextDay": "[tomorrow] [at] h m A",
             "nextWeek": "dddd [at] h m A",
-            "sameElse": "[on] MMMM D [at] h m A"
-        } 
+            "sameElse": "MMMM D [at] h m A"
+        },
+        "daterange": {
+            "weekEnd": "this week-end",
+            "nextWeek": "next week",
+            "fromTo": "from {{ dateMin }} to {{ dateMax }}"
+        },
+        "recurrence": {
+            "every": "[every] dddd [at] h m A",
+            "daily": "[every day at] h m A"
+        }
     }
 }
