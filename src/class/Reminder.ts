@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
-import { getScheduleString, logger } from '../utils'
+import { getScheduleString, logger, translation } from '../utils'
 import { 
     InstantTimeSlotValue, 
     Hermes, 
@@ -109,15 +109,29 @@ export class Reminder {
         const dialogId: string = `snips-assistant:reminder:${this.id}`
 
         const onReminderArrive = () => {
-            const i18n = i18nFactory.get()
-            const message = i18n('alarm.info.itsTimeTo', {
+            const message = translation.getRandom('alarm.info.itsTimeTo', {
                 name: this.name
+            })
+
+            hermes.dialog().sessionFlow(dialogId, (msg, flow) => {
+                flow.continue('snips-assistant:Stop', (msg, flow) => {
+                    this.reset()
+                    flow.end()
+                })
+                flow.continue('snips-assistant:Silence', (msg, flow) => {
+                    this.reset()
+                    flow.end()
+                })
+                flow.continue('snips-assistant:AddTime', (msg, flow) => {
+                    this.reset()
+                    flow.end()
+                })
             })
 
             hermes.dialog().publish('start_session', {
                 init: {
                     type: Dialog.enums.initType.action,
-                    text: message,
+                    text: '[[sound:ding.ding]] ' + message,
                     intentFilter: [
                         'snips-assistant:Stop',
                         'snips-assistant:Silence',
@@ -130,19 +144,6 @@ export class Reminder {
                 siteId: 'default'
             })
         }
-
-        hermes.dialog().sessionFlow(dialogId, (msg, flow) => {
-            flow.continue('snips-assistant:Stop', (msg, flow) => {
-                flow.end()
-            })
-            flow.continue('snips-assistant:Silence', (msg, flow) => {
-                flow.end()
-            })
-            flow.continue('snips-assistant:AddTime', (msg, flow) => {
-                flow.end()
-            })
-            //flow.notRecognized()
-        })
 
         this.taskReminderAlarm = cron.schedule(ALARM_CRON_EXP, onReminderArrive, { scheduled: false })
         this.taskReminder = cron.schedule(this.schedule, () => {
@@ -214,17 +215,17 @@ export class Reminder {
      * Reset alarm, update nextExecution
      */
     reset() {
-        if (!this.rawRecurrence) {
-            this.setExpired()
-        }
-
         if (this.taskReminderAlarm) {
             this.taskReminderAlarm.stop()
         } else {
             throw new Error('noTaskReminderAlarmFound')
         }
-        
-        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+
+        if (!this.rawRecurrence) {
+            this.setExpired()
+        } else {
+            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+        }
     }
 
     /**

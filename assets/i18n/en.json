@@ -47,6 +47,13 @@
             "Sorry I didn't quite get that."
         ]
     },
+    "alarm": {
+        "info": {
+            "itsTimeTo": [
+                "It's time for your reminder: {{ name }}. "
+            ]
+        }
+    },
     "setReminder": {
         "ask": {
             "createReminder": [

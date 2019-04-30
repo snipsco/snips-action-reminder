@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import { withHermes } from 'hermes-javascript'
 import bootstrap from './bootstrap'
 import { configFactory } from './factories'
@@ -5,6 +7,8 @@ import { translation, logger, camelize } from './utils'
 import { CONFIDENCE_DEFAULT, INTENT_PREFIX_DEFAULT, INTENTS_MAIN } from './constants'
 import handlers, { HandlerOptions } from './handlers'
 import { Database } from './class/Database'
+
+const alarmWav = fs.readFileSync(path.resolve(__dirname, '../assets/dingding.wav'))
 
 export default function ({
     hermesOptions = {},
@@ -15,8 +19,14 @@ export default function ({
             try {
                 await bootstrap(bootstrapOptions)
                 
-                const config = configFactory.get()
+                // Publish the alarm sound.
+                hermes.tts().publish('register_sound', {
+                    soundId: 'ding.ding',
+                    wavSound: alarmWav.toString('base64'),
+                    wavSoundLen: alarmWav.length
+                })
 
+                const config = configFactory.get()
                 const database = new Database(hermes)
 
                 // Construct handler options
