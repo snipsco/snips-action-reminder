@@ -3,21 +3,11 @@
         "mqtt": [
             "Sorry, there was a communication error with the Snips platform."
         ],
-        "mpdConnectionFaild": [
-            "Sorry, mpd connection faild."
-        ],
-        "mpdConnectionEnd": [
-            "Sorry, mpd connection lost."
-        ],
-        "config": [
-            "Sorry, there was an error with your config file."
-        ],
-        "locale": [
-            "Sorry, there was an error with your language settings."
-        ],
-        "unspecific": [
-            "Oops, something went wrong."
-        ],
+        "mpdConnectionFaild": ["Sorry, mpd connection faild."],
+        "mpdConnectionEnd": ["Sorry, mpd connection lost."],
+        "config": ["Sorry, there was an error with your config file."],
+        "locale": ["Sorry, there was an error with your language settings."],
+        "unspecific": ["Oops, something went wrong."],
         "asrError": [
             "I don't think I understood.",
             "I'm not sure I understood.",
@@ -43,22 +33,16 @@
             "Sorry I didn't quite get that, Feel free to try again when you are ready.",
             "Sorry I didn't quite get that."
         ],
-        "nluSlotErrorBad": [
-            "Sorry I didn't quite get that."
-        ]
+        "nluSlotErrorBad": ["Sorry I didn't quite get that."]
     },
     "alarm": {
         "info": {
-            "itsTimeTo": [
-                "It's time for your reminder: {{ name }}. "
-            ]
+            "itsTimeTo": ["It's time for your reminder: {{ name }}. "]
         }
     },
     "setReminder": {
         "ask": {
-            "createReminder": [
-                "Would you like to create one? "
-            ],
+            "createReminder": ["Would you like to create one? "],
             "name": [
                 "How should I name this reminder? ",
                 "What you want it for? "
@@ -87,9 +71,15 @@
             "noSuchRemindersFound": [
                 "Seems like you have no such reminder set for the monment. "
             ],
-            "reminder_SetFor_": [
-                "{{ name }}, set for {{ time }}; "
-            ]
+            "reminder_SetFor_": ["{{ name }}, set for {{ time }}; "]
+        }
+    },
+    "cancelReminder": {
+        "info": {
+            "confirm": "Okay, I'v cancelled it. "
+        },
+        "ask": {
+            "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them? "
         }
     },
     "moment": {
