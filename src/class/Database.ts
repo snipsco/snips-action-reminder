@@ -13,10 +13,10 @@ export type GetReminderObj = {
 }
 
 function isDateInRange(datetimeRange: DatetimeRange, datetimeObj: Date) {
-    return (
-        (datetimeObj.getTime() >= datetimeRange.min) && 
-        (datetimeObj.getTime() < datetimeRange.max)
-    ) ? true : false
+    return datetimeObj.getTime() >= datetimeRange.min &&
+        datetimeObj.getTime() < datetimeRange.max
+        ? true
+        : false
 }
 
 export class Database {
@@ -35,7 +35,9 @@ export class Database {
      * Load from file system
      */
     loadSavedReminders() {
-        const savedIds: string[] = fs.readdirSync(path.resolve(__dirname + DIR_DB))
+        const savedIds: string[] = fs.readdirSync(
+            path.resolve(__dirname + DIR_DB)
+        )
         logger.info(`Found ${savedIds.length} saved reminders!`)
 
         savedIds.forEach(id => {
@@ -44,11 +46,14 @@ export class Database {
 
             const reminderRawString = fs.readFileSync(pathAbs).toString()
 
-            const reminder = new Reminder(reminderRawString, this.__hermesClient)
+            const reminder = new Reminder(
+                reminderRawString,
+                this.__hermesClient
+            )
             this.__reminders.push(reminder)
         })
+        this.deleteAllExpired()
     }
-
 
     add(reminderInitObj: ReminderInit): Reminder {
         const reminder = new Reminder(reminderInitObj, this.__hermesClient)
@@ -58,24 +63,31 @@ export class Database {
 
     /**
      * Get reminders
-     * 
+     *
      * @param obj
      */
     get(obj: GetReminderObj) {
-        return this.__reminders.filter( reminder =>
-            (!obj.name || obj.name === reminder.name) &&
-            (!obj.datetimeRange || isDateInRange(obj.datetimeRange, reminder.rawDatetime)) &&
-            (!obj.recurrence || obj.recurrence === reminder.rawRecurrence) &&
-            (obj.isExpired === reminder.isExpired)
-        ).sort( (a, b) => {
-            return (a.rawDatetime.getTime() - b.rawDatetime.getTime())
-        })
+        return this.__reminders
+            .filter(
+                reminder =>
+                    (!obj.name || obj.name === reminder.name) &&
+                    (!obj.datetimeRange ||
+                        isDateInRange(
+                            obj.datetimeRange,
+                            reminder.rawDatetime
+                        )) &&
+                    (!obj.recurrence ||
+                        obj.recurrence === reminder.rawRecurrence)
+            )
+            .sort((a, b) => {
+                return a.rawDatetime.getTime() - b.rawDatetime.getTime()
+            })
     }
 
     /**
      * Get a reminder by its id
-     * 
-     * @param id 
+     *
+     * @param id
      */
     getById(id: string): Reminder {
         const res = this.__reminders.filter(reminder => reminder.id === id)
@@ -87,8 +99,8 @@ export class Database {
 
     /**
      * Delete an exist reminder from database
-     * 
-     * @param id 
+     *
+     * @param id
      */
     deleteById(id: string) {
         const reminder = this.getById(id)
@@ -112,11 +124,23 @@ export class Database {
     }
 
     /**
+     * Delete all the expired reminders
+     */
+    deleteAllExpired() {
+        this.__reminders.forEach(reminder => {
+            if (reminder.isExpired) {
+                reminder.delete()
+                this.__reminders.splice(this.__reminders.indexOf(reminder), 1)
+            }
+        })
+    }
+
+    /**
      * Disable all the reminders and release memory
      */
     destory() {
         // disable all the reminder (task crons)
-        this.__reminders.forEach( (reminder) => {
+        this.__reminders.forEach(reminder => {
             reminder.destory()
         })
     }

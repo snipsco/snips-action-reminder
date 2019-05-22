@@ -3,17 +3,14 @@ import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
 import { getScheduleString, logger, translation } from '../utils'
-import { 
-    InstantTimeSlotValue, 
-    Hermes, 
-    slotType, 
+import {
+    InstantTimeSlotValue,
+    Hermes,
+    slotType,
     Dialog
 } from 'hermes-javascript'
 import { parseExpression } from 'cron-parser'
-import { i18nFactory } from '../factories'
 import { ALARM_CRON_EXP, DIR_DB, MAX_REPEAT } from '../constants'
-import { EventEmitter } from 'events'
-import { localeData } from 'moment';
 
 export type ReminderInit = {
     name: string
@@ -33,9 +30,9 @@ export type ReminderString = {
 
 /**
  * Reminder
- * 
+ *
  * @exception {pastReminderDatetime}
- * @exception {noTaskReminderAlarmFound} 
+ * @exception {noTaskReminderAlarmFound}
  */
 export class Reminder {
     id: string = ''
@@ -45,25 +42,25 @@ export class Reminder {
 
     rawDatetime: Date = new Date()
     rawRecurrence: string | null = null
-    nextExecution: Date | null = null 
+    nextExecution: Date | null = null
 
     taskReminder: ScheduledTask | null = null
     taskReminderAlarm: ScheduledTask | null = null
 
     // Used to count, only repeat for MAX_REPEAT times
     repeat: number = 0
-    
+
     constructor(obj: ReminderInit | string, hermes: Hermes) {
         if (typeof obj === 'string') {
-            this.__constructorLoad(obj, hermes)
+            this.constructorLoad(obj, hermes)
         } else if (typeof obj === 'object') {
-            this.__constructorCreate(obj, hermes)
+            this.constructorCreate(obj, hermes)
         }
     }
 
-    __constructorLoad(rawString: string, hermes: Hermes) {
+    private constructorLoad(rawString: string, hermes: Hermes) {
         const loadData: ReminderString = JSON.parse(rawString)
-        
+
         this.id = loadData.id
         this.name = loadData.name
 
@@ -74,7 +71,9 @@ export class Reminder {
         this.isExpired = loadData.isExpired
 
         //this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
-        this.nextExecution = loadData.nextExecution ? new Date(loadData.nextExecution) : null
+        this.nextExecution = loadData.nextExecution
+            ? new Date(loadData.nextExecution)
+            : null
 
         if (this.isExpired) {
             return
@@ -88,13 +87,20 @@ export class Reminder {
             this.setExpired()
             this.save()
             return
-        } else if (this.rawRecurrence && this.nextExecution.getTime() < Date.now()) {
-            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
-            this.__make_alive(hermes)
+        } else if (
+            this.rawRecurrence &&
+            this.nextExecution.getTime() < Date.now()
+        ) {
+            this.nextExecution = new Date(
+                parseExpression(this.schedule)
+                    .next()
+                    .toString()
+            )
+            this.make_alive(hermes)
         }
-    } 
+    }
 
-    __constructorCreate(initData: ReminderInit, hermes: Hermes) {
+    private constructorCreate(initData: ReminderInit, hermes: Hermes) {
         this.id = timestamp('YYYYMMDD-HHmmss-ms')
         this.name = initData.name
 
@@ -104,22 +110,26 @@ export class Reminder {
         this.schedule = getScheduleString(this.rawDatetime, this.rawRecurrence)
         this.isExpired = false
 
-        this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+        this.nextExecution = new Date(
+            parseExpression(this.schedule)
+                .next()
+                .toString()
+        )
 
         if (this.nextExecution.getTime() < Date.now() + 15000) {
             throw new Error('pastReminderDatetime')
         }
 
-        this.__make_alive(hermes)
+        this.make_alive(hermes)
         this.save()
     }
 
     /**
      * Create and start cron task
-     * 
-     * @param hermes 
+     *
+     * @param hermes
      */
-    __make_alive(hermes: Hermes) {
+    private make_alive(hermes: Hermes) {
         const dialogId: string = `snips-assistant:reminder:${this.id}`
 
         const onReminderArrive = () => {
@@ -137,16 +147,12 @@ export class Reminder {
             })
 
             // Subscribe to the reminding session
-            hermes.dialog().sessionFlow(dialogId, (msg, flow) => {
-                flow.continue('snips-assistant:Stop', (msg, flow) => {
+            hermes.dialog().sessionFlow(dialogId, (_, flow) => {
+                flow.continue('snips-assistant:Cancel', (_, flow) => {
                     this.reset()
                     flow.end()
                 })
-                flow.continue('snips-assistant:Silence', (msg, flow) => {
-                    this.reset()
-                    flow.end()
-                })
-                flow.continue('snips-assistant:AddTime', (msg, flow) => {
+                flow.continue('snips-assistant:StopSilence', (_, flow) => {
                     this.reset()
                     flow.end()
                 })
@@ -158,9 +164,8 @@ export class Reminder {
                     type: Dialog.enums.initType.action,
                     text: '[[sound:ding.ding]] ' + message,
                     intentFilter: [
-                        'snips-assistant:Stop',
-                        'snips-assistant:Silence',
-                        'snips-assistant:AddTime'
+                        'snips-assistant:Cancel',
+                        'snips-assistant:StopSilence'
                     ],
                     canBeEnqueued: true,
                     sendIntentNotRecognized: true
@@ -170,7 +175,11 @@ export class Reminder {
             })
         }
 
-        this.taskReminderAlarm = cron.schedule(ALARM_CRON_EXP, onReminderArrive, { scheduled: false })
+        this.taskReminderAlarm = cron.schedule(
+            ALARM_CRON_EXP,
+            onReminderArrive,
+            { scheduled: false }
+        )
         this.taskReminder = cron.schedule(this.schedule, () => {
             if (this.taskReminderAlarm) {
                 this.taskReminderAlarm.start()
@@ -199,12 +208,17 @@ export class Reminder {
      * Save reminder info to fs
      */
     save() {
-        fs.writeFile(path.resolve(__dirname + DIR_DB, `${this.id}.json`), this.toString(), 'utf8', (err) => {
-            if (err) {
-                throw new Error(err.message)
+        fs.writeFile(
+            path.resolve(__dirname + DIR_DB, `${this.id}.json`),
+            this.toString(),
+            'utf8',
+            err => {
+                if (err) {
+                    throw new Error(err.message)
+                }
+                logger.info(`Saved reminder: ${this.name} - ${this.id}`)
             }
-            logger.info(`Saved reminder: ${this.name} - ${this.id}`)
-        })
+        )
     }
 
     /**
@@ -212,8 +226,8 @@ export class Reminder {
      */
     delete() {
         this.destory()
-        
-        fs.unlink(path.resolve(__dirname + DIR_DB, `${this.id}.json`), (err) => {
+
+        fs.unlink(path.resolve(__dirname + DIR_DB, `${this.id}.json`), err => {
             if (err) {
                 throw new Error(err.message)
             }
@@ -250,7 +264,11 @@ export class Reminder {
             this.setExpired()
             this.save()
         } else {
-            this.nextExecution = new Date(parseExpression(this.schedule).next().toString())
+            this.nextExecution = new Date(
+                parseExpression(this.schedule)
+                    .next()
+                    .toString()
+            )
         }
     }
 
@@ -278,7 +296,7 @@ export class Reminder {
     }
 
     reschedule(
-        newDatetimeSnips?: InstantTimeSlotValue<slotType.instantTime>, 
+        newDatetimeSnips?: InstantTimeSlotValue<slotType.instantTime>,
         newRecurrence?: string
     ) {
         if (!newDatetimeSnips && !newRecurrence) {

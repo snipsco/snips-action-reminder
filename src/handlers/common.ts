@@ -1,6 +1,19 @@
-import { logger, message, camelize, getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
+import {
+    logger,
+    message,
+    camelize,
+    getCompletedDatetime,
+    DatetimeRange,
+    getDatetimeRange
+} from '../utils'
 import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
-import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript'
+import {
+    IntentMessage,
+    NluSlot,
+    slotType,
+    grain,
+    FlowContinuation
+} from 'hermes-javascript'
 import { HandlerOptions, Handler } from '.'
 
 export type ReminderSlots = {
@@ -19,11 +32,14 @@ export type ReminderSlots = {
 
 /**
  * All-in-one slots parser for Reminder App
- * 
- * @param msg 
- * @param options 
+ *
+ * @param msg
+ * @param options
  */
-export const extractSltos = function(msg: IntentMessage, options: HandlerOptions): ReminderSlots {
+export const extractSltos = function(
+    msg: IntentMessage,
+    options: HandlerOptions
+): ReminderSlots {
     const res: ReminderSlots = {}
     // Only extract custom type slot
     SLOTS_CUSTOM.forEach(slotName => {
@@ -33,12 +49,16 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
             res[slotNameCam] = options.knownSlots[slotNameCam]
             return
         }
-        
+
         // Get slot object from message
-        const tmp: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, slotName, {
-            threshold: options.confidenceScore.slotDrop,
-            onlyMostConfident: true
-        })
+        const tmp: NluSlot<slotType.custom> | null = message.getSlotsByName(
+            msg,
+            slotName,
+            {
+                threshold: options.confidenceScore.slotDrop,
+                onlyMostConfident: true
+            }
+        )
 
         // Not found
         if (!tmp) {
@@ -56,9 +76,11 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
             res[slotNameCam] = options.knownSlots[slotNameCam]
             return
         }
-        
+
         // Get slot object from message
-        const tmp: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, slotName, {
+        const tmp: NluSlot<
+            slotType.instantTime | slotType.timeInterval
+        > | null = message.getSlotsByName(msg, slotName, {
             threshold: options.confidenceScore.slotDrop,
             onlyMostConfident: true
         })
@@ -86,7 +108,7 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
                 })
             }
         } else if (tmp.value.kind === 'InstantTime') {
-            // Complete time 
+            // Complete time
             res[slotNameCam] = getCompletedDatetime(tmp.value)
 
             // Generate a DatetimeRange in case the handler needs
@@ -101,17 +123,15 @@ export const extractSltos = function(msg: IntentMessage, options: HandlerOptions
 
 /**
  * Construct a new handler option for next recursion call
- * 
- * @param options 
- * @param slots 
+ *
+ * @param options
+ * @param slots
  */
-export const nextOptions = (options: HandlerOptions, slots: ReminderSlots): HandlerOptions => {
-    return {
-        confidenceScore: options.confidenceScore,
-        intentPrefix: options.intentPrefix,
-        knownSlots: slots,
-        depth: options.depth - 1
-    }
+export const nextOptions = (
+    options: HandlerOptions,
+    slots: ReminderSlots
+): HandlerOptions => {
+    return { ...options, knownSlots: slots, depth: options.depth - 1 }
 }
 
 export const flowContinueTerminate = (flow: FlowContinuation) => {
