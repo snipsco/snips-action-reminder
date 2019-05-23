@@ -1,10 +1,24 @@
 #!/bin/sh
 
-npm install
+# File names definition
+CONFIG_FILE_DEFAULT="config.ini.default"
+CONFIG_FILE="config.ini"
+DB=".db_reminders"
 
-if [ ! -e "./config.ini" ]
+# Install dependencies and compile typescript
+npm install && npm run build
+
+# Check user configuration file
+if [ ! -e ${CONFIG_FILE} ]
 then
-    cp config.ini.default config.ini
+    cp ${CONFIG_FILE_DEFAULT} ${CONFIG_FILE}
 fi
 
-mkdir reminder_records
+# Check reminder database folder
+if [ ! -e ${DB} ]
+then
+    echo "created db folder"
+    mkdir ${DB}
+else
+    echo "found db folder"
+fi
