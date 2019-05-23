@@ -1,7 +1,7 @@
 {
   "name": "snips-action-reminder",
   "version": "0.0.1",
-  "description": "Snips Voice App - Reminder",
+  "description": "Snips action code for the Reminder app",
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run lint && npm run build && npm run test",
