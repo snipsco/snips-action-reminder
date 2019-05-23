@@ -1,5 +1,5 @@
 [global]
-locale=french
+locale=en
 
 [parameters]
 confidence_intent_standerd=0.5

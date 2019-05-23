@@ -9,9 +9,9 @@ export const camelize = {
      *      set-Pokemon -> setPokemon
      */
     camelize: (string: string): string => {
-        return string.replace(/^([A-Z])|[\s-_](\w)/g, function(match, p1, p2, offset) {
+        return string.replace(/^([A-Z])|[\s-_](\w)/g, function(p1, p2) {
             return p2 ? p2.toUpperCase() : p1.toLowerCase()  
-        });
+        })
     },
     camelizeKeys: (obj: {[ key: string ]: any }) => {
         const clone: {[ key: string ]: any } = {}

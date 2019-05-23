@@ -1,13 +1,7 @@
-import handlers, { Handler } from './index'
-import { logger, translation } from '../utils'
-import {
-    flowContinueTerminate,
-    nextOptions,
-    ReminderSlots,
-    extractSltos
-} from './common'
+import handlers from './index'
+import { flowContinueTerminate, nextOptions, ReminderSlots, extractSlots } from './common'
 import { Reminder } from '../class/Reminder'
-import { i18nFactory } from '../factories'
+import { i18n, logger, Handler } from 'snips-toolkit'
 
 export const cancelReminderHandler: Handler = async function(
     msg,
@@ -16,7 +10,6 @@ export const cancelReminderHandler: Handler = async function(
     options
 ) {
     logger.debug('cancelReminder')
-    const i18n = i18nFactory.get()
     // Add handler for intentNotRecognized
     flow.notRecognized((_, flow) => {
         return handlers.cancelReminder(
@@ -28,7 +21,7 @@ export const cancelReminderHandler: Handler = async function(
     })
 
     // Extract slots
-    const slots: ReminderSlots = extractSltos(msg, options)
+    const slots: ReminderSlots = extractSlots(msg, options)
     logger.debug(slots)
     // Get reminders
     const reminders: Reminder[] = database.get({
@@ -42,7 +35,7 @@ export const cancelReminderHandler: Handler = async function(
     // No reminders, no slots
     if (!reminders.length && !Object.keys(slots).length) {
         flow.end()
-        return translation.getRandom('getReminder.info.noReminderFound')
+        return i18n.randomTranslation('getReminder.info.noReminderFound', {})
     }
 
     // No reminders, slots detected
@@ -55,7 +48,7 @@ export const cancelReminderHandler: Handler = async function(
                 nextOptions(options, slots)
             )
         })
-        flow.continue(`${options.intentPrefix}No`, (msg, flow) => {
+        flow.continue(`${options.intentPrefix}No`, (_, flow) => {
             flow.end()
             return
         })
@@ -69,8 +62,8 @@ export const cancelReminderHandler: Handler = async function(
             )
         })
         return (
-            translation.getRandom('getReminder.info.noSuchRemindersFound') +
-            translation.getRandom('setReminder.ask.createReminder')
+            i18n.randomTranslation('getReminder.info.noSuchRemindersFound', {}) +
+            i18n.randomTranslation('setReminder.ask.createReminder', {})
         )
     }
 
@@ -81,7 +74,7 @@ export const cancelReminderHandler: Handler = async function(
         })
 
         flow.end()
-        return i18n('cancelReminder.info.confirm')
+        return i18n.translate('cancelReminder.info.confirm')
     }
 
     // Cancel all the reminder, need to be confirmed
@@ -91,7 +84,7 @@ export const cancelReminderHandler: Handler = async function(
                 database.deleteById(reminder.id)
             })
             flow.end()
-            return i18n('cancelReminder.info.confirm')
+            return i18n.translate('cancelReminder.info.confirm')
         })
         flow.continue(`${options.intentPrefix}No`, (_, flow) => {
             flow.end()
@@ -106,7 +99,7 @@ export const cancelReminderHandler: Handler = async function(
             )
         })
         const length = reminders.length
-        return i18n('cancelReminder.ask.confirm', {
+        return i18n.translate('cancelReminder.ask.confirm', {
             number: length,
             odd: length > 1 ? 's' : ''
         })

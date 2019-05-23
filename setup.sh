@@ -6,7 +6,7 @@ CONFIG_FILE="config.ini"
 DB=".db_reminders"
 
 # Install dependencies and compile typescript
-npm install && npm run build
+#npm install && npm run build
 
 # Check user configuration file
 if [ ! -e ${CONFIG_FILE} ]

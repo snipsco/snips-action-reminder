@@ -1,11 +1,7 @@
-import handlers, { Handler } from './index'
-import { logger, translation } from '../utils'
-import {
-    flowContinueTerminate,
-    nextOptions,
-    ReminderSlots,
-    extractSltos
-} from './common'
+import handlers from './index'
+import { translation } from '../utils'
+import { logger, i18n, Handler } from 'snips-toolkit'
+import { flowContinueTerminate, nextOptions, ReminderSlots, extractSlots } from './common'
 import { Reminder } from '../class/Reminder'
 
 export const getReminderHandler: Handler = async function(
@@ -27,7 +23,7 @@ export const getReminderHandler: Handler = async function(
     })
 
     // Extract slots
-    const slots: ReminderSlots = extractSltos(msg, options)
+    const slots: ReminderSlots = extractSlots(msg, options)
 
     // Get reminders
     const reminders: Reminder[] = database.get({
@@ -40,7 +36,7 @@ export const getReminderHandler: Handler = async function(
     // No reminders, no slots
     if (!reminders.length && !Object.keys(slots).length) {
         flow.end()
-        return translation.getRandom('getReminder.info.noReminderFound')
+        return i18n.randomTranslation('getReminder.info.noReminderFound', {})
     }
 
     // No reminders, slots detected
@@ -53,7 +49,7 @@ export const getReminderHandler: Handler = async function(
                 nextOptions(options, slots)
             )
         })
-        flow.continue(`${options.intentPrefix}No`, (msg, flow) => {
+        flow.continue(`${options.intentPrefix}No`, (_, flow) => {
             flow.end()
             return
         })
@@ -67,8 +63,8 @@ export const getReminderHandler: Handler = async function(
             )
         })
         return (
-            translation.getRandom('getReminder.info.noSuchRemindersFound') +
-            translation.getRandom('setReminder.ask.createReminder')
+            i18n.randomTranslation('getReminder.info.noSuchRemindersFound', {}) +
+            i18n.randomTranslation('setReminder.ask.createReminder', {})
         )
     }
 
@@ -76,8 +72,8 @@ export const getReminderHandler: Handler = async function(
     if (reminders.length) {
         flow.end()
         return translation.reportGetReminder(
-            reminders,
-            Boolean(slots.pastReminders)
+            reminders
+            //Boolean(slots.pastReminders)
         )
     }
 

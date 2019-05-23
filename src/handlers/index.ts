@@ -1,23 +1,10 @@
-import { translation, logger, message } from '../utils'
-import {
-    FlowContinuation,
-    IntentMessage,
-    FlowActionReturn
-} from 'hermes-javascript'
-
+import { handler, ConfidenceThresholds } from 'snips-toolkit'
 import { setReminderHandler } from './setReminder'
 import { getReminderHandler } from './getReminder'
 import { cancelReminderHandler } from './cancelReminder'
 import { renameReminderHandler } from './renameReminder'
-import { Database } from '../class/Database'
+import { INTENT_PROBABILITY_THRESHOLD, ASR_UTTERANCE_CONFIDENCE_THRESHOLD } from '../constants'
 import { ReminderSlots } from './common'
-
-export type Handler = (
-    message: IntentMessage,
-    flow: FlowContinuation,
-    database: Database,
-    options: HandlerOptions
-) => FlowActionReturn
 
 export type HandlerOptions = {
     confidenceScore: ConfidenceScore
@@ -36,44 +23,15 @@ type ConfidenceScore = {
     asrDrop: number
 }
 
-// Wrap handlers to gracefully capture errors
-const handlerWrapper = (handler: Handler): Handler => async (
-    msg,
-    flow,
-    hermes,
-    options
-) => {
-    //logger.debug('message: %O', msg)
-    try {
-        // Check confidenceScore before call the handler
-        if (msg.intent.confidenceScore < options.confidenceScore.intentDrop) {
-            throw new Error('nluIntentErrorBad')
-        }
-
-        if (
-            msg.intent.confidenceScore < options.confidenceScore.intentStandard
-        ) {
-            throw new Error('nluIntentErrorStanderd')
-        }
-
-        if (message.getAsrConfidence(msg) < options.confidenceScore.asrDrop) {
-            throw new Error('asrError')
-        }
-
-        const tts = await handler(msg, flow, hermes, options)
-
-        return tts
-    } catch (error) {
-        flow.end()
-        logger.error(error)
-        return await translation.getError(error)
-    }
+const thresholds: ConfidenceThresholds = {
+    intent: INTENT_PROBABILITY_THRESHOLD,
+    asr: ASR_UTTERANCE_CONFIDENCE_THRESHOLD
 }
 
 // Add handlers here, and wrap them.
 export default {
-    setReminder: handlerWrapper(setReminderHandler),
-    getReminder: handlerWrapper(getReminderHandler),
-    cancelReminder: handlerWrapper(cancelReminderHandler),
-    renameReminder: handlerWrapper(renameReminderHandler)
+    setReminder: handler.wrap(setReminderHandler, thresholds),
+    getReminder: handler.wrap(getReminderHandler, thresholds),
+    cancelReminder: handler.wrap(cancelReminderHandler, thresholds),
+    renameReminder: handler.wrap(renameReminderHandler, thresholds)
 }

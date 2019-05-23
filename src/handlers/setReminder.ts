@@ -1,9 +1,10 @@
-import handlers, { Handler } from './index'
-import { logger, translation, beautify } from '../utils'
-import { ReminderSlots, extractSltos, nextOptions, flowContinueTerminate } from './common'
+import handlers from './index'
+import { translation } from '../utils'
+import { logger, i18n, Handler } from 'snips-toolkit'
+import { ReminderSlots, extractSlots, nextOptions, flowContinueTerminate } from './common'
 import { ReminderInit, Reminder } from '../class/Reminder'
 import { INTENT_ELICITATION } from '../constants'
-import { IntentMessage, FlowContinuation } from 'hermes-javascript'
+import { IntentMessage, FlowContinuation } from 'hermes-javascript/types'
 
 export const setReminderHandler: Handler = async function (msg, flow, database, options) {
     logger.debug(`${msg.intent.intentName}, depth: ${options.depth}`)
@@ -16,7 +17,7 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     })
 
     // Extract slots
-    const slots: ReminderSlots = extractSltos(msg, options)
+    const slots: ReminderSlots = extractSlots(msg, options)
 
     // Create a new reminder
     if (slots.reminderName && (slots.recurrence || slots.datetime)) {
@@ -46,13 +47,13 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     // Require slot: name
     if (!slots.reminderName && (slots.recurrence || slots.datetime)) {
         flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.name}`, elicitationCallback)
-        return translation.getRandom('setReminder.ask.name')
+        return i18n.randomTranslation('setReminder.ask.name', {})
     }
 
     // Require slot: datetime or recurrence
     if (slots.reminderName && !(slots.recurrence || slots.datetime)) {
         flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.time}`, elicitationCallback)
-        return translation.getRandom('setReminder.ask.time')
+        return i18n.randomTranslation('setReminder.ask.time', {})
     }
 
     // Require slot: name, datetime/recurrence
@@ -60,7 +61,7 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
         flow.continue(msg.intent.intentName, elicitationCallback)
         flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.time}`, elicitationCallback)
         flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.name}`, elicitationCallback)
-        return translation.getRandom('setReminder.ask.nameAndTime')
+        return i18n.randomTranslation('setReminder.ask.nameAndTime', {})
     }
 
     throw new Error('setReminderUnhandled')

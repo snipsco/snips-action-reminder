@@ -2,13 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
-import { getScheduleString, logger, translation } from '../utils'
-import {
-    InstantTimeSlotValue,
-    Hermes,
-    slotType,
-    Dialog
-} from 'hermes-javascript'
+import { getScheduleString } from '../utils'
+import { logger, i18n } from 'snips-toolkit'
+import { Hermes } from 'hermes-javascript'
+import { InstantTimeSlotValue, slotType, Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
 import { ALARM_CRON_EXP, DIR_DB, MAX_REPEAT } from '../constants'
 
@@ -142,7 +139,7 @@ export class Reminder {
             }
 
             // Get reminding message
-            const message = translation.getRandom('alarm.info.itsTimeTo', {
+            const message = i18n.randomTranslation('alarm.info.itsTimeTo', {
                 name: this.name
             })
 
@@ -161,7 +158,7 @@ export class Reminder {
             // Start a reminding session which play sound and tts
             hermes.dialog().publish('start_session', {
                 init: {
-                    type: Dialog.enums.initType.action,
+                    type: Enums.initType.action,
                     text: '[[sound:ding.ding]] ' + message,
                     intentFilter: [
                         'snips-assistant:Cancel',
@@ -289,10 +286,6 @@ export class Reminder {
         }
 
         this.isExpired = true
-    }
-
-    addTime(duration: number) {
-        //reserved
     }
 
     reschedule(

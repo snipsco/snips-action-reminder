@@ -4,14 +4,26 @@
         "node": true,
         "jest/globals": true
     },
-    "extends": "eslint:recommended",
-    "plugins": ["jest"],
+    "parser": "@typescript-eslint/parser",
+    "globals": {
+        "SnipsToolkit": "readonly"
+    },
+    "plugins": [
+        "jest",
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended"
+    ],
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2018,
+        "sourceType": "module"
     },
     "rules": {
-        "no-console": "off",
+        "no-console": "warn",
         "quotes": ["error", "single", { "avoidEscape": true }],
-        "quote-props": ["error", "as-needed"]
+        "quote-props": ["error", "as-needed"],
+        "@typescript-eslint/no-unused-vars": "error",
+        "semi": ["error", "never"]
     }
 }

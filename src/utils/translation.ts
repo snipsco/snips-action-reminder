@@ -1,30 +1,6 @@
-import { i18nFactory } from '../factories/i18nFactory'
-import { Reminder } from '../class/Reminder';
-import { beautify } from '.';
-
-function getRandom(key: string | string[], opts: {[key: string]: any} = {}): string {
-    const i18n = i18nFactory.get()
-    const possibleValues = i18n(key, { returnObjects: true, ...opts })
-    if(typeof possibleValues === 'string')
-        return possibleValues
-    const randomIndex = Math.floor(Math.random() * possibleValues.length)
-    return possibleValues[randomIndex]
-}
-
-async function getError(error: Error) {
-    let i18n = i18nFactory.get()
-
-        if(!i18n) {
-            await i18nFactory.init()
-            i18n = i18nFactory.get()
-        }
-
-        if(i18n) {
-            return getRandom(`error.${error.message}`)
-        } else {
-            return 'Oops, something went wrong.'
-        }
-}
+import { i18n } from 'snips-toolkit'
+import { Reminder } from '../class/Reminder'
+import { beautify } from '.'
 
 /**
  * Return a report tts for found reminders
@@ -46,14 +22,14 @@ async function getError(error: Error) {
  * 
  * @param reminders 
  */
-function reportGetReminder(reminders: Reminder[], isPast: boolean){
+function reportGetReminder(reminders: Reminder[]){
     let message = ''
     for (let i = 0; i < reminders.length; i++) {
         const reminder = reminders[i]
         if (!reminder.nextExecution) {
             throw new Error('invalideExecutionTime')
         }
-        message += translation.getRandom('getReminder.info.reminder_SetFor_', {
+        message += i18n.randomTranslation('getReminder.info.reminder_SetFor_', {
             name: reminder.name,
             time: beautify.datetime(reminder.nextExecution)
         })
@@ -65,7 +41,7 @@ function reportSetReminder(reminder: Reminder) {
     if (!reminder.nextExecution) {
         throw new Error('invalideExecutionTime')
     }
-    return getRandom('setReminder.info.reminder_SetFor_', {
+    return i18n.randomTranslation('setReminder.info.reminder_SetFor_', {
         name: reminder.name,
         time: reminder.rawRecurrence ? 
               beautify.recurrence(reminder.nextExecution, reminder.rawRecurrence) : 
@@ -74,8 +50,6 @@ function reportSetReminder(reminder: Reminder) {
 }
 
 export const translation = {
-    getError,
-    getRandom,
     reportSetReminder,
     reportGetReminder
 }

@@ -1,20 +1,8 @@
-import {
-    logger,
-    message,
-    camelize,
-    getCompletedDatetime,
-    DatetimeRange,
-    getDatetimeRange
-} from '../utils'
+import { camelize, getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
+import { message } from 'snips-toolkit'
 import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
-import {
-    IntentMessage,
-    NluSlot,
-    slotType,
-    grain,
-    FlowContinuation
-} from 'hermes-javascript'
-import { HandlerOptions, Handler } from '.'
+import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript/types'
+import { HandlerOptions } from './index'
 
 export type ReminderSlots = {
     reminderName?: string
@@ -36,7 +24,7 @@ export type ReminderSlots = {
  * @param msg
  * @param options
  */
-export const extractSltos = function(
+export const extractSlots = function(
     msg: IntentMessage,
     options: HandlerOptions
 ): ReminderSlots {

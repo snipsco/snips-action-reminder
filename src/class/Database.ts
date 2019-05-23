@@ -1,6 +1,7 @@
 import { Reminder, ReminderInit } from './Reminder'
 import { DIR_DB } from '../constants'
-import { DatetimeRange, logger } from '../utils'
+import { DatetimeRange } from '../utils'
+import { logger } from 'snips-toolkit'
 import fs from 'fs'
 import path from 'path'
 import { Hermes } from 'hermes-javascript'

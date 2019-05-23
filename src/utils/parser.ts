@@ -1,6 +1,6 @@
 import cron from 'node-cron'
-import { InstantTimeSlotValue, slotType } from 'hermes-javascript'
-import { logger } from './logger';
+import { InstantTimeSlotValue, slotType } from 'hermes-javascript/types'
+import { logger } from 'snips-toolkit'
 
 export type DatetimeRange = {
     min: number

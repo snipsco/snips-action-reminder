@@ -1,11 +1,8 @@
-import handlers, { Handler, HandlerOptions } from './index'
-import { logger } from '../utils'
+import { logger, Handler } from 'snips-toolkit'
 
 export const renameReminderHandler: Handler = async function(
     msg,
-    flow,
-    database,
-    options
+    flow
 ) {
     logger.debug('renameReminder')
     flow.end()
