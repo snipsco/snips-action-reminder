@@ -135,13 +135,10 @@ export const nextOptions = (
 }
 
 export const flowContinueTerminate = (flow: FlowContinuation) => {
-    flow.continue('snips-assistant:Silence', (msg, flow) => {
+    flow.continue('snips-assistant:Cancel', (_, flow) => {
         flow.end()
     })
-    flow.continue('snips-assistant:Cancel', (msg, flow) => {
-        flow.end()
-    })
-    flow.continue('snips-assistant:Stop', (msg, flow) => {
+    flow.continue('snips-assistant:StopSilence', (_, flow) => {
         flow.end()
     })
 }
