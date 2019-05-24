@@ -7,7 +7,7 @@ import { logger, i18n } from 'snips-toolkit'
 import { Hermes } from 'hermes-javascript'
 import { InstantTimeSlotValue, slotType, Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
-import { ALARM_CRON_EXP, DIR_DB, MAX_REPEAT } from '../constants'
+import { ALARM_CRON_EXP, MAX_REPEAT } from '../constants'
 
 export type ReminderInit = {
     name: string
@@ -206,7 +206,7 @@ export class Reminder {
      */
     save() {
         fs.writeFile(
-            path.resolve(__dirname + DIR_DB, `${this.id}.json`),
+            path.resolve(__dirname + '/../.db', `${this.id}.json`),
             this.toString(),
             'utf8',
             err => {
@@ -224,7 +224,7 @@ export class Reminder {
     delete() {
         this.destory()
 
-        fs.unlink(path.resolve(__dirname + DIR_DB, `${this.id}.json`), err => {
+        fs.unlink(path.resolve(__dirname + '/../.db', `${this.id}.json`), err => {
             if (err) {
                 throw new Error(err.message)
             }
@@ -286,15 +286,5 @@ export class Reminder {
         }
 
         this.isExpired = true
-    }
-
-    reschedule(
-        newDatetimeSnips?: InstantTimeSlotValue<slotType.instantTime>,
-        newRecurrence?: string
-    ) {
-        if (!newDatetimeSnips && !newRecurrence) {
-            throw new Error('noRescheduleTimeFound')
-        }
-        // reserved
     }
 }

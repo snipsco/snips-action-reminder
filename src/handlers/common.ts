@@ -1,5 +1,5 @@
-import { camelize, getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
-import { message } from 'snips-toolkit'
+import { getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
+import { message, camelize } from 'snips-toolkit'
 import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
 import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript/types'
 import { HandlerOptions } from './index'

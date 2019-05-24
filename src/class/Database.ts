@@ -1,5 +1,4 @@
 import { Reminder, ReminderInit } from './Reminder'
-import { DIR_DB } from '../constants'
 import { DatetimeRange } from '../utils'
 import { logger } from 'snips-toolkit'
 import fs from 'fs'
@@ -37,12 +36,12 @@ export class Database {
      */
     loadSavedReminders() {
         const savedIds: string[] = fs.readdirSync(
-            path.resolve(__dirname + DIR_DB)
+            path.resolve(__dirname + '/../.db')
         )
         logger.info(`Found ${savedIds.length} saved reminders!`)
 
         savedIds.forEach(id => {
-            const pathAbs = path.resolve(__dirname + DIR_DB, id)
+            const pathAbs = path.resolve(__dirname + '/../.db', id)
             logger.debug('Reading: ', pathAbs)
 
             const reminderRawString = fs.readFileSync(pathAbs).toString()

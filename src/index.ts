@@ -1,14 +1,16 @@
 import fs from 'fs'
 import path from 'path'
-import { camelize } from './utils'
+//import {  } from './utils'
 import {
-    CONFIDENCE_DEFAULT,
+    INTENT_PROBABILITY_THRESHOLD,
+    SLOT_CONFIDENCE_THRESHOLD,
+    ASR_UTTERANCE_CONFIDENCE_THRESHOLD,
     INTENT_PREFIX_DEFAULT,
     INTENTS_MAIN
 } from './constants'
 import handlers, { HandlerOptions } from './handlers'
 import { Database } from './class/Database'
-import { config, i18n, logger } from 'snips-toolkit'
+import { config, i18n, logger, camelize } from 'snips-toolkit'
 import { Hermes, Done } from 'hermes-javascript'
 
 const alarmWav = fs.readFileSync(
@@ -42,6 +44,12 @@ export default async function ({
         })
 
         const dialog = hermes.dialog()
+
+        const db = __dirname + '/../.db'
+        if (!fs.existsSync(db)){
+            fs.mkdirSync(db)
+        }
+        
         const database = new Database(hermes)
 
         // Construct handler options
@@ -49,16 +57,16 @@ export default async function ({
             confidenceScore: {
                 intentStandard:
                     Number(config.get().confidenceIntentStanderd) ||
-                    CONFIDENCE_DEFAULT.INTENT_STANDARD,
+                    INTENT_PROBABILITY_THRESHOLD,
                 intentDrop:
                     Number(config.get().confidenceIntentDrop) ||
-                    CONFIDENCE_DEFAULT.INTENT_DROP,
+                    0.01,
                 slotDrop:
                     Number(config.get().confidenceSlotDrop) ||
-                    CONFIDENCE_DEFAULT.SLOT_DROP,
+                    SLOT_CONFIDENCE_THRESHOLD,
                 asrDrop:
                     Number(config.get().confidenceAsrDrop) ||
-                    CONFIDENCE_DEFAULT.ASR
+                    ASR_UTTERANCE_CONFIDENCE_THRESHOLD
             },
             intentPrefix: config.get().intentPrefix || INTENT_PREFIX_DEFAULT,
             depth: 3,
