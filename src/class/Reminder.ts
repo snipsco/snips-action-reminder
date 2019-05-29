@@ -5,9 +5,9 @@ import cron, { ScheduledTask } from 'node-cron'
 import { getScheduleString } from '../utils'
 import { logger, i18n } from 'snips-toolkit'
 import { Hermes } from 'hermes-javascript'
-import { InstantTimeSlotValue, slotType, Enums } from 'hermes-javascript/types'
+import { Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
-import { ALARM_CRON_EXP, MAX_REPEAT } from '../constants'
+import { DB_DIR, ALARM_CRON_EXP, MAX_REPEAT } from '../constants'
 
 export type ReminderInit = {
     name: string
@@ -206,7 +206,7 @@ export class Reminder {
      */
     save() {
         fs.writeFile(
-            path.resolve(__dirname + '/../.db', `${this.id}.json`),
+            path.resolve(DB_DIR, `${this.id}.json`),
             this.toString(),
             'utf8',
             err => {
@@ -224,7 +224,7 @@ export class Reminder {
     delete() {
         this.destory()
 
-        fs.unlink(path.resolve(__dirname + '/../.db', `${this.id}.json`), err => {
+        fs.unlink(path.resolve(DB_DIR, `${this.id}.json`), err => {
             if (err) {
                 throw new Error(err.message)
             }

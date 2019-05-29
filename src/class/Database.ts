@@ -4,6 +4,7 @@ import { logger } from 'snips-toolkit'
 import fs from 'fs'
 import path from 'path'
 import { Hermes } from 'hermes-javascript'
+import { DB_DIR } from '../constants'
 
 export type GetReminderObj = {
     name?: string
@@ -36,12 +37,12 @@ export class Database {
      */
     loadSavedReminders() {
         const savedIds: string[] = fs.readdirSync(
-            path.resolve(__dirname + '/../.db')
+            path.resolve(DB_DIR)
         )
         logger.info(`Found ${savedIds.length} saved reminders!`)
 
         savedIds.forEach(id => {
-            const pathAbs = path.resolve(__dirname + '/../.db', id)
+            const pathAbs = path.resolve(DB_DIR, id)
             logger.debug('Reading: ', pathAbs)
 
             const reminderRawString = fs.readFileSync(pathAbs).toString()

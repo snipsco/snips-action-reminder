@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-//import {  } from './utils'
 import {
+    DB_DIR,
+    ASSETS_DIR,
     INTENT_PROBABILITY_THRESHOLD,
     SLOT_CONFIDENCE_THRESHOLD,
     ASR_UTTERANCE_CONFIDENCE_THRESHOLD,
@@ -14,7 +15,7 @@ import { config, i18n, logger, camelize } from 'snips-toolkit'
 import { Hermes, Done } from 'hermes-javascript'
 
 const alarmWav = fs.readFileSync(
-    path.resolve(__dirname, '../assets/dingding.wav')
+    path.resolve(ASSETS_DIR, 'dingding.wav')
 )
 
 // Enables deep printing of objects.
@@ -45,9 +46,8 @@ export default async function ({
 
         const dialog = hermes.dialog()
 
-        const db = __dirname + '/../.db'
-        if (!fs.existsSync(db)){
-            fs.mkdirSync(db)
+        if (!fs.existsSync(DB_DIR)){
+            fs.mkdirSync(DB_DIR)
         }
         
         const database = new Database(hermes)
