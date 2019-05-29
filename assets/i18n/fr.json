@@ -1,14 +1,96 @@
 {
     "error": {
-        "mqtt": "Désolé, une erreur s'est produite lors de la communication avec la plateforme Snips",
-        "config": "Désolé, une erreur s'est produite avec votre fichier de configuration.",
-        "locale": "Désolé, une erreur s'est produite avec vos paramètres de localisation.",
-        "intentNotRecognized": "Désolé, je n'ai pas compris votre requête.",
-        "APIResponse": "Désolé, une erreur s'est produite avec le service distant.",
-        "APIRequest": "Désolé, le service distant est injoignable.",
-        "unspecific": "Oups, quelque chose s'est mal passé."
+        "mqtt": [
+            "Désolé, une erreur s'est produite lors de la communication avec la plateforme Snips."
+        ],
+        "config": ["Désolé, une erreur s'est produite avec votre fichier de configuration."],
+        "locale": ["Désolé, une erreur s'est produite avec vos paramètres de langue."],
+        "unspecific": ["Oups, quelque chose s'est mal passé."],
+        "asrError": [
+            "Désolé, je n'ai pas compris."
+        ],
+        "noSlotValueFound": [
+            "Désolé, je n'ai pas compris."
+        ],
+        "nluIntentErrorStanderd": [
+            "Désolé, je n'ai pas compris."
+        ],
+        "nluIntentErrorBad": [
+            "Désolé, je n'ai pas compris."
+        ],
+        "nluSlotErrorStanderd": [
+            "Désolé, je n'ai pas compris."
+        ],
+        "nluSlotErrorBad": ["Désolé, je n'ai pas compris."]
     },
-    "pokemon": {
-        "info": "Le pokémon {{ name }} pèse {{ weight }} kilos et mesure {{ height }} centimètres."
+    "alarm": {
+        "info": {
+            "itsTimeTo": ["Votre rappel arrive à expiration : {{ name }}. "]
+        }
+    },
+    "setReminder": {
+        "ask": {
+            "createReminder": ["Voulez-vous en créer un ? "],
+            "name": [
+                "Comment voulez-vous nommer votre rappel ?"
+            ],
+            "time": [
+                "Quand voulez-vous programmer ce rappel ?"
+            ],
+            "nameAndTime": [
+                "Comment voulez-vous nommer votre rappel, et quand voulez-vous le programmer ? "
+            ]
+        },
+        "info": {
+            "reminder_SetFor_": [
+
+                "D'accord, le rappel : {{ name }} est programmé pour {{ time }} "
+            ]
+        }
+    },
+    "getReminder": {
+        "info": {
+            "noReminderFound": [
+                "Il semble que vous n'ayez pas de rappel de programmé. "
+            ],
+            "noSuchRemindersFound": [
+                "Il semble que vous n'ayez pas de tel rappel de programmé. "
+            ],
+            "reminder_SetFor_": ["{{ name }}, programmé pour {{ time }}. "]
+        }
+    },
+    "cancelReminder": {
+        "info": {
+            "confirm": "D'accord, je l'ai supprimé. "
+        },
+        "ask": {
+            "confirm": "J'ai trouvé {{ number }} rappel{{odd}}, êtes-vous sûr de vouloir les supprimer ? "
+        }
+    },
+    "moment": {
+        "date": {
+            "sameDay": "[aujourd'hui]",
+            "nextDay": "[demain]",
+            "nextWeek": "dddd",
+            "sameElse": "[le] D MMMM"
+        },
+        "time": {
+            "12H": "H [heures] m"
+        },
+        "datetime": {
+            "sameDay": "[aujourd'hui à] H [heures] m",
+            "nextDay": "[demain à] H [heures] m",
+            "nextWeek": "dddd [à] H [heures] m",
+            "sameElse": "[le] D MMMM [à] H [heures] m"
+        },
+        "daterange": {
+            "weekEnd": "ce week-end",
+            "nextWeek": "la semaine prochaine",
+            "fromTo": "du {{ dateMin}} au {{ dateMax}}"
+        },
+        "recurrence": {
+            "every": "[tous les] dddd [à] H [heures] m",
+            "daily": "[tous les jours à] H [heures] m"
+        }
     }
 }

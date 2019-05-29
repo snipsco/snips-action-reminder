@@ -3,8 +3,6 @@
         "mqtt": [
             "Sorry, there was a communication error with the Snips platform."
         ],
-        "mpdConnectionFaild": ["Sorry, mpd connection faild."],
-        "mpdConnectionEnd": ["Sorry, mpd connection lost."],
         "config": ["Sorry, there was an error with your config file."],
         "locale": ["Sorry, there was an error with your language settings."],
         "unspecific": ["Oops, something went wrong."],
@@ -16,13 +14,13 @@
         "noSlotValueFound": [
             "Sorry I don't know how to help you with that.",
             "I don't think I can help you with that.",
-            "Sorry, I dont't think I understood.",
+            "Sorry, I don't think I understood.",
             "Em, I dont't know that one."
         ],
         "nluIntentErrorStanderd": [
             "Sorry I don't know how to help you with that.",
             "I don't think I can help you with that.",
-            "Sorry, I dont't think I understood.",
+            "Sorry, I don't think I understood.",
             "Em, I dont't know that one."
         ],
         "nluIntentErrorBad": [
@@ -49,7 +47,7 @@
             ],
             "time": [
                 "When should I set this reminder for? ",
-                "When should I reminde you? ",
+                "When should I remind you? ",
                 "What time do you want it for? "
             ],
             "nameAndTime": [
@@ -66,17 +64,17 @@
     "getReminder": {
         "info": {
             "noReminderFound": [
-                "Seems like you have no reminder set for the monment. "
+                "Seems like you have no reminder set for the moment. "
             ],
             "noSuchRemindersFound": [
-                "Seems like you have no such reminder set for the monment. "
+                "Seems like you have no such reminder set for the moment. "
             ],
-            "reminder_SetFor_": ["{{ name }}, set for {{ time }}; "]
+            "reminder_SetFor_": ["{{ name }}, set for {{ time }}. "]
         }
     },
     "cancelReminder": {
         "info": {
-            "confirm": "Okay, I'v cancelled it. "
+            "confirm": "Okay, I cancelled it. "
         },
         "ask": {
             "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them? "
