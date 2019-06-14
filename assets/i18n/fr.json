@@ -25,7 +25,7 @@
     },
     "alarm": {
         "info": {
-            "itsTimeTo": ["Votre rappel arrive à expiration : {{ name }}. "]
+            "itsTimeTo": ["Votre rappel {{ name }} arrive à expiration."]
         }
     },
     "setReminder": {
@@ -51,10 +51,10 @@
     "getReminder": {
         "info": {
             "noReminderFound": [
-                "Il semble que vous n'ayez pas de rappel de programmé. "
+                "Il semble que vous n'ayez pas de rappel programmé. "
             ],
             "noSuchRemindersFound": [
-                "Il semble que vous n'ayez pas de tel rappel de programmé. "
+                "Il semble que ce rappel ne soit pas programmé. "
             ],
             "reminder_SetFor_": ["{{ name }}, programmé pour {{ time }}. "]
         }
