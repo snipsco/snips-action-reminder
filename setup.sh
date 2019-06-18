@@ -3,10 +3,10 @@
 # File names definition
 CONFIG_FILE_DEFAULT="config.ini.default"
 CONFIG_FILE="config.ini"
-DB=".db_reminders"
+DB=".db"
 
 # Install dependencies and compile typescript
-#npm install && npm run build
+npm install && npm run build
 
 # Check user configuration file
 if [ ! -e ${CONFIG_FILE} ]
