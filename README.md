@@ -2,6 +2,8 @@
 
 Snips action code for the Reminder app
 
+[![Build Status](https://travis-ci.org/snipsco/snips-action-reminder.svg?branch=master)](https://travis-ci.org/snipsco/snips-action-reminder)
+
 ## Setup
 
 ```sh
