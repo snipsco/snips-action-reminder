@@ -53,8 +53,8 @@ npm start
 
 **In test mode, i18n output and http calls are mocked.**
 
-- **http**: see `tests/httpMocks/index.js`
-- **i18n**: see `src/factories/i18nFactory.js`
+- **http**: mocks are written in `tests/httpMocks/index.ts`
+- **i18n**: mocked by `snips-toolkit`, see the [documentation](https://github.com/snipsco/snips-javascript-toolkit#i18n).
 
 ## Contributing
 
