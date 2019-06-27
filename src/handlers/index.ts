@@ -9,7 +9,6 @@ import { ReminderSlots } from './common'
 export type HandlerOptions = {
     confidenceScore: ConfidenceScore
     knownSlots?: ReminderSlots
-    intentPrefix: string
     depth: number
     isReturnObj: boolean
 }

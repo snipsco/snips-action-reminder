@@ -1,7 +1,7 @@
 import handlers from './index'
 import { flowContinueTerminate, nextOptions, ReminderSlots, extractSlots } from './common'
 import { Reminder } from '../class/Reminder'
-import { i18n, logger, Handler } from 'snips-toolkit'
+import { i18n, logger, Handler, config } from 'snips-toolkit'
 
 export const cancelReminderHandler: Handler = async function(
     msg,
@@ -40,7 +40,7 @@ export const cancelReminderHandler: Handler = async function(
 
     // No reminders, slots detected
     if (!reminders.length && Object.keys(slots).length) {
-        flow.continue(`${options.intentPrefix}Yes`, (msg, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:Yes`, (msg, flow) => {
             return handlers.setReminder(
                 msg,
                 flow,
@@ -48,7 +48,7 @@ export const cancelReminderHandler: Handler = async function(
                 nextOptions(options, slots)
             )
         })
-        flow.continue(`${options.intentPrefix}No`, (_, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
             return
         })
@@ -79,14 +79,14 @@ export const cancelReminderHandler: Handler = async function(
 
     // Cancel all the reminder, need to be confirmed
     if (reminders.length && Object.keys(slots).length === 0) {
-        flow.continue(`${options.intentPrefix}Yes`, (_, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:Yes`, (_, flow) => {
             reminders.forEach(reminder => {
                 database.deleteById(reminder.id)
             })
             flow.end()
             return i18n.translate('cancelReminder.info.confirm')
         })
-        flow.continue(`${options.intentPrefix}No`, (_, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
         })
         flowContinueTerminate(flow)

@@ -3,7 +3,7 @@ import path from 'path'
 import timestamp from 'time-stamp'
 import cron, { ScheduledTask } from 'node-cron'
 import { getScheduleString } from '../utils'
-import { logger, i18n } from 'snips-toolkit'
+import { logger, i18n, config } from 'snips-toolkit'
 import { Hermes } from 'hermes-javascript'
 import { Enums } from 'hermes-javascript/types'
 import { parseExpression } from 'cron-parser'
@@ -127,7 +127,7 @@ export class Reminder {
      * @param hermes
      */
     private make_alive(hermes: Hermes) {
-        const dialogId: string = `snips-assistant:reminder:${this.id}`
+        const dialogId: string = `${ config.get().assistantPrefix }:reminder:${ this.id }`
 
         const onReminderArrive = () => {
             // Check if its repeating time reach the limite
@@ -145,11 +145,11 @@ export class Reminder {
 
             // Subscribe to the reminding session
             hermes.dialog().sessionFlow(dialogId, (_, flow) => {
-                flow.continue('snips-assistant:Cancel', (_, flow) => {
+                flow.continue(`${ config.get().assistantPrefix }:Cancel`, (_, flow) => {
                     this.reset()
                     flow.end()
                 })
-                flow.continue('snips-assistant:StopSilence', (_, flow) => {
+                flow.continue(`${ config.get().assistantPrefix }:StopSilence`, (_, flow) => {
                     this.reset()
                     flow.end()
                 })
@@ -161,8 +161,8 @@ export class Reminder {
                     type: Enums.initType.action,
                     text: '[[sound:ding.ding]] ' + message,
                     intentFilter: [
-                        'snips-assistant:Cancel',
-                        'snips-assistant:StopSilence'
+                        `${ config.get().assistantPrefix }:Cancel`,
+                        `${ config.get().assistantPrefix }:StopSilence`
                     ],
                     canBeEnqueued: true,
                     sendIntentNotRecognized: true

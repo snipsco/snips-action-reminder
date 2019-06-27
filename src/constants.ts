@@ -1,6 +1,5 @@
 export const ASSETS_DIR = `${process.cwd()}/assets`
 export const DB_DIR = `${process.cwd()}/.db`
-export const INTENT_PREFIX_DEFAULT = 'snips-assistant:'
 export const INTENTS_MAIN = [
     'SetReminder',
     'GetReminder',

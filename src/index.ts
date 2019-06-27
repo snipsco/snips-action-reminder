@@ -6,7 +6,6 @@ import {
     INTENT_PROBABILITY_THRESHOLD,
     SLOT_CONFIDENCE_THRESHOLD,
     ASR_UTTERANCE_CONFIDENCE_THRESHOLD,
-    INTENT_PREFIX_DEFAULT,
     INTENTS_MAIN
 } from './constants'
 import handlers, { HandlerOptions } from './handlers'
@@ -26,7 +25,7 @@ export default async function ({
     done
 }: {
     hermes: Hermes,
-    done: Done 
+    done: Done
 }) {
     try {
         const { name } = require('../package.json')
@@ -49,7 +48,7 @@ export default async function ({
         if (!fs.existsSync(DB_DIR)){
             fs.mkdirSync(DB_DIR)
         }
-        
+
         const database = new Database(hermes)
 
         // Construct handler options
@@ -68,16 +67,13 @@ export default async function ({
                     Number(config.get().confidenceAsrDrop) ||
                     ASR_UTTERANCE_CONFIDENCE_THRESHOLD
             },
-            intentPrefix: config.get().intentPrefix || INTENT_PREFIX_DEFAULT,
             depth: 3,
             isReturnObj: false
         }
 
         // Subscribe to the app intents
         INTENTS_MAIN.forEach(intent => {
-            dialog.flow(
-                `${config.get().intentPrefix ||
-                    INTENT_PREFIX_DEFAULT}${intent}`,
+            dialog.flow(`${ config.get().assistantPrefix }:${ intent }`,
                 (msg, flow) =>
                     handlers[camelize.camelize(intent)](
                         msg,

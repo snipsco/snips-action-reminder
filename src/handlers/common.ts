@@ -1,5 +1,5 @@
 import { getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
-import { message, camelize } from 'snips-toolkit'
+import { message, camelize, config } from 'snips-toolkit'
 import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
 import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript/types'
 import { HandlerOptions } from './index'
@@ -123,10 +123,10 @@ export const nextOptions = (
 }
 
 export const flowContinueTerminate = (flow: FlowContinuation) => {
-    flow.continue('snips-assistant:Cancel', (_, flow) => {
+    flow.continue(`${ config.get().assistantPrefix }:Cancel`, (_, flow) => {
         flow.end()
     })
-    flow.continue('snips-assistant:StopSilence', (_, flow) => {
+    flow.continue(`${ config.get().assistantPrefix }:StopSilence`, (_, flow) => {
         flow.end()
     })
 }

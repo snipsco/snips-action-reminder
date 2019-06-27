@@ -64,10 +64,10 @@
     "getReminder": {
         "info": {
             "noReminderFound": [
-                "Seems like you have no reminder set for the moment. "
+                "It seems that you have no reminder set for the moment. "
             ],
             "noSuchRemindersFound": [
-                "Seems like you have no such reminder set for the moment. "
+                "It seems that you have no such reminder set for the moment. "
             ],
             "reminder_SetFor_": ["{{ name }}, set for {{ time }}. "]
         }

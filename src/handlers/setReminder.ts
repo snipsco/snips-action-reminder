@@ -1,6 +1,6 @@
 import handlers from './index'
 import { translation } from '../utils'
-import { logger, i18n, Handler } from 'snips-toolkit'
+import { logger, i18n, Handler, config } from 'snips-toolkit'
 import { ReminderSlots, extractSlots, nextOptions, flowContinueTerminate } from './common'
 import { ReminderInit, Reminder } from '../class/Reminder'
 import { INTENT_ELICITATION } from '../constants'
@@ -23,15 +23,15 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     if (slots.reminderName && (slots.recurrence || slots.datetime)) {
         logger.debug('createReminder', slots)
         flow.end()
-        
+
         const reminderInitObj: ReminderInit = {
             name: slots.reminderName,
             datetime: slots.datetime || undefined,
-            recurrence: slots.recurrence || undefined 
+            recurrence: slots.recurrence || undefined
         }
-        
+
         const reminder: Reminder = database.add(reminderInitObj)
-        
+
         return translation.reportSetReminder(reminder)
     }
 
@@ -43,24 +43,24 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     const elicitationCallback = (msg: IntentMessage, flow: FlowContinuation) => {
         return handlers.setReminder(msg, flow, database, nextOptions(options, slots))
     }
-    
+
     // Require slot: name
     if (!slots.reminderName && (slots.recurrence || slots.datetime)) {
-        flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.name}`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.name }`, elicitationCallback)
         return i18n.randomTranslation('setReminder.ask.name', {})
     }
 
     // Require slot: datetime or recurrence
     if (slots.reminderName && !(slots.recurrence || slots.datetime)) {
-        flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.time}`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.time }`, elicitationCallback)
         return i18n.randomTranslation('setReminder.ask.time', {})
     }
 
     // Require slot: name, datetime/recurrence
     if (!slots.reminderName && !(slots.recurrence || slots.datetime)) {
         flow.continue(msg.intent.intentName, elicitationCallback)
-        flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.time}`, elicitationCallback)
-        flow.continue(`${options.intentPrefix}${INTENT_ELICITATION.name}`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.time }`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.name }`, elicitationCallback)
         return i18n.randomTranslation('setReminder.ask.nameAndTime', {})
     }
 

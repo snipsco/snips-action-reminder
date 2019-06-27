@@ -1,6 +1,6 @@
 import handlers from './index'
 import { translation } from '../utils'
-import { logger, i18n, Handler } from 'snips-toolkit'
+import { logger, i18n, Handler, config } from 'snips-toolkit'
 import { flowContinueTerminate, nextOptions, ReminderSlots, extractSlots } from './common'
 import { Reminder } from '../class/Reminder'
 
@@ -41,7 +41,7 @@ export const getReminderHandler: Handler = async function(
 
     // No reminders, slots detected
     if (!reminders.length && Object.keys(slots).length) {
-        flow.continue(`${options.intentPrefix}Yes`, (msg, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:Yes`, (msg, flow) => {
             return handlers.setReminder(
                 msg,
                 flow,
@@ -49,7 +49,7 @@ export const getReminderHandler: Handler = async function(
                 nextOptions(options, slots)
             )
         })
-        flow.continue(`${options.intentPrefix}No`, (_, flow) => {
+        flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
             return
         })
