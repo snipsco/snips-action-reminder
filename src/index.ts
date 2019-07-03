@@ -53,20 +53,6 @@ export default async function ({
 
         // Construct handler options
         const handlerOptions: HandlerOptions = {
-            confidenceScore: {
-                intentStandard:
-                    Number(config.get().confidenceIntentStanderd) ||
-                    INTENT_PROBABILITY_THRESHOLD,
-                intentDrop:
-                    Number(config.get().confidenceIntentDrop) ||
-                    0.01,
-                slotDrop:
-                    Number(config.get().confidenceSlotDrop) ||
-                    SLOT_CONFIDENCE_THRESHOLD,
-                asrDrop:
-                    Number(config.get().confidenceAsrDrop) ||
-                    ASR_UTTERANCE_CONFIDENCE_THRESHOLD
-            },
             depth: 3,
             isReturnObj: false
         }

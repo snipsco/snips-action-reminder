@@ -1,6 +1,6 @@
 import { getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
 import { message, camelize, config } from 'snips-toolkit'
-import { SLOTS_CUSTOM, SLOTS_TIME } from '../constants'
+import { SLOTS_CUSTOM, SLOTS_TIME, SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript/types'
 import { HandlerOptions } from './index'
 
@@ -39,14 +39,10 @@ export const extractSlots = function(
         }
 
         // Get slot object from message
-        const tmp: NluSlot<slotType.custom> | null = message.getSlotsByName(
-            msg,
-            slotName,
-            {
-                threshold: options.confidenceScore.slotDrop,
-                onlyMostConfident: true
-            }
-        )
+        const tmp: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, slotName, {
+            threshold: SLOT_CONFIDENCE_THRESHOLD,
+            onlyMostConfident: true
+        })
 
         // Not found
         if (!tmp) {
@@ -66,10 +62,8 @@ export const extractSlots = function(
         }
 
         // Get slot object from message
-        const tmp: NluSlot<
-            slotType.instantTime | slotType.timeInterval
-        > | null = message.getSlotsByName(msg, slotName, {
-            threshold: options.confidenceScore.slotDrop,
+        const tmp: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, slotName, {
+            threshold: SLOT_CONFIDENCE_THRESHOLD,
             onlyMostConfident: true
         })
 

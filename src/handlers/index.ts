@@ -7,19 +7,9 @@ import { INTENT_PROBABILITY_THRESHOLD, ASR_UTTERANCE_CONFIDENCE_THRESHOLD } from
 import { ReminderSlots } from './common'
 
 export type HandlerOptions = {
-    confidenceScore: ConfidenceScore
     knownSlots?: ReminderSlots
     depth: number
     isReturnObj: boolean
-}
-
-type ConfidenceScore = {
-    intentStandard: number
-    intentDrop: number
-    slotStandard?: number
-    slotDrop: number
-    asrStandard?: number
-    asrDrop: number
 }
 
 const thresholds: ConfidenceThresholds = {

@@ -37,7 +37,7 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
 
     // Intent not recognized
     if (options.depth === 0) {
-        throw new Error('nluIntentErrorStanderd')
+        throw new Error('intentNotRecognized')
     }
 
     const elicitationCallback = (msg: IntentMessage, flow: FlowContinuation) => {
