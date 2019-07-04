@@ -4,13 +4,6 @@ import { getReminderHandler } from './getReminder'
 import { cancelReminderHandler } from './cancelReminder'
 import { renameReminderHandler } from './renameReminder'
 import { INTENT_PROBABILITY_THRESHOLD, ASR_UTTERANCE_CONFIDENCE_THRESHOLD } from '../constants'
-import { ReminderSlots } from './common'
-
-export type HandlerOptions = {
-    knownSlots?: ReminderSlots
-    depth: number
-    isReturnObj: boolean
-}
 
 const thresholds: ConfidenceThresholds = {
     intent: INTENT_PROBABILITY_THRESHOLD,

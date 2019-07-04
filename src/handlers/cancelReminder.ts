@@ -1,28 +1,15 @@
 import handlers from './index'
-import { flowContinueTerminate, nextOptions, ReminderSlots, extractSlots } from './common'
+import { flowContinueTerminate, KnownSlots, ReminderSlots, extractSlots } from './common'
 import { Reminder } from '../class/Reminder'
 import { i18n, logger, Handler, config } from 'snips-toolkit'
+import { INTENT_FILTER_PROBABILITY_THRESHOLD } from '../constants'
 
-export const cancelReminderHandler: Handler = async function(
-    msg,
-    flow,
-    database,
-    options
-) {
-    logger.debug('cancelReminder')
-    // Add handler for intentNotRecognized
-    flow.notRecognized((_, flow) => {
-        return handlers.cancelReminder(
-            msg,
-            flow,
-            database,
-            nextOptions(options, slots)
-        )
-    })
+export const cancelReminderHandler: Handler = async function(msg, flow, database, knownSlots: KnownSlots = { depth: 2 }) {
+    logger.info('CancelReminder')
 
     // Extract slots
-    const slots: ReminderSlots = extractSlots(msg, options)
-    logger.debug(slots)
+    const slots: ReminderSlots = extractSlots(msg, knownSlots)
+
     // Get reminders
     const reminders: Reminder[] = database.get({
         name: slots.reminderName || undefined,
@@ -41,26 +28,28 @@ export const cancelReminderHandler: Handler = async function(
     // No reminders, slots detected
     if (!reminders.length && Object.keys(slots).length) {
         flow.continue(`${ config.get().assistantPrefix }:Yes`, (msg, flow) => {
-            return handlers.setReminder(
-                msg,
-                flow,
-                database,
-                nextOptions(options, slots)
-            )
+            return handlers.setReminder(msg, flow, database, (msg, flow) => {
+                if (msg.intent.confidenceScore < INTENT_FILTER_PROBABILITY_THRESHOLD) {
+                    throw new Error('intentNotRecognized')
+                }
+
+                const options: { reminderName?: string, datetime?: Date, recurrence?: string } = {}
+                if (slots.reminderName) options.reminderName = slots.reminderName
+                if (slots.recurrence) options.recurrence = slots.recurrence
+                if (slots.datetime) options.datetime = slots.datetime
+
+                return handlers.setReminder(msg, flow, database, {
+                    ...options,
+                    depth: knownSlots.depth - 1
+                })
+            })
         })
         flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
             return
         })
         flowContinueTerminate(flow)
-        flow.notRecognized((_, flow) => {
-            return handlers.getReminder(
-                msg,
-                flow,
-                database,
-                nextOptions(options, slots)
-            )
-        })
+
         return (
             i18n.translate('getReminder.info.noSuchRemindersFound') +
             ' ' +
@@ -91,14 +80,7 @@ export const cancelReminderHandler: Handler = async function(
             flow.end()
         })
         flowContinueTerminate(flow)
-        flow.notRecognized((_, flow) => {
-            return handlers.cancelReminder(
-                msg,
-                flow,
-                database,
-                nextOptions(options, slots)
-            )
-        })
+
         const length = reminders.length
         return i18n.translate('cancelReminder.ask.confirm', {
             number: length,

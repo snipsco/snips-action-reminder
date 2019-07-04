@@ -2,20 +2,20 @@ import { getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
 import { message, camelize, config } from 'snips-toolkit'
 import { SLOTS_CUSTOM, SLOTS_TIME, SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript/types'
-import { HandlerOptions } from './index'
 
 export type ReminderSlots = {
     reminderName?: string
     newReminderName?: string
-
     datetime?: Date
     datetimeRange?: DatetimeRange
     newDatetime?: Date
-
     recurrence?: string
-
     allReminders?: string
     pastReminders?: string
+}
+
+export type KnownSlots = ReminderSlots & {
+    depth: number
 }
 
 /**
@@ -24,17 +24,14 @@ export type ReminderSlots = {
  * @param msg
  * @param options
  */
-export const extractSlots = function(
-    msg: IntentMessage,
-    options: HandlerOptions
-): ReminderSlots {
+export const extractSlots = function(msg: IntentMessage, knownSlots: KnownSlots): ReminderSlots {
     const res: ReminderSlots = {}
     // Only extract custom type slot
     SLOTS_CUSTOM.forEach(slotName => {
         const slotNameCam = camelize.camelize(slotName)
         // Check if it exists in knownSlots
-        if (options.knownSlots && slotNameCam in options.knownSlots) {
-            res[slotNameCam] = options.knownSlots[slotNameCam]
+        if (knownSlots && slotNameCam in knownSlots) {
+            res[slotNameCam] = knownSlots[slotNameCam]
             return
         }
 
@@ -56,8 +53,8 @@ export const extractSlots = function(
     SLOTS_TIME.forEach(slotName => {
         const slotNameCam = camelize.camelize(slotName)
         // Check if it exists in knownSlots
-        if (options.knownSlots && slotNameCam in options.knownSlots) {
-            res[slotNameCam] = options.knownSlots[slotNameCam]
+        if (knownSlots && slotNameCam in knownSlots) {
+            res[slotNameCam] = knownSlots[slotNameCam]
             return
         }
 
@@ -101,19 +98,6 @@ export const extractSlots = function(
     })
 
     return res
-}
-
-/**
- * Construct a new handler option for next recursion call
- *
- * @param options
- * @param slots
- */
-export const nextOptions = (
-    options: HandlerOptions,
-    slots: ReminderSlots
-): HandlerOptions => {
-    return { ...options, knownSlots: slots, depth: options.depth - 1 }
 }
 
 export const flowContinueTerminate = (flow: FlowContinuation) => {

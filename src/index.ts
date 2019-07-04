@@ -5,10 +5,11 @@ import {
     ASSETS_PATH,
     INTENTS_MAIN
 } from './constants'
-import handlers, { HandlerOptions } from './handlers'
+import handlers from './handlers'
 import { Database } from './class/Database'
 import { config, i18n, logger, camelize } from 'snips-toolkit'
 import { Hermes, Done } from 'hermes-javascript'
+import { beautify } from './utils/beautify'
 
 const alarmWav = fs.readFileSync(
     path.resolve(ASSETS_PATH, 'dingding.wav')
@@ -31,6 +32,7 @@ export default async function ({
         logger.enable('error')
 
         config.init()
+        beautify.init()
         await i18n.init(config.get().locale)
 
         // Publish the alarm sound.
@@ -48,22 +50,10 @@ export default async function ({
 
         const database = new Database(hermes)
 
-        // Construct handler options
-        const handlerOptions: HandlerOptions = {
-            depth: 3,
-            isReturnObj: false
-        }
-
         // Subscribe to the app intents
         INTENTS_MAIN.forEach(intent => {
             dialog.flow(`${ config.get().assistantPrefix }:${ intent }`,
-                (msg, flow) =>
-                    handlers[camelize.camelize(intent)](
-                        msg,
-                        flow,
-                        database,
-                        handlerOptions
-                    )
+                (msg, flow) => handlers[camelize.camelize(intent)](msg, flow, database)
             )
         })
     } catch (error) {

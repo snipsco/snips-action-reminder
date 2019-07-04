@@ -1,6 +1,6 @@
 import { i18n } from 'snips-toolkit'
 import { Reminder } from '../class/Reminder'
-import { beautify } from '.'
+import { beautify } from './index'
 
 /**
  * Return a report tts for found reminders
@@ -23,18 +23,19 @@ import { beautify } from '.'
  * @param reminders
  */
 function reportGetReminder(reminders: Reminder[]){
-    let message = ''
+    let tts = ''
     for (let i = 0; i < reminders.length; i++) {
         const reminder = reminders[i]
         if (!reminder.nextExecution) {
             throw new Error('invalideExecutionTime')
         }
-        message += i18n.translate('getReminder.info.reminder_SetFor_', {
+        tts += i18n.translate('getReminder.info.reminder_SetFor_', {
             name: reminder.name,
             time: beautify.datetime(reminder.nextExecution)
         })
+        tts += ' '
     }
-    return message
+    return tts
 }
 
 function reportSetReminder(reminder: Reminder) {

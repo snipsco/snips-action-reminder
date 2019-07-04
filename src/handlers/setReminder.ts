@@ -1,23 +1,15 @@
 import handlers from './index'
 import { translation } from '../utils'
 import { logger, i18n, Handler, config } from 'snips-toolkit'
-import { ReminderSlots, extractSlots, nextOptions, flowContinueTerminate } from './common'
+import { ReminderSlots, extractSlots, KnownSlots } from './common'
 import { ReminderInit, Reminder } from '../class/Reminder'
-import { INTENT_ELICITATION } from '../constants'
-import { IntentMessage, FlowContinuation } from 'hermes-javascript/types'
+import { INTENT_FILTER_PROBABILITY_THRESHOLD } from '../constants'
 
-export const setReminderHandler: Handler = async function (msg, flow, database, options) {
-    logger.debug(`${msg.intent.intentName}, depth: ${options.depth}`)
-
-    flowContinueTerminate(flow)
-
-    // Add handler for intentNotRecognized
-    flow.notRecognized((_, flow) => {
-        return handlers.setReminder(msg, flow, database, nextOptions(options, slots))
-    })
+export const setReminderHandler: Handler = async function (msg, flow, database, knownSlots: KnownSlots = { depth: 2 }) {
+    logger.info('SetReminder')
 
     // Extract slots
-    const slots: ReminderSlots = extractSlots(msg, options)
+    const slots: ReminderSlots = extractSlots(msg, knownSlots)
 
     // Create a new reminder
     if (slots.reminderName && (slots.recurrence || slots.datetime)) {
@@ -36,33 +28,46 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     }
 
     // Intent not recognized
-    if (options.depth === 0) {
+    if (knownSlots.depth === 0) {
+        flow.end()
         throw new Error('intentNotRecognized')
     }
 
-    const elicitationCallback = (msg: IntentMessage, flow: FlowContinuation) => {
-        return handlers.setReminder(msg, flow, database, nextOptions(options, slots))
+    const elicitationCallback = (msg, flow) => {
+        if (msg.intent.confidenceScore < INTENT_FILTER_PROBABILITY_THRESHOLD) {
+            throw new Error('intentNotRecognized')
+        }
+
+        const options: { reminderName?: string, datetime?: Date, recurrence?: string } = {}
+        if (slots.reminderName) options.reminderName = slots.reminderName
+        if (slots.recurrence) options.recurrence = slots.recurrence
+        if (slots.datetime) options.datetime = slots.datetime
+
+        return handlers.setReminder(msg, flow, database, {
+            ...options,
+            depth: knownSlots.depth - 1
+        })
     }
 
-    // Require slot: name
+    // Required slot: name
     if (!slots.reminderName && (slots.recurrence || slots.datetime)) {
-        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.name }`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:ElicitReminderName`, elicitationCallback)
         return i18n.translate('setReminder.ask.name')
     }
 
-    // Require slot: datetime or recurrence
+    // Required slot: datetime or recurrence
     if (slots.reminderName && !(slots.recurrence || slots.datetime)) {
-        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.time }`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:ElicitReminderTime`, elicitationCallback)
         return i18n.translate('setReminder.ask.time')
     }
 
     // Require slot: name, datetime/recurrence
     if (!slots.reminderName && !(slots.recurrence || slots.datetime)) {
-        flow.continue(msg.intent.intentName, elicitationCallback)
-        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.time }`, elicitationCallback)
-        flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.name }`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:ElicitReminderTime`, elicitationCallback)
+        flow.continue(`${ config.get().assistantPrefix }:ElicitReminderName`, elicitationCallback)
         return i18n.translate('setReminder.ask.nameAndTime')
     }
 
+    flow.end()
     throw new Error('setReminderUnhandled')
 }
