@@ -3,9 +3,6 @@ import path from 'path'
 import {
     DB_DIR,
     ASSETS_DIR,
-    INTENT_PROBABILITY_THRESHOLD,
-    SLOT_CONFIDENCE_THRESHOLD,
-    ASR_UTTERANCE_CONFIDENCE_THRESHOLD,
     INTENTS_MAIN
 } from './constants'
 import handlers, { HandlerOptions } from './handlers'

@@ -8,41 +8,25 @@
     },
     "alarm": {
         "info": {
-            "itsTimeTo": ["It's time for your reminder: {{ name }}. "]
+            "itsTimeTo": "It's time for your reminder: {{ name }}. "
         }
     },
     "setReminder": {
         "ask": {
-            "createReminder": ["Would you like to create one? "],
-            "name": [
-                "How should I name this reminder? ",
-                "What you want it for? "
-            ],
-            "time": [
-                "When should I set this reminder for? ",
-                "When should I remind you? ",
-                "What time do you want it for? "
-            ],
-            "nameAndTime": [
-                "When should I set this reminder and how should I name it? ",
-                "How should I set this reminder"
-            ]
+            "createReminder": "Would you like to create one? ",
+            "name": "How should I name this reminder? ",
+            "time": "When should I remind you? ",
+            "nameAndTime": "When should I set this reminder and how should I name it? "
         },
         "info": {
-            "reminder_SetFor_": [
-                "Okay, reminder: {{ name }} is set for {{ time }} "
-            ]
+            "reminder_SetFor_": "Sure, I set a reminder named {{ name }} for {{ time }} "
         }
     },
     "getReminder": {
         "info": {
-            "noReminderFound": [
-                "It seems that you have no reminder set for the moment. "
-            ],
-            "noSuchRemindersFound": [
-                "It seems that you have no such reminder set for the moment. "
-            ],
-            "reminder_SetFor_": ["{{ name }}, set for {{ time }}. "]
+            "noReminderFound": "It seems that you have no reminder set for the moment. ",
+            "noSuchRemindersFound": "It seems that you have no such reminder set for the moment. ",
+            "reminder_SetFor_": "A reminder named {{ name }} is set for {{ time }}. "
         }
     },
     "cancelReminder": {

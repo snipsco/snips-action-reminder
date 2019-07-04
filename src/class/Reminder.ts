@@ -139,7 +139,7 @@ export class Reminder {
             }
 
             // Get reminding message
-            const message = i18n.randomTranslation('alarm.info.itsTimeTo', {
+            const message = i18n.translate('alarm.info.itsTimeTo', {
                 name: this.name
             })
 

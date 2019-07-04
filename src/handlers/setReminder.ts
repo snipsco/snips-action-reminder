@@ -47,13 +47,13 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
     // Require slot: name
     if (!slots.reminderName && (slots.recurrence || slots.datetime)) {
         flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.name }`, elicitationCallback)
-        return i18n.randomTranslation('setReminder.ask.name', {})
+        return i18n.translate('setReminder.ask.name')
     }
 
     // Require slot: datetime or recurrence
     if (slots.reminderName && !(slots.recurrence || slots.datetime)) {
         flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.time }`, elicitationCallback)
-        return i18n.randomTranslation('setReminder.ask.time', {})
+        return i18n.translate('setReminder.ask.time')
     }
 
     // Require slot: name, datetime/recurrence
@@ -61,7 +61,7 @@ export const setReminderHandler: Handler = async function (msg, flow, database, 
         flow.continue(msg.intent.intentName, elicitationCallback)
         flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.time }`, elicitationCallback)
         flow.continue(`${ config.get().assistantPrefix }:${ INTENT_ELICITATION.name }`, elicitationCallback)
-        return i18n.randomTranslation('setReminder.ask.nameAndTime', {})
+        return i18n.translate('setReminder.ask.nameAndTime')
     }
 
     throw new Error('setReminderUnhandled')

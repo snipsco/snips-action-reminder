@@ -35,7 +35,7 @@ export const cancelReminderHandler: Handler = async function(
     // No reminders, no slots
     if (!reminders.length && !Object.keys(slots).length) {
         flow.end()
-        return i18n.randomTranslation('getReminder.info.noReminderFound', {})
+        return i18n.translate('getReminder.info.noReminderFound')
     }
 
     // No reminders, slots detected
@@ -62,8 +62,8 @@ export const cancelReminderHandler: Handler = async function(
             )
         })
         return (
-            i18n.randomTranslation('getReminder.info.noSuchRemindersFound', {}) +
-            i18n.randomTranslation('setReminder.ask.createReminder', {})
+            i18n.translate('getReminder.info.noSuchRemindersFound') +
+            i18n.translate('setReminder.ask.createReminder')
         )
     }
 
