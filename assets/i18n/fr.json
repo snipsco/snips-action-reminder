@@ -39,30 +39,7 @@
             "confirm": "J'ai trouvé {{ number }} rappel{{odd}}, êtes-vous sûr de vouloir les supprimer ? "
         }
     },
-    "moment": {
-        "date": {
-            "sameDay": "[aujourd'hui]",
-            "nextDay": "[demain]",
-            "nextWeek": "dddd",
-            "sameElse": "[le] D MMMM"
-        },
-        "time": {
-            "12H": "H [heures] m"
-        },
-        "datetime": {
-            "sameDay": "[aujourd'hui à] H [heures] m",
-            "nextDay": "[demain à] H [heures] m",
-            "nextWeek": "dddd [à] H [heures] m",
-            "sameElse": "[le] D MMMM [à] H [heures] m"
-        },
-        "daterange": {
-            "weekEnd": "ce week-end",
-            "nextWeek": "la semaine prochaine",
-            "fromTo": "du {{ dateMin}} au {{ dateMax}}"
-        },
-        "recurrence": {
-            "every": "[tous les] dddd [à] H [heures] m",
-            "daily": "[tous les jours à] H [heures] m"
-        }
+    "daterange": {
+        "fromTo": "du {{ dateMin }} au {{ dateMax }}"
     }
 }

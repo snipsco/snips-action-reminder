@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import {
     DB_DIR,
-    ASSETS_DIR,
+    ASSETS_PATH,
     INTENTS_MAIN
 } from './constants'
 import handlers, { HandlerOptions } from './handlers'
@@ -11,7 +11,7 @@ import { config, i18n, logger, camelize } from 'snips-toolkit'
 import { Hermes, Done } from 'hermes-javascript'
 
 const alarmWav = fs.readFileSync(
-    path.resolve(ASSETS_DIR, 'dingding.wav')
+    path.resolve(ASSETS_PATH, 'dingding.wav')
 )
 
 // Enables deep printing of objects.

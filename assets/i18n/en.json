@@ -37,30 +37,7 @@
             "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them? "
         }
     },
-    "moment": {
-        "date": {
-            "sameDay": "[today]",
-            "nextDay": "[tomorrow]",
-            "nextWeek": "dddd",
-            "sameElse": "[on] MMMM D"
-        },
-        "time": {
-            "12H": "h m A"
-        },
-        "datetime": {
-            "sameDay": "[today] [at] h m A",
-            "nextDay": "[tomorrow] [at] h m A",
-            "nextWeek": "dddd [at] h m A",
-            "sameElse": "MMMM D [at] h m A"
-        },
-        "daterange": {
-            "weekEnd": "this week-end",
-            "nextWeek": "next week",
-            "fromTo": "from {{ dateMin }} to {{ dateMax }}"
-        },
-        "recurrence": {
-            "every": "[every] dddd [at] h m A",
-            "daily": "[every day at] h m A"
-        }
+    "daterange": {
+        "fromTo": "from {{ dateMin }} to {{ dateMax }}"
     }
 }
