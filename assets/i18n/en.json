@@ -8,33 +8,33 @@
     },
     "alarm": {
         "info": {
-            "itsTimeTo": "It's time for your reminder: {{ name }}. "
+            "itsTimeTo": "It's time for your reminder: {{ name }}."
         }
     },
     "setReminder": {
         "ask": {
-            "createReminder": "Would you like to create one? ",
-            "name": "How should I name this reminder? ",
-            "time": "When should I remind you? ",
-            "nameAndTime": "When should I set this reminder and how should I name it? "
+            "createReminder": "Would you like to create one?",
+            "name": "How should I name this reminder?",
+            "time": "When should I remind you?",
+            "nameAndTime": "When should I set this reminder and how should I name it?"
         },
         "info": {
-            "reminder_SetFor_": "Sure, I set a reminder named {{ name }} for {{ time }} "
+            "reminder_SetFor_": "Sure, I set a reminder named {{ name }} for {{ time }}."
         }
     },
     "getReminder": {
         "info": {
-            "noReminderFound": "It seems that you have no reminder set for the moment. ",
-            "noSuchRemindersFound": "It seems that you have no such reminder set for the moment. ",
-            "reminder_SetFor_": "A reminder named {{ name }} is set for {{ time }}. "
+            "noReminderFound": "It seems that you have no reminder set for the moment.",
+            "noSuchRemindersFound": "It seems that you have no such reminder set for the moment.",
+            "reminder_SetFor_": "A reminder named {{ name }} is set for {{ time }}."
         }
     },
     "cancelReminder": {
         "info": {
-            "confirm": "Okay, I cancelled it. "
+            "confirm": "Okay, I cancelled it."
         },
         "ask": {
-            "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them? "
+            "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them?"
         }
     },
     "daterange": {

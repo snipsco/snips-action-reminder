@@ -63,6 +63,7 @@ export const cancelReminderHandler: Handler = async function(
         })
         return (
             i18n.translate('getReminder.info.noSuchRemindersFound') +
+            ' ' +
             i18n.translate('setReminder.ask.createReminder')
         )
     }
