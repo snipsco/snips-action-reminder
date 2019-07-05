@@ -2,10 +2,7 @@ import handlers from './index'
 import { logger, i18n, Handler, config, message } from 'snips-toolkit'
 import commonHandler, { KnownSlots } from './common'
 import { Reminder } from '../utils/reminder/reminder'
-import {
-    SLOT_CONFIDENCE_THRESHOLD,
-    INTENT_FILTER_PROBABILITY_THRESHOLD
-} from '../constants'
+import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 import { translation, Database, getExactDate } from '../utils'
 import { NluSlot, slotType } from 'hermes-javascript/types'
 
