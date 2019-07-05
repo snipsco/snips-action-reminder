@@ -1,103 +1,47 @@
-import { getCompletedDatetime, DatetimeRange, getDatetimeRange } from '../utils'
-import { message, camelize, config } from 'snips-toolkit'
-import { SLOTS_CUSTOM, SLOTS_TIME, SLOT_CONFIDENCE_THRESHOLD } from '../constants'
-import { IntentMessage, NluSlot, slotType, grain, FlowContinuation } from 'hermes-javascript/types'
+import { IntentMessage, slotType, NluSlot, FlowContinuation } from 'hermes-javascript/types'
+import { message, logger, config } from 'snips-toolkit'
+import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
 
-export type ReminderSlots = {
-    reminderName?: string
-    newReminderName?: string
-    datetime?: Date
-    datetimeRange?: DatetimeRange
-    newDatetime?: Date
-    recurrence?: string
-    allReminders?: string
-    pastReminders?: string
-}
-
-export type KnownSlots = ReminderSlots & {
+export type KnownSlots = {
     depth: number
+    name?: string
+    date?: Date
+    recurrence?: string
 }
 
-/**
- * All-in-one slots parser for Reminder App
- *
- * @param msg
- * @param options
- */
-export const extractSlots = function(msg: IntentMessage, knownSlots: KnownSlots): ReminderSlots {
-    const res: ReminderSlots = {}
-    // Only extract custom type slot
-    SLOTS_CUSTOM.forEach(slotName => {
-        const slotNameCam = camelize.camelize(slotName)
-        // Check if it exists in knownSlots
-        if (knownSlots && slotNameCam in knownSlots) {
-            res[slotNameCam] = knownSlots[slotNameCam]
-            return
-        }
+export default async function (msg: IntentMessage, knownSlots: KnownSlots) {
+    let name: string | undefined, recurrence: string | undefined
 
-        // Get slot object from message
-        const tmp: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, slotName, {
-            threshold: SLOT_CONFIDENCE_THRESHOLD,
-            onlyMostConfident: true
+    if (!('name' in knownSlots)) {
+        const nameSlot: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, 'reminder_name', {
+            onlyMostConfident: true,
+            threshold: SLOT_CONFIDENCE_THRESHOLD
         })
 
-        // Not found
-        if (!tmp) {
-            return
+        if (nameSlot) {
+            name = nameSlot.value.value
         }
+    } else {
+        name = knownSlots.name
+    }
 
-        res[slotNameCam] = tmp.value.value
-    })
-
-    // Only extract snips/datetime type slot
-    SLOTS_TIME.forEach(slotName => {
-        const slotNameCam = camelize.camelize(slotName)
-        // Check if it exists in knownSlots
-        if (knownSlots && slotNameCam in knownSlots) {
-            res[slotNameCam] = knownSlots[slotNameCam]
-            return
-        }
-
-        // Get slot object from message
-        const tmp: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, slotName, {
-            threshold: SLOT_CONFIDENCE_THRESHOLD,
-            onlyMostConfident: true
+    if (!('recurrence' in knownSlots)) {
+        const recurrenceSlot: NluSlot<slotType.custom> | null = message.getSlotsByName(msg, 'recurrence', {
+            onlyMostConfident: true,
+            threshold: SLOT_CONFIDENCE_THRESHOLD
         })
 
-        // Not found
-        if (!tmp) {
-            return
+        if (recurrenceSlot) {
+            recurrence = recurrenceSlot.value.value
         }
+    } else {
+        recurrence = knownSlots.recurrence
+    }
 
-        if (tmp.value.kind === 'TimeInterval') {
-            // Use start time as time value
-            res[slotNameCam] = getCompletedDatetime({
-                kind: slotType.instantTime,
-                value: tmp.value.from,
-                grain: grain.minute,
-                precision: 'Exact'
-            })
-            // Generate a DatetimeRange in case the handler needs
-            if (slotNameCam == 'datetime') {
-                res.datetimeRange = getDatetimeRange({
-                    kind: slotType.instantTime,
-                    value: tmp.value.from,
-                    grain: grain.minute,
-                    precision: 'Exact'
-                })
-            }
-        } else if (tmp.value.kind === 'InstantTime') {
-            // Complete time
-            res[slotNameCam] = getCompletedDatetime(tmp.value)
+    logger.info('\tname: ', name)
+    logger.info('\trecurrence: ', recurrence)
 
-            // Generate a DatetimeRange in case the handler needs
-            if (slotNameCam == 'datetime') {
-                res.datetimeRange = getDatetimeRange(tmp.value)
-            }
-        }
-    })
-
-    return res
+    return { name, recurrence }
 }
 
 export const flowContinueTerminate = (flow: FlowContinuation) => {

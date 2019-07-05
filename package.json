@@ -16,13 +16,13 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.15",
-    "@types/node": "^12.0.8",
-    "@typescript-eslint/eslint-plugin": "^1.10.2",
-    "@typescript-eslint/parser": "^1.10.2",
-    "eslint": "^5.12.0",
-    "eslint-plugin-jest": "^22.7.0",
+    "@types/node": "12.0.12",
+    "@typescript-eslint/eslint-plugin": "1.11.0",
+    "@typescript-eslint/parser": "1.11.0",
+    "eslint": "6.0.1",
+    "eslint-plugin-jest": "22.7.2",
     "hermes-javascript": "^0.3.12",
-    "snips-toolkit": "^1.0.1",
+    "snips-toolkit": "1.0.9",
     "typescript": "^3.5.2"
   },
   "dependencies": {
@@ -30,7 +30,7 @@
     "cron-parser": "^2.12.0",
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
-    "snips-toolkit-runner": "^1.0.0",
+    "snips-toolkit-runner": "1.0.1",
     "time-stamp": "^2.2.0"
   },
   "sandbox": [

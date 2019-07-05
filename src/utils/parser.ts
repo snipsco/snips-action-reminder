@@ -1,71 +1,75 @@
 import cron from 'node-cron'
-import { InstantTimeSlotValue, slotType } from 'hermes-javascript/types'
-import { logger } from 'snips-toolkit'
+import { grain } from 'hermes-javascript/types'
 
-export type DatetimeRange = {
-    min: number
-    max: number
+export type DateGrain = {
+    date: string
+    grain?: string
 }
 
-export const getDatetimeRange = (datetimeSnips: InstantTimeSlotValue<slotType.instantTime>): DatetimeRange => {
-    const datetime = new Date(datetimeSnips.value)
-    const min = datetime.getTime()
-    switch (datetimeSnips.grain) {
-        case 'Minute':
-            return {min, max: min + 1000 * 60}
-        case 'Hour':
-            return {min, max: min + 1000 * 60 * 60}
-        case 'Day':
-            return {min, max: min + 1000 * 60 * 60 * 24}
-        case 'Week':
-            return {min, max: min + 1000 * 60 * 60 * 24 * 7}
-        case 'Month':
-            return {min, max: min + 1000 * 60 * 60 * 24 * 30}
-        case 'Year':
-            return {min, max: min + 1000 * 60 * 60 * 24 * 365}
+export type DateRange = {
+    min: Date
+    max: Date
+    grain?: string
+}
+
+export const getDateRange = (date: Date, grainValue: string): DateRange => {
+    switch (grainValue) {
+        case grain.minute:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60), grain: grainValue }
+        case grain.hour:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60), grain: grainValue }
+        case grain.day:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24), grain: grainValue }
+        case grain.week:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 7), grain: grainValue }
+        case grain.month:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 30), grain: grainValue}
+        case grain.year:
+            return { min: date, max: new Date(date.getTime() + 1000 * 60 * 60 * 24 * 365), grain: grainValue }
         default:
-            // Not sure which will be this case
-            return {min, max: min + 1000 * 60}
+            // Not sure which will be this case, Second? Quarter?
+            return { min: date, max: new Date(date.getTime() + 1000 * 60) }
     }
 }
 
 /**
- * Convert a incompleted datetime to a exact time, filling the unclear parts by current time sub-segments
+ * Convert an incomple date to an exact time,
+ * filling the unclear parts by current time sub-segments
  */
- export const getCompletedDatetime = (datetimeSnips: InstantTimeSlotValue<slotType.instantTime>): Date => {
-     const datetimeNow = new Date(Date.now())
-     let completedDatetime = new Date(datetimeSnips.value)
+export const getExactDate = (dateGrain: DateGrain): Date => {
+    const now = new Date(Date.now())
+    let date = new Date(dateGrain.date)
 
-     switch (datetimeSnips.grain) {
-         case 'Minute':// base: exact at YYYY-MM-DD HH-MM
-             return completedDatetime
-         // case 'Hour':// base: the next hour at HH:00
-         //     completedDatetime.setMinutes(datetimeNow.getMinutes())
-         //     return completedDatetime
-         case 'Day':// base: the next day at 00:00
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         case 'Week':// base: the first day of next weeek at 00:00
-             completedDatetime.setDate(completedDatetime.getDate() + datetimeNow.getDay() - 1)
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         case 'Month':// base: the first day of month at 00:00
-             completedDatetime.setDate(datetimeNow.getDate())
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         case 'Year':// base: the first day of year at 00:00
-             completedDatetime.setMonth(datetimeNow.getMonth())
-             completedDatetime.setDate(datetimeNow.getDate())
-             completedDatetime.setHours(datetimeNow.getHours())
-             completedDatetime.setMinutes(datetimeNow.getMinutes())
-             return completedDatetime
-         default:// base: exact at YYYY-MM-DD HH-MM-SS
-             return completedDatetime
-     }
- }
+    switch (dateGrain.grain) {
+        case grain.minute: // base: exact at YYYY-MM-DD HH-MM
+            return date
+        // case 'Hour': // base: the next hour at HH:00
+        //     date.setMinutes(now.getMinutes())
+        //     return date
+        case grain.day: // base: the next day at 00:00
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        case grain.week: // base: the first day of next weeek at 00:00
+            date.setDate(date.getDate() + now.getDay() - 1)
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        case grain.month: // base: the first day of month at 00:00
+            date.setDate(now.getDate())
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        case grain.year: // base: the first day of year at 00:00
+            date.setMonth(now.getMonth())
+            date.setDate(now.getDate())
+            date.setHours(now.getHours())
+            date.setMinutes(now.getMinutes())
+            return date
+        default: // base: exact at YYYY-MM-DD HH-MM-SS
+            return date
+    }
+}
 
 /**
  * Convert a datetime and recurrence to a cron schedule expression
@@ -80,31 +84,34 @@ export const getDatetimeRange = (datetimeSnips: InstantTimeSlotValue<slotType.in
  *     │ │ │ │ │ │
  *     * * * * * *
  */
-export const getScheduleString = (datetime: Date, recurrence: string | null): string => {
-    logger.debug('getScheduleString', typeof datetime)
-    const mapper = new Map([
-        ['mondays', '* * Mon'],
-        ['tuesdays', '* * Tue'],
-        ['wednesdays', '* * Wed'],
-        ['thursdays', '* * Thu'],
-        ['fridays', '* * Fri'],
-        ['saturdays', '* * Sat'],
-        ['sundays', '* * Sun'],
-        ['weekly', `* * ${datetime.getDay()}`],
-        ['daily', '* * *'],
-        ['monthly', `${datetime.getDate()} * *`],
-        ['weekends', '* * Sat,Sun']
-    ])
+export const getScheduleString = (date: Date, recurrence: string | null): string => {
+    const mapper = {
+        mondays: '* * Mon',
+        tuesdays: '* * Tue',
+        wednesdays: '* * Wed',
+        thursdays: '* * Thu',
+        fridays: '* * Fri',
+        saturdays: '* * Sat',
+        sundays: '* * Sun',
+        weekly: `* * ${ date.getDay() }`,
+        daily: '* * *'
+    }
 
-    let schedule = `${datetime.getSeconds()} ${datetime.getMinutes()} ${datetime.getHours()} `
+    let schedule = `${ date.getSeconds() } ${ date.getMinutes() } ${ date.getHours() } `
 
     if (recurrence) {
-        schedule += mapper.get(recurrence)
+        for (let [key, value] of Object.entries(mapper)) {
+            if (recurrence.toLowerCase().includes(key)) {
+                schedule += value
+            }
+        }
     } else {
-        schedule += `${datetime.getDate()} ${datetime.getMonth()+1} ${datetime.getDay()}`
+        schedule += `${ date.getDate() } ${ date.getMonth() + 1 } ${ date.getDay() }`
     }
+
     if (!cron.validate(schedule)) {
-        throw 'invalideCronScheduleExpression'
+        throw 'invalidCronScheduleExpression'
     }
+
     return schedule
 }

@@ -1,8 +1,7 @@
 import fs from 'fs'
 import moment from 'moment'
 import { config, i18n } from 'snips-toolkit'
-import { DatetimeRange } from './parser'
-import { ASSETS_PATH } from '../constants'
+import { ASSETS_DIR } from '../constants'
 
 export type DateFormats = {[key: string]: any}
 
@@ -10,7 +9,7 @@ let dateFormats: DateFormats = {}
 
 export const beautify = {
     init: () => {
-        dateFormats = JSON.parse(fs.readFileSync(`${ASSETS_PATH}/dates/${ config.get().locale }.json`, 'utf8'))
+        dateFormats = JSON.parse(fs.readFileSync(`${ASSETS_DIR}/dates/${ config.get().locale }.json`, 'utf8'))
     },
 
     date: (date: Date): string => {

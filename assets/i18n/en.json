@@ -8,25 +8,48 @@
     },
     "alarm": {
         "info": {
-            "itsTimeTo": "It's time for your reminder: {{ name }}."
+            "expired": "A reminder is up!",
+            "expired_name": "The reminder named {{ name }} is up!"
         }
     },
     "setReminder": {
+        "info": {
+            "scheduled": "I set a reminder for {{ time }}.",
+            "scheduled_name": "I set a reminder named {{ name }} for {{ time }}.",
+            "scheduled_recurrence": "I set a reminder for {{ recurrence }}.",
+            "scheduled_name_recurrence": "I set a reminder named {{ name }} for {{ recurrence }}."
+        },
         "ask": {
             "createReminder": "Would you like to create one?",
             "name": "How should I name this reminder?",
             "time": "When should I remind you?",
             "nameAndTime": "When should I set this reminder and how should I name it?"
-        },
-        "info": {
-            "reminder_SetFor_": "Sure, I set a reminder named {{ name }} for {{ time }}."
         }
     },
     "getReminder": {
         "info": {
             "noReminderFound": "It seems that you have no reminder set for the moment.",
-            "noSuchRemindersFound": "It seems that you have no such reminder set for the moment.",
-            "reminder_SetFor_": "A reminder named {{ name }} is set for {{ time }}."
+            "noSuchRemindersFound": "It seems that you have no such reminder set for the moment."
+        },
+        "head": {
+            "found": "I found {{ number }} reminder{{odd}}.",
+            "found_name": "I found {{ number }} reminder{{odd}} named {{ name }}.",
+            "found_time": "I found {{ number }} reminder{{odd}} set for {{ time }}.",
+            "found_recurrence": "I found {{ number }} reminder{{odd}} set for {{ recurrence }}.",
+            "found_time_recurrence": "I found {{ number }} reminder{{odd}} set for {{ recurrence }} at {{ time }}.",
+            "found_time_name": "I found {{ number }} reminder{{odd}} named {{ name }} set for {{ time }}.",
+            "found_recurrence_name": "I found {{ number }} reminder{{odd}} named {{ name }} set for {{ recurrence }}.",
+            "found_time_recurrence_name": "I found {{ number }} reminder{{odd}} named {{ name }} set for {{ recurrence }} at {{ time }}."
+        },
+        "list": {
+            "scheduled": "One is set for {{ time }}.",
+            "scheduled_name": "A reminder named {{ name }} is set for {{ time }}.",
+            "scheduled_recurrence": "One is set for {{ recurrence }}.",
+            "scheduled_recurrence_name": "A reminder named {{ name }} is set for {{ recurrence }}.",
+            "singleReminder_name": "Its name is {{ name }} and it is set for {{ time }}.",
+            "singleReminder_time": "It is set for {{ time }}.",
+            "singleReminder_recurrence": "It is set for {{ recurrence }}.",
+            "singleReminder_recurrence_name": "Its name is {{ name }} and it is set for {{ recurrence }}."
         }
     },
     "cancelReminder": {
