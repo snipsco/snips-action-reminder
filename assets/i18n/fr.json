@@ -31,7 +31,8 @@
     },
     "cancelReminder": {
         "info": {
-            "confirm": "D'accord, je l'ai supprimé."
+            "confirm": "D'accord, je l'ai supprimé.",
+            "confirmAll": "D'accord, je les ai supprimés."
         },
         "ask": {
             "confirm": "J'ai trouvé {{ number }} rappel{{odd}}, êtes-vous sûr de vouloir les supprimer ?"

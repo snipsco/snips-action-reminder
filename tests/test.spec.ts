@@ -7,7 +7,7 @@ import {
 } from './utils'
 
 const { Session, Tools } = Test
-const { getMessageKey } = Tools
+const { getMessageKey, getMessageOptions } = Tools
 
 beforeAll(() => {
     // Wait one second for the action bootstrap
@@ -24,6 +24,15 @@ describe('Reminder app', () => {
                 createDateSlot('2019-05-27 06:00:00 +00:00')
             ]
         })
+
+        const elicitationMsg = await session.continue({
+            intentName: 'snips-assistant:ElicitReminderName',
+            input: 'go to the swimming pool',
+            slots: [
+                createNameSlot('go to the swimming pool')
+            ]
+        })
+        expect(getMessageKey(elicitationMsg)).toBe('setReminder.ask.name')
 
         const endMsg = await session.end()
         expect(getMessageKey(endMsg)).toBe('setReminder.info.scheduled')
@@ -65,21 +74,15 @@ describe('Reminder app', () => {
             ]
         })
 
-        const confirmationMsg = await session.continue({
-            intentName: 'snips-assistant:Yes',
-            input: 'Yes'
-        })
-        expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
-
         const endMsg = await session.end()
-        expect(getMessageKey(endMsg)).toBe('cancelReminder.successfullyDeletedSingle')
+        expect(getMessageKey(endMsg)).toBe('cancelReminder.info.confirm')
     })
 
     it('should set a new named reminder every wednesday at 8 pm', async () => {
         const session = new Session()
         await session.start({
             intentName: 'snips-assistant:SetReminder',
-            input: 'Schedule a reminder named yoga class every wednesday at 8 pm',
+            input: 'Schedule a reminder named yoga class every wednesday at 10 pm',
             slots: [
                 createDateSlot('2019-05-28 20:00:00 +00:00'),
                 createNameSlot('yoga class'),
@@ -88,6 +91,9 @@ describe('Reminder app', () => {
         })
 
         const endMsg = await session.end()
+        expect(getMessageOptions(endMsg).name).toBe('yoga class')
+        expect(getMessageOptions(endMsg).recurrence).toBe('every Wednesday at 10 PM')
+        expect(getMessageOptions(endMsg).context).toBe('name_recurrence')
         expect(getMessageKey(endMsg)).toBe('setReminder.info.scheduled')
     })
 
@@ -102,9 +108,10 @@ describe('Reminder app', () => {
             intentName: 'snips-assistant:Yes',
             input: 'Yes'
         })
+        expect(getMessageKey(confirmationMsg)).toBe('cancelReminder.ask.confirm')
         expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
 
         const endMsg = await session.end()
-        expect(getMessageKey(endMsg)).toBe('cancelReminder.successfullyDeletedAll')
+        expect(getMessageKey(endMsg)).toBe('cancelReminder.info.confirmAll')
     })
 })

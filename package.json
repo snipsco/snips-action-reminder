@@ -4,7 +4,7 @@
   "description": "Snips action code for the Reminder app",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run lint && npm run build && npm run test",
+    "start": "npm run lint && npm run build && npm run test && npm run test:sandbox",
     "build": "snips-toolkit build",
     "dev": "snips-toolkit dev",
     "test": "snips-toolkit test '^.*\\.spec\\.[jt]s$'",

@@ -1,11 +1,13 @@
 import { IntentMessage, slotType, NluSlot, FlowContinuation } from 'hermes-javascript/types'
 import { message, logger, config } from 'snips-toolkit'
 import { SLOT_CONFIDENCE_THRESHOLD } from '../constants'
+import { DateRange } from '../utils'
 
 export type KnownSlots = {
     depth: number
     name?: string
     date?: Date
+    dateRange?: DateRange
     recurrence?: string
 }
 

@@ -54,7 +54,8 @@
     },
     "cancelReminder": {
         "info": {
-            "confirm": "Okay, I cancelled it."
+            "confirm": "Okay, I cancelled it.",
+            "confirmAll": "Okay, I cancelled them."
         },
         "ask": {
             "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them?"

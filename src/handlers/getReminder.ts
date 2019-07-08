@@ -16,17 +16,21 @@ export const getReminderHandler: Handler = async function(msg, flow, database: D
 
     let dateRange: DateRange | undefined
 
-    const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
-        onlyMostConfident: true,
-        threshold: SLOT_CONFIDENCE_THRESHOLD
-    })
-
-    if (dateSlot) {
-        if (dateSlot.value.kind === slotType.timeInterval) {
-            dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
-        } else if (dateSlot.value.kind === slotType.instantTime) {
-            dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+    if (!('dateRange' in knownSlots)) {
+        const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
+            onlyMostConfident: true,
+            threshold: SLOT_CONFIDENCE_THRESHOLD
+        })
+    
+        if (dateSlot) {
+            if (dateSlot.value.kind === slotType.timeInterval) {
+                dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
+            } else if (dateSlot.value.kind === slotType.instantTime) {
+                dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+            }
         }
+    } else {
+        dateRange = knownSlots.dateRange
     }
 
     const reminders: Reminder[] = database.get(name, dateRange, recurrence)

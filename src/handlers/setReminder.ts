@@ -25,12 +25,16 @@ export const setReminderHandler: Handler = async function (msg, flow, database: 
         threshold: SLOT_CONFIDENCE_THRESHOLD
     })
 
-    if (dateSlot) {
-        if (dateSlot.value.kind === slotType.timeInterval) {
-            date = getExactDate({ date: dateSlot.value.from })
-        } else if (dateSlot.value.kind === slotType.instantTime) {
-            date = getExactDate({ date: dateSlot.value.value, grain: dateSlot.value.kind })
+    if (!('date' in knownSlots)) {
+        if (dateSlot) {
+            if (dateSlot.value.kind === slotType.timeInterval) {
+                date = getExactDate({ date: dateSlot.value.from })
+            } else if (dateSlot.value.kind === slotType.instantTime) {
+                date = getExactDate({ date: dateSlot.value.value, grain: dateSlot.value.kind })
+            }
         }
+    } else {
+        date = knownSlots.date
     }
 
     const elicitationCallback = (msg, flow) => {

@@ -15,17 +15,21 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
 
     let dateRange: DateRange | undefined
 
-    const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
-        onlyMostConfident: true,
-        threshold: SLOT_CONFIDENCE_THRESHOLD
-    })
-
-    if (dateSlot) {
-        if (dateSlot.value.kind === slotType.timeInterval) {
-            dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
-        } else if (dateSlot.value.kind === slotType.instantTime) {
-            dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+    if (!('dateRange' in knownSlots)) {
+        const dateSlot: NluSlot<slotType.instantTime | slotType.timeInterval> | null = message.getSlotsByName(msg, 'datetime', {
+            onlyMostConfident: true,
+            threshold: SLOT_CONFIDENCE_THRESHOLD
+        })
+    
+        if (dateSlot) {
+            if (dateSlot.value.kind === slotType.timeInterval) {
+                dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
+            } else if (dateSlot.value.kind === slotType.instantTime) {
+                dateRange = getDateRange(new Date(dateSlot.value.value), dateSlot.value.grain)
+            }
         }
+    } else {
+        dateRange = knownSlots.dateRange
     }
 
     const reminders: Reminder[] = database.get(name, dateRange, recurrence)
@@ -37,7 +41,7 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
                 database.deleteById(reminder.id)
             })
             flow.end()
-            return i18n.translate('cancelReminder.info.confirm')
+            return i18n.translate('cancelReminder.info.confirmAll')
         })
         flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
