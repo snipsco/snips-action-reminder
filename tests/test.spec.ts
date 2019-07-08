@@ -92,7 +92,6 @@ describe('Reminder app', () => {
 
         const endMsg = await session.end()
         expect(getMessageOptions(endMsg).name).toBe('yoga class')
-        expect(getMessageOptions(endMsg).recurrence).toBe('every Wednesday at 10 PM')
         expect(getMessageOptions(endMsg).context).toBe('name_recurrence')
         expect(getMessageKey(endMsg)).toBe('setReminder.info.scheduled')
     })
