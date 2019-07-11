@@ -20,7 +20,7 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
             onlyMostConfident: true,
             threshold: SLOT_CONFIDENCE_THRESHOLD
         })
-    
+
         if (dateSlot) {
             if (dateSlot.value.kind === slotType.timeInterval) {
                 dateRange = { min: new Date(dateSlot.value.from), max: new Date(dateSlot.value.to) }
@@ -40,8 +40,16 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
             reminders.forEach(reminder => {
                 database.deleteById(reminder.id)
             })
+
             flow.end()
-            return i18n.translate('cancelReminder.info.confirmAll')
+            const length = reminders.length
+            if (length > 1) {
+                return i18n.translate('cancelReminder.info.confirmAll', {
+                    number: length
+                })
+            } else {
+                return i18n.translate('cancelReminder.info.confirm')
+            }
         })
         flow.continue(`${ config.get().assistantPrefix }:No`, (_, flow) => {
             flow.end()
@@ -49,10 +57,13 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
         flowContinueTerminate(flow)
 
         const length = reminders.length
-        return i18n.translate('cancelReminder.ask.confirm', {
-            number: length,
-            odd: length > 1 ? 's' : ''
-        })
+        if (length > 1) {
+            return i18n.translate('cancelReminder.ask.confirmAll', {
+                number: length
+            })
+        } else {
+            return i18n.translate('cancelReminder.ask.confirm')
+        }
     }
 
     // Found reminders by using some of the constrains, no need to continue just cancel

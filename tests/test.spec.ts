@@ -107,7 +107,7 @@ describe('Reminder app', () => {
             intentName: 'snips-assistant:Yes',
             input: 'Yes'
         })
-        expect(getMessageKey(confirmationMsg)).toBe('cancelReminder.ask.confirm')
+        expect(getMessageKey(confirmationMsg)).toBe('cancelReminder.ask.confirmAll')
         expect(confirmationMsg.intentFilter && confirmationMsg.intentFilter.includes('snips-assistant:Yes')).toBeTruthy()
 
         const endMsg = await session.end()

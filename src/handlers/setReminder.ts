@@ -72,23 +72,7 @@ export const setReminderHandler: Handler = async function (msg, flow, database: 
 
     // Required slot: datetime or recurrence
     if (!date) {
-        flow.continue(`${ config.get().assistantPrefix }:ElicitReminderTime`, (msg, flow) => {
-            /*
-            if (msg.intent.confidenceScore < INTENT_FILTER_PROBABILITY_THRESHOLD) {
-                throw new Error('intentNotRecognized')
-            }
-            */
-
-            const options: { name?: string, date?: Date, recurrence?: string } = {}
-            if (name) options.name = name
-            if (recurrence) options.recurrence = recurrence
-            if (date) options.date = date
-
-            return handlers.setReminder(msg, flow, database, {
-                ...options,
-                depth: knownSlots.depth - 1
-            })
-        })
+        flow.continue(`${ config.get().assistantPrefix }:ElicitReminderTime`, elicitationCallback)
 
         return i18n.translate('setReminder.ask.time')
     }

@@ -58,7 +58,8 @@
             "confirmAll": "Okay, I cancelled them."
         },
         "ask": {
-            "confirm": "I found {{ number }} reminder{{odd}}, are you sure to cancel all of them?"
+            "confirm": "I found one reminder, are you sure to cancel it?",
+            "confirmAll": "I found {{ number }} reminders, are you sure to cancel all of them?"
         }
     },
     "daterange": {

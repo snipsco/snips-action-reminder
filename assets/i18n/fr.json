@@ -35,7 +35,8 @@
             "confirmAll": "D'accord, je les ai supprimés."
         },
         "ask": {
-            "confirm": "J'ai trouvé {{ number }} rappel{{odd}}, êtes-vous sûr de vouloir les supprimer ?"
+            "confirm": "J'ai trouvé un rappel, êtes-vous sûr de vouloir le supprimer ?",
+            "confirmAll": "J'ai trouvé {{ number }} rappels, êtes-vous sûr de vouloir les supprimer ?"
         }
     },
     "daterange": {
