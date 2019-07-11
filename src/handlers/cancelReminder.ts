@@ -33,16 +33,16 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
     }
 
     const reminders: Reminder[] = database.get(name, dateRange, recurrence)
+    const length = reminders.length
 
     // Cancel all the reminder, need to be confirmed
-    if (reminders.length && (!name && !recurrence && !dateRange)) {
+    if (length && (!name && !recurrence && !dateRange)) {
         flow.continue(`${ config.get().assistantPrefix }:Yes`, (_, flow) => {
             reminders.forEach(reminder => {
                 database.deleteById(reminder.id)
             })
 
             flow.end()
-            const length = reminders.length
             if (length > 1) {
                 return i18n.translate('cancelReminder.info.confirmAll', {
                     number: length
@@ -56,7 +56,6 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
         })
         flowContinueTerminate(flow)
 
-        const length = reminders.length
         if (length > 1) {
             return i18n.translate('cancelReminder.ask.confirmAll', {
                 number: length
@@ -67,13 +66,19 @@ export const cancelReminderHandler: Handler = async function(msg, flow, database
     }
 
     // Found reminders by using some of the constrains, no need to continue just cancel
-    if (reminders.length && (name || recurrence || dateRange)) {
+    if (length && (name || recurrence || dateRange)) {
         reminders.forEach(reminder => {
             database.deleteById(reminder.id)
         })
 
         flow.end()
-        return i18n.translate('cancelReminder.info.confirm')
+        if (length > 1) {
+            return i18n.translate('cancelReminder.info.confirmAll', {
+                number: length
+            })
+        } else {
+            return i18n.translate('cancelReminder.info.confirm')
+        }
     }
 
     flow.end()

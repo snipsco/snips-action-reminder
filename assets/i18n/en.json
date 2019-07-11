@@ -54,12 +54,12 @@
     },
     "cancelReminder": {
         "info": {
-            "confirm": "Okay, I cancelled it.",
-            "confirmAll": "Okay, I cancelled them."
+            "confirm": "Sure, I cancelled it.",
+            "confirmAll": "Sure, I cancelled them."
         },
         "ask": {
-            "confirm": "I found one reminder, are you sure to cancel it?",
-            "confirmAll": "I found {{ number }} reminders, are you sure to cancel all of them?"
+            "confirm": "I found one reminder, are you sure you want to cancel it?",
+            "confirmAll": "I found {{ number }} reminders, are you sure you want to cancel all of them?"
         }
     },
     "daterange": {
