@@ -8,25 +8,48 @@
     },
     "alarm": {
         "info": {
-            "expired": "Votre rappel {{ name }} arrive à expiration."
+            "expired": "Votre rappel {{ name }} vient d'arriver à expiration !",
+            "expired_name": "Le rappel nommé {{ name }} vient d'arriver à expiration !"
         }
     },
     "setReminder": {
+        "info": {
+            "scheduled": "J'ai programmé un rappel {{- time }}.",
+            "scheduled_name": "J'ai programmé un rappel nommé {{ name }} {{- time }}.",
+            "scheduled_recurrence": "J'ai programmé un rappel {{ recurrence }}.",
+            "scheduled_name_recurrence": "J'ai programmé un rappel nommé {{ name }} {{ recurrence }}."
+        },
         "ask": {
             "createReminder": "Voulez-vous en créer un ?",
             "name": "Comment voulez-vous nommer votre rappel ?",
             "time": "Quand voulez-vous programmer ce rappel ?",
             "nameAndTime": "Comment voulez-vous nommer votre rappel, et quand voulez-vous le programmer ?"
-        },
-        "info": {
-            "reminder_SetFor_": "D'accord, j'ai programmé un rappel nommé {{ name }} pour {{ time }}."
         }
     },
     "getReminder": {
         "info": {
             "noReminderFound": "Il semble que vous n'ayez pas de rappel programmé.",
-            "noSuchRemindersFound": "Il semble que ce rappel ne soit pas programmé.",
-            "reminder_SetFor_": "Un rappel nommé {{ name }} programmé pour {{ time }}."
+            "noSuchRemindersFound": "Il semble que ce rappel ne soit pas programmé."
+        },
+        "head": {
+            "found": "J'ai trouvé {{ number }} rappel{{odd}}.",
+            "found_name": "J'ai trouvé {{ number }} rappel{{odd}} nommé{{odd}} {{ name }}.",
+            "found_time": "J'ai trouvé {{ number }} rappel{{odd}} programmés {{- time }}.",
+            "found_recurrence": "J'ai trouvé {{ number }} rappel{{odd}} programmé{{odd}} {{ recurrence }}.",
+            "found_time_recurrence": "J'ai trouvé {{ number }} rappel{{odd}} programmé{{odd}} {{ recurrence }} {{- time }}.",
+            "found_time_name": "J'ai trouvé {{ number }} rappel{{odd}} nommé{{ name }} et programmé{{odd}} {{- time }}.",
+            "found_recurrence_name": "J'ai trouvé {{ number }} rappel{{odd}} nommé{{odd}} {{ name }} et programmé{{odd}} {{ recurrence }}.",
+            "found_time_recurrence_name": "J'ai trouvé {{ number }} rappel{{odd}} nommé{{odd}} {{ name }} et programmé{{odd}} {{ recurrence }} {{- time }}."
+        },
+        "list": {
+            "scheduled": "Un rappel est programmé {{- time }}.",
+            "scheduled_name": "Un rappel nommé {{ name }} est programmé {{- time }}.",
+            "scheduled_recurrence": "Un rappel est programmé {{ recurrence }}.",
+            "scheduled_recurrence_name": "Un rappel nommé {{ name }} est programmé {{ recurrence }}.",
+            "singleReminder_name": "Il est nommé {{ name }} et est programmé {{- time }}.",
+            "singleReminder_time": "Il est programmé {{- time }}.",
+            "singleReminder_recurrence": "Il est programmé {{ recurrence }}.",
+            "singleReminder_recurrence_name": "Il est nommé {{ name }} et est programmé {{ recurrence }}."
         }
     },
     "cancelReminder": {
@@ -40,6 +63,6 @@
         }
     },
     "daterange": {
-        "fromTo": "du {{ dateMin }} au {{ dateMax }}"
+        "fromTo": "du {{ date_1 }} au {{ date_2 }}"
     }
 }

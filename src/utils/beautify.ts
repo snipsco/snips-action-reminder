@@ -26,7 +26,7 @@ export const beautify = {
     time: (date: Date): string => {
         return moment(date)
             .locale(config.get().locale)
-            .format(dateFormats.moment.time.format12H)
+            .format(dateFormats.moment.time)
             .replace(' 0', '')
     },
 
@@ -40,17 +40,17 @@ export const beautify = {
     },
 
     daterange: (dateRange: DateRange): string => {
-        if ((new Date(dateRange.min)).getDay() === 5 && new Date(dateRange.max).getDay() === 1) {
+        if (dateRange.min.getDay() === 5 && dateRange.max.getDay() === 1) {
             return dateFormats.moment.daterange.weekEnd
         }
 
-        if (new Date(dateRange.min).getDay() === 1 && new Date(dateRange.max).getDay() === 1) {
+        if (dateRange.min.getDay() === 1 && dateRange.max.getDay() === 1) {
             return dateFormats.moment.daterange.nextWeek
         }
 
         return i18n.translate('daterange.fromTo', {
-            dateMin: beautify.date(new Date(dateRange.min)),
-            dateMax: beautify.date(new Date(dateRange.max.getTime() - 1000))
+            date_1: beautify.date(dateRange.min),
+            date_2: beautify.date(new Date(dateRange.max.getTime() - 1000))
         })
     },
 

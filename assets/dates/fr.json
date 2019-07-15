@@ -6,9 +6,7 @@
             "nextWeek": "dddd",
             "sameElse": "[le] D MMMM"
         },
-        "time": {
-            "format12H": "H [heures] m"
-        },
+        "time": "[à] H [heures] m",
         "datetime": {
             "sameDay": "[aujourd'hui à] H [heures] m",
             "nextDay": "[demain à] H [heures] m",

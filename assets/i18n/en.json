@@ -8,7 +8,7 @@
     },
     "alarm": {
         "info": {
-            "expired": "A reminder is up!",
+            "expired": "Your reminder is up!",
             "expired_name": "The reminder named {{ name }} is up!"
         }
     },
@@ -63,6 +63,6 @@
         }
     },
     "daterange": {
-        "fromTo": "from {{ dateMin }} to {{ dateMax }}"
+        "fromTo": "from {{ date_1 }} to {{ date_2 }}"
     }
 }
